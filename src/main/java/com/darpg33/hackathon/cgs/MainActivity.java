@@ -39,22 +39,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Create new grievance request.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_profile, R.id.nav_settings,
-                R.id.nav_share, R.id.nav_sign_out)
+                R.id.nav_grievance, R.id.nav_home, R.id.nav_profile,
+                R.id.nav_settings, R.id.nav_share, R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -64,6 +59,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Snackbar.make(view, "Create new grievance request.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                navController.navigate(R.id.nav_grievance);
+
+            }
+        });
 
     }
 
@@ -87,6 +93,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "onNavigationItemSelected: item clicked." + menuItem.getItemId());
 
         switch (menuItem.getItemId()) {
+
+            case R.id.nav_grievance: {
+                Log.d(TAG, "onNavigationItemSelected: nav_grievance ");
+                navController.navigate(R.id.nav_grievance);
+                return true;
+            }
+
             case R.id.nav_home: {
                 Log.d(TAG, "onNavigationItemSelected: nav_home ");
                 navController.navigate(R.id.nav_home);
@@ -126,4 +139,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "closeDrawer:");
         drawer.closeDrawer(GravityCompat.START);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
 }

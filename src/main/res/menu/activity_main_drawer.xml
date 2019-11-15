@@ -4,6 +4,13 @@
     tools:showIn="navigation_view">
 
     <group>
+
+
+        <item
+            android:id="@+id/nav_grievance"
+            android:icon="@drawable/ic_ic_icon_add"
+            android:title="@string/menu_new_grievance" />
+
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"

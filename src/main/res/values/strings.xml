@@ -17,4 +17,32 @@
     <string name="menu_profile">Profile</string>
     <string name="my_requests">My Requests</string>
     <string name="action_items">Action Items</string>
+    <string name="no_action">No Action</string>
+    <string name="pending">Pending</string>
+    <string name="email_id">Email ID</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="Sign_in">Sign In</string>
+    <string name="create_account_text">Don\'t have account? Create here</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="select_country">Select Country</string>
+    <string name="select_state">Select State</string>
+    <string name="select_district">Select District</string>
+    <string name="pin_code">Pin Code</string>
+    <string name="register">Register</string>
+    <string name="content_description_navigate_back">navigate back</string>
+    <string name="select_grievance_category">Select Grievance Category</string>
+    <string name="enter_grievance_description">Enter Grievance Description</string>
+    <string name="enter_grievance_title">Enter Grievance Title</string>
+    <string name="submit">Submit</string>
+    <string name="add_attachment">Add Attachment</string>
+    <string name="attachment_help">attachment help</string>
+    <string name="menu_new_grievance">New Grievance</string>
+    <string name="select_privacy">Select privacy</string>
+    <string name="rb_private">Private</string>
+    <string name="rb_public">Public</string>
+
 </resources>

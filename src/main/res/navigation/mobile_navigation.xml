@@ -6,6 +6,12 @@
     app:startDestination="@+id/nav_home">
 
     <fragment
+        android:id="@+id/nav_grievance"
+        android:name="com.darpg33.hackathon.cgs.ui.request.GrievanceFragment"
+        android:label="@string/menu_new_grievance"
+        tools:layout="@layout/fragment_new_grievance" />
+
+    <fragment
         android:id="@+id/nav_home"
         android:name="com.darpg33.hackathon.cgs.ui.home.HomeFragment"
         android:label="@string/menu_home"
@@ -16,6 +22,7 @@
         android:name="com.darpg33.hackathon.cgs.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_profile" />
+
 
     <fragment
         android:id="@+id/nav_settings"
