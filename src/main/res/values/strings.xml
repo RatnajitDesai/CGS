@@ -44,5 +44,9 @@
     <string name="select_privacy">Select privacy</string>
     <string name="rb_private">Private</string>
     <string name="rb_public">Public</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="transgender">Transgender</string>
+    <string name="address">Address</string>
 
 </resources>
