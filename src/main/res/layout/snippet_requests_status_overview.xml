@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:padding="12dp"
+    android:gravity="center"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:id="@+id/txt_count_request_pending"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pending"
+            android:textColor="@color/colorPrimaryDark"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:id="@+id/txt_request_status_pending"
+            android:layout_below="@id/txt_count_request_pending"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/design_default_color_primary"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:id="@+id/txt_count_request_in_process"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/in_process"
+            android:textColor="@color/design_default_color_primary"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:id="@+id/txt_request_status_in_process"
+            android:layout_below="@id/txt_count_request_in_process"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/green"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:id="@+id/txt_count_request_resolved"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/resolved"
+            android:textColor="@color/green"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:id="@+id/txt_request_status_resolved"
+            android:layout_below="@id/txt_count_request_resolved"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

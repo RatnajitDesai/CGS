@@ -5,18 +5,20 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class SignOutViewModel extends ViewModel {
-    private MutableLiveData<String> mText;
+    private MutableLiveData<Boolean> isUserSignedOut;
+    private SignOutRepository repository;
 
     public SignOutViewModel() {
-
-        mText = new MutableLiveData<>();
-        mText.setValue("This is sign out fragment");
-
+        repository = new SignOutRepository();
+        isUserSignedOut = new MutableLiveData<>();
     }
 
-    public LiveData<String> getText() {
+     LiveData<Boolean> signOutCurrentUser() {
 
-        return mText;
+
+        isUserSignedOut = repository.signOutCurrentUser();
+
+        return isUserSignedOut;
 
     }
 

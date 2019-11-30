@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/blue_background_with_rounded_black_border"
+    android:padding="8dp"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        >
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/ivAttachmentType"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/attachment_type"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtAttachmentName"
+            android:layout_gravity="center_vertical"
+            android:maxWidth="200dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            />
+
+        <ImageView
+            android:id="@+id/ivDeleteAttachment"
+            android:contentDescription="@string/delete_attachment"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_remove_attachment_red"
+            />
+
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

@@ -4,19 +4,23 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.darpg33.hackathon.cgs.Model.User;
+
 public class ProfileViewModel extends ViewModel {
-    private MutableLiveData<String> mText;
+    private MutableLiveData<User> userMutableLiveData;
+    private ProfileRepository mRepository;
+
 
     public ProfileViewModel() {
 
-        mText = new MutableLiveData<>();
-        mText.setValue("This is profile fragment");
-
+        mRepository = new ProfileRepository();
     }
 
-    public LiveData<String> getText() {
+    LiveData<User> getUserInfo() {
 
-        return mText;
+        userMutableLiveData = mRepository.getUserInfo();
+
+        return userMutableLiveData;
 
     }
 

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "948613551345",
+    "firebase_url": "https://cgrs-76d39.firebaseio.com",
+    "project_id": "cgrs-76d39",
+    "storage_bucket": "cgrs-76d39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948613551345:android:272cae6b53e3096a4cc550",
+        "android_client_info": {
+          "package_name": "com.darpg33.hackathon.cgs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948613551345-jkdlfttbr8a5ukor3lpe4h9vurtviplj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.darpg33.hackathon.cgs",
+            "certificate_hash": "a1e3950d7e86723e61eee0c021b328055d60a379"
+          }
+        },
+        {
+          "client_id": "948613551345-vpccbtp8a6rhd25ugeqc41e3o5cfqq4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuaaMZcaTVoGTeZnPUAgdwp8E7CoQT_T0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "948613551345-vpccbtp8a6rhd25ugeqc41e3o5cfqq4p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

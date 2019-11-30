@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -15,7 +20,7 @@
         app:boxStrokeColor="@color/colorPrimary">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/GrievanceTitle"
+            android:id="@+id/grievanceTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/enter_grievance_title"
@@ -25,27 +30,25 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/txtGrievanceCategory"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_margin="8dp"
-        app:boxStrokeColor="@color/colorPrimary">
+        android:id="@+id/linGrievanceCategory"
+        android:background="@drawable/transaparent_background_with_grey_rounded_border"
+        android:orientation="horizontal"
+        android:layout_below="@id/txtGrievanceTitle">
 
-        <com.google.android.material.textfield.TextInputEditText
+
+        <Spinner
             android:id="@+id/grievanceCategory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:cursorVisible="false"
-            android:drawableEnd="@drawable/ic_arrow_drop_down"
-            android:drawablePadding="8dp"
-            android:focusable="false"
-            android:hint="@string/select_grievance_category" />
+            android:layout_gravity="center_vertical"
+            android:prompt="@string/grievance_category"
+            android:spinnerMode="dialog" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-
+    </LinearLayout>
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -54,13 +57,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:boxStrokeColor="@color/colorPrimary">
+        app:boxStrokeColor="@color/colorPrimary"
+        android:layout_below="@id/linGrievanceCategory">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/description"
+            android:id="@+id/grievanceDescription"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ems="3"
+            android:maxLines="8"
             android:hint="@string/enter_grievance_description"
             android:inputType="textMultiLine"
             android:maxLength="1500" />
@@ -72,20 +77,25 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/gradient_fading_right"
         android:text="@string/select_privacy"
-
+        android:id="@+id/txtSelectPrivacy"
+        android:textSize="16sp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_below="@id/txtDescription"
         />
 
-
-
     <RadioGroup
-        android:id="@+id/rgTicketVisibility"
-        android:layout_width="wrap_content"
+        android:id="@+id/rgPrivacy"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_margin="8dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/txtSelectPrivacy">
 
         <RadioButton
             android:id="@+id/rbPublic"
@@ -99,31 +109,30 @@
             android:layout_height="wrap_content"
             android:text="@string/rb_private" />
 
-
     </RadioGroup>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attachmentsRecyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+        android:layout_below="@id/rgPrivacy"
+        android:layout_centerHorizontal="true"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal"
-
-        >
-
+        android:id="@+id/linAttachment"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/attachmentsRecyclerView">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAttachment"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_margin="8dp"
             android:text="@string/add_attachment"
-            app:icon="@drawable/ic_icon_attach_file" />
+            app:icon="@drawable/ic_icon_attach_file"/>
 
         <ImageView
             android:id="@+id/attachmentHelp"
@@ -131,21 +140,28 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/attachment_help"
-            android:src="@drawable/ic_icon_info" />
-
+            android:src="@drawable/ic_icon_info"/>
 
     </LinearLayout>
-
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_margin="8dp"
-        android:text="@string/submit" />
+        android:text="@string/submit"
+        android:layout_below="@id/linAttachment"/>
 
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
 
-</LinearLayout>
+</RelativeLayout>
+
+</ScrollView>

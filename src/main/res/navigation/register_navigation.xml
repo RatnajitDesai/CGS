@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/register_navigation"
+    app:startDestination="@id/nav_personal_info">
+
+    <fragment
+        android:id="@+id/nav_personal_info"
+        android:name="com.darpg33.hackathon.cgs.ui.register.PersonalInfoFragment"
+        android:label="@string/personal_info"
+        tools:layout="@layout/fragment_personal_jnfo">
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_address_info"
+        android:label="@string/enter_address"
+        android:name="com.darpg33.hackathon.cgs.ui.register.AddressInfoFragment"
+        tools:layout="@layout/fragment_address_info"
+        >
+        <action
+            android:id="@+id/action_nav_address_info_to_nav_contact_info"
+            app:destination="@id/nav_contact_info" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_contact_info"
+        android:label="@string/enter_contact_info"
+        android:name="com.darpg33.hackathon.cgs.ui.register.ContactInfoFragment"
+        tools:layout="@layout/fragment_contact_info"
+        >
+        <action
+            android:id="@+id/action_nav_contact_info_to_nav_otp_verification"
+            app:destination="@id/nav_otp_verification" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_otp_verification"
+        android:name="com.darpg33.hackathon.cgs.ui.register.FragmentOtpVerification"
+        android:label="@string/verify_otp"
+        tools:layout="@layout/fragment_otp_verification" >
+        <action
+            android:id="@+id/action_nav_otp_verification_to_login_activity"
+            app:destination="@id/login_activity" />
+    </fragment>
+
+
+    <activity android:id="@+id/login_activity"
+        tools:layout="@layout/activity_login"/>
+
+
+</navigation>

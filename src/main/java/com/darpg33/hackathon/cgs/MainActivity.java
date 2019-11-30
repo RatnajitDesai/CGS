@@ -1,10 +1,10 @@
 package com.darpg33.hackathon.cgs;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +16,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.darpg33.hackathon.cgs.ui.login.LoginActivity;
+import com.darpg33.hackathon.cgs.ui.signout.SignOutFragment;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        SignOutFragment.SignOutUserListener{
 
     private static final String TAG = "MainActivity";
 
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = findViewById(R.id.fab);
 
 
         drawer = findViewById(R.id.drawer_layout);
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // menu should be considered as top level destinations.
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_grievance, R.id.nav_home, R.id.nav_profile,
+                R.id.nav_grievance, R.id.nav_home, R.id.nav_profile, R.id.nav_edit_profile,
                 R.id.nav_settings, R.id.nav_share, R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();
@@ -60,26 +60,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Snackbar.make(view, "Create new grievance request.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                navController.navigate(R.id.nav_grievance);
-
-            }
-        });
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
-        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -128,7 +117,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.nav_sign_out: {
                 Log.d(TAG, "onNavigationItemSelected: nav_sign_out ");
-                navController.navigate(R.id.nav_sign_out);
+                SignOutFragment fragment = new SignOutFragment();
+                fragment.setSignOutUserListener(this);
+                fragment.show(getSupportFragmentManager(), "Sign out Fragment.");
                 closeDrawer();
                 return true;
             }
@@ -143,9 +134,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
+    public void checkUserSignedOutOrNot(boolean userSignedOut) {
+
+        if (userSignedOut)
+        {
+            finish();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+
     }
+
 
 }
