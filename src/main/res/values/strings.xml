@@ -76,6 +76,8 @@
     <string name="camera">Camera</string>
     <string name="title_activity_maps">Map</string>
     <string name="share_current_location">Share Current location</string>
+    <string name="share_selected_location">Share Selected location</string>
+    <string name="get_current_location">Get Current location</string>
     <string name="confirm_sign_out_text">Do you really want to sign out?</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
@@ -88,5 +90,12 @@
     <string name="txt_profile_state">State :</string>
     <string name="txt_profile_district">District :</string>
     <string name="txt_profile_pin_code">Pin Code :</string>
+    <string name="gps_not_found_title">GPS not found</string>
+    <string name="gps_not_found_message">Want to enable it?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="enter_address_city_or_zip_code">Enter Address, City or Zip Code</string>
+    <string name="search_icon">Search Icon</string>
+    <string name="place_icon">place icon</string>
 
 </resources>

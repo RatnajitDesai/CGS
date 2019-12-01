@@ -1,6 +1,9 @@
 package com.darpg33.hackathon.cgs.Model;
 
+import android.location.Address;
 import android.net.Uri;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
 
@@ -10,7 +13,14 @@ public class Attachment {
             attachmentType, attachment_name;
     private Uri attachmentUri;
     private Timestamp timestamp;
+    private Address address;
 
+    public Attachment(Address address,String attachmentType, Timestamp timestamp)
+    {
+        this.address = address;
+        this.attachmentType = attachmentType;
+        this.timestamp = timestamp;
+    }
 
     public Attachment(String attachmentPath, String attachmentType, String attachment_name, Uri attachmentUri, Timestamp timestamp) {
         this.attachmentPath = attachmentPath;
@@ -28,6 +38,15 @@ public class Attachment {
     }
 
     public Attachment() {
+    }
+
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public String getAttachment_name() {
@@ -70,6 +89,7 @@ public class Attachment {
         this.timestamp = timestamp;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Attachment{" +

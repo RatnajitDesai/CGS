@@ -15,7 +15,6 @@ public class SignOutViewModel extends ViewModel {
 
      LiveData<Boolean> signOutCurrentUser() {
 
-
         isUserSignedOut = repository.signOutCurrentUser();
 
         return isUserSignedOut;

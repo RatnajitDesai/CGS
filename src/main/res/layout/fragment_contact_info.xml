@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,6 +98,8 @@
 
     </LinearLayout>
 
+    </ScrollView>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signUpBtn"
@@ -103,8 +109,17 @@
         android:background="@color/white"
         android:fontFamily="Rubik"
         android:text="@string/register"
-        android:textSize="8pt" />
+        android:textSize="8pt"
+        android:layout_below="@id/scrollView"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
 
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -2,6 +2,7 @@ package com.darpg33.hackathon.cgs.ui.request;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +43,8 @@ import java.util.Objects;
 public class GrievanceFragment extends Fragment implements View.OnClickListener,
         ChooseAttachmentBottomSheet.PhotoUriListener,
         ChooseAttachmentBottomSheet.DocumentUriListener,
+        ChooseAttachmentBottomSheet.CameraUriListener,
+        ChooseAttachmentBottomSheet.LocationListener,
         AttachmentAdapter.RemoveItemListener {
 
     private static final String TAG = "GrievanceFragment";
@@ -176,6 +179,8 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
             ChooseAttachmentBottomSheet bottomSheet = new ChooseAttachmentBottomSheet();
             bottomSheet.setPhotoUriListener(this);
             bottomSheet.setDocumentUriListener(this);
+            bottomSheet.setCameraUriListener(this);
+            bottomSheet.setLocationListener(this);
             bottomSheet.show(Objects.requireNonNull(getFragmentManager()),"ChooseAttachmentBottomSheet");
         }
         else {
@@ -189,6 +194,8 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
     {
 
         grievanceViewModel.getNewRequestId().observe(this, new Observer<String>() {
+
+            boolean b = true;
             @Override
             public void onChanged(String request_id) {
 
@@ -199,36 +206,32 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
                         @Override
                         public void onChanged(HashMap<String, HashMap<String, Object>> map) {
 
-                            if (map!=null)
-                            {
-                                grievanceViewModel.submitNewRequest(grievance,map).observe(GrievanceFragment.this, new Observer<Grievance>() {
-                                    @Override
-                                    public void onChanged(Grievance grievance) {
-                                        if (grievance != null)
-                                        {
-                                            mProgressBar.setVisibility(View.GONE);
-                                            Toast.makeText(mContext, "Request raised : "+grievance.getRequest_id(), Toast.LENGTH_SHORT).show();
-                                            Navigation.findNavController(Objects.requireNonNull(getActivity()),R.id.btnSubmit).navigate(R.id.nav_home);
-                                        }
-                                        else {
-                                            Toast.makeText(mContext, "Error occurred while raising request.Please try again.", Toast.LENGTH_SHORT).show();
-                                            mProgressBar.setVisibility(View.GONE);
+                                if (map != null) {
 
+                                        grievanceViewModel.submitNewRequest(grievance, map).observe(GrievanceFragment.this, new Observer<Grievance>() {
+                                            @Override
+                                            public void onChanged(Grievance grievance) {
+                                                if (grievance != null) {
+                                                    mProgressBar.setVisibility(View.GONE);
+                                                    Toast.makeText(mContext, "Request raised : " + grievance.getRequest_id(), Toast.LENGTH_SHORT).show();
+                                                    Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.btnSubmit).navigate(R.id.nav_home);
+                                                } else {
+                                                    Toast.makeText(mContext, "Error occurred while raising request.Please try again.", Toast.LENGTH_SHORT).show();
+                                                    mProgressBar.setVisibility(View.GONE);
 
-                                            enableViews(mGrievanceTitle,mGrievanceCategory,mGrievanceDescription,
-                                                    mPrivacy,mPublic,mPrivate, mAttachmentButton,mAttachmentsRecycler,mSubmit);
-
-                                        }
-                                    }
-                                });
-                            }
-                            else {
-                                Toast.makeText(mContext, "Error occurred while uploading files.", Toast.LENGTH_SHORT).show();
-                                mProgressBar.setVisibility(View.GONE);
-                                enableViews(mGrievanceTitle,mGrievanceCategory,mGrievanceDescription,
-                                        mPrivacy,mPublic,mPrivate, mAttachmentButton,mAttachmentsRecycler,mSubmit);
-
-                            }
+                                                    enableViews(mGrievanceTitle, mGrievanceCategory, mGrievanceDescription,
+                                                            mPrivacy, mPublic, mPrivate, mAttachmentButton, mAttachmentsRecycler, mSubmit);
+                                                }
+                                            }
+                                        });
+                                } else
+                                    {
+                                    Toast.makeText(mContext, "Error occurred while uploading files.", Toast.LENGTH_SHORT).show();
+                                    mProgressBar.setVisibility(View.GONE);
+                                    b = false;
+                                    enableViews(mGrievanceTitle, mGrievanceCategory, mGrievanceDescription,
+                                            mPrivacy, mPublic, mPrivate, mAttachmentButton, mAttachmentsRecycler, mSubmit);
+                                }
                         }
                     });
                 }
@@ -255,7 +258,7 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
                     mAttachmentAdapter.notifyItemInserted(position);
                 }
                 else {
-                    Toast.makeText(mContext, "Max. file should be less than 2 MB.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Max. file should be less than 6 MB.", Toast.LENGTH_SHORT).show();
                 }
     }
 
@@ -270,7 +273,6 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
             mAttachmentButton.setEnabled(true);
         }
     }
-
 
     @Override
     public void getDocumentUri(Uri uri, String display_name, long file_size) {
@@ -288,13 +290,43 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
             mAttachmentAdapter.notifyItemInserted(position);
         }
         else {
-            Toast.makeText(mContext, "Max. file should be less than 2 MB.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Max. file should be less than 6 MB.", Toast.LENGTH_SHORT).show();
         }
-
-
 
     }
 
+    @Override
+    public void getCameraUri(Uri uri, String display_name, long file_size) {
+
+        Log.e(TAG, "getCameraUri: "+uri.toString());
+        Log.d(TAG, "getCameraUri: display name: "+display_name);
+
+        if (FileUtilities.checkFileSize(file_size))
+        {
+            Log.d(TAG, "getCameraUri: file_size: "+file_size);
+            Attachment attachment = new Attachment(display_name,"image", uri,new Timestamp(new Date()));
+            mAttachments.add(attachment);
+            setAttachmentsButton();
+            int position = mAttachments.size()-1;
+            Log.d(TAG, "getCameraUri: setAttachmentsButton :"+position+1);
+            mAttachmentAdapter.notifyItemInserted(position);
+        }
+        else {
+            Toast.makeText(mContext, "Max. file should be less than 6 MB.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void getLocation(Address address) {
+
+        Attachment attachment = new Attachment(address,"location",new Timestamp(new Date()));
+        mAttachments.add(attachment);
+        setAttachmentsButton();
+        int position = mAttachments.size()-1;
+        mAttachmentAdapter.notifyItemInserted(position);
+
+    }
 
 
     /**
@@ -370,4 +402,7 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
         mAttachmentAdapter.notifyItemRemoved(position);
         setAttachmentsButton();
     }
+
+
+
 }

@@ -104,14 +104,13 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 }
             }
 
-            mPhoneNumber.setText(user.getPhone_number());
+            mPhoneNumber.setText(user.getPhone_number().substring(3));
             mEmailId.setText(user.getEmail_id());
             mAddress.setText(user.getAddress());
             mCountry.setText(user.getCountry());
             mState.setText(user.getState());
             mDistrict.setText(user.getDistrict());
             mPinCode.setText(user.getPin_code());
-
 
         }
 
@@ -159,23 +158,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                             disableViews(mFirstName,mLastName,mMale,mFemale,mTransgender,mPhoneNumber,mEmailId);
                         } else {
                             Snackbar.make(getView(), "Could not update profile.", Snackbar.LENGTH_LONG).show();
-
                             mProgressBar.setVisibility(View.GONE);
                             enableViews(mFirstName,mLastName,mMale,mFemale,mTransgender,mPhoneNumber,mEmailId);
                         }
                     }
                 });
-
-
             }
-
-
         }
-
-
     }
-
-
 
 
     private boolean checkInputs(String firstname, String lastname)

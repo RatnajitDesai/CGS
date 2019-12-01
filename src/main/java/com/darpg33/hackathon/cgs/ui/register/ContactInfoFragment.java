@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
     private RegisterViewModel registerViewModel;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private Context mContext;
+    private ProgressBar mProgressBar;
     private FirebaseAuth mAuth;
     private String phone_number,email, password, confPassword, firstname, lastname, gender, address,pincode, country, state, district;
     private Bundle mBundle;
@@ -66,9 +68,6 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
         init(view);
 
         mRegister.setOnClickListener(this);
-
-
-
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
@@ -88,9 +87,9 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
-                        Log.d(TAG, "onSuccess: pone number verified.");
+                        Log.d(TAG, "onSuccess: phone number verified.");
                         Toast.makeText(mContext, "Phone number verified successfully.", Toast.LENGTH_SHORT).show();
-                        final FirebaseUser user = authResult.getUser();
+                        final FirebaseUser user = mAuth.getCurrentUser();
 
                         if (user!=null)
                         {
@@ -103,10 +102,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                     user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(mContext, "Email verification link sent to your email.", Toast.LENGTH_SHORT).show();
-
                                             User NewUser = new User();
-
                                             NewUser.setUser_id(user.getUid());
                                             NewUser.setTimestamp(new Timestamp(new Date()));
                                             NewUser.setEmail_id(email);
@@ -120,16 +116,15 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                             NewUser.setState(state);
                                             NewUser.setDistrict(district);
                                             NewUser.setRegistered(true);
-
                                             saveUserToDatabase(NewUser);
-
-
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.e(TAG, "onFailure: "+e.getMessage() );
                                             Toast.makeText(mContext, "Unable to send verification mail.\n Please retry after sometime.Or change your email ID.", Toast.LENGTH_LONG).show();
+                                            mProgressBar.setVisibility(View.GONE);
+                                            enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                             user.delete();
                                         }
                                     });
@@ -142,10 +137,14 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                             {
                                                 Log.d(TAG, "onFailure: User with this email id already exists.");
                                                 Toast.makeText(mContext, "User with email :"+email+" already exists.", Toast.LENGTH_SHORT).show();
+                                                mProgressBar.setVisibility(View.GONE);
+                                                enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                                 user.delete();
                                             }
                                             else {
                                                 Toast.makeText(mContext, "Unable to register. Email already exists.", Toast.LENGTH_SHORT).show();
+                                                mProgressBar.setVisibility(View.GONE);
+                                                enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                                 user.delete();
                                             }
                                         }
@@ -166,11 +165,15 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                     // Invalid request
                     // ...
                     Toast.makeText(mContext, "OTP denied.", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                    enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                     // ...
                     Toast.makeText(mContext, "Too many request.Please try again after some time.", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                    enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                 }
 
                 // Show a message and update the UI
@@ -200,8 +203,8 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                 mBundle.putString(getString(R.string.password),password);
                 mBundle.putString(getString(R.string.verification_Id),verificationId);
                 mBundle.putParcelable(getString(R.string.resend_token),token);
-
-
+                mProgressBar.setVisibility(View.GONE);
+                enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                 Navigation.findNavController(Objects.requireNonNull(getActivity()),R.id.signUpBtn).navigate(R.id.nav_otp_verification,mBundle);
                 Toast.makeText(getContext(), "New OTP sent to your number", Toast.LENGTH_SHORT).show();
 
@@ -227,17 +230,23 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
 
                 if (user!=null)
                 {
-
-                    Objects.requireNonNull(getActivity()).finish();
+                    mAuth.signOut();
                     Toast.makeText(mContext, "Verify your email address and Sign In.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onChanged: User saved.");
+                    mProgressBar.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), LoginActivity.class));
-
+                    getActivity().finish();
                 }
                 else
                 {
                     Toast.makeText(mContext, "Error occurred.Unable to register user.Try again.", Toast.LENGTH_SHORT).show();
-                    Objects.requireNonNull(getActivity()).finish();
+                    mAuth.signOut();
+                    mAuth.getCurrentUser().delete();
+                    mProgressBar.setVisibility(View.GONE);
+                    enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
+                    Log.d(TAG, "onChanged: User not saved.");
                     startActivity(new Intent(getActivity(), LoginActivity.class));
+                    getActivity().finish();
                 }
 
             }
@@ -251,6 +260,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
 
         mContext = getContext();
         mAuth = FirebaseAuth.getInstance();
+        mProgressBar = view.findViewById(R.id.progressBar);
         mEtPhoneNumber = view.findViewById(R.id.phoneNumber);
         mEtEmailId = view.findViewById(R.id.emailId);
         mEtPassword = view.findViewById(R.id.password);
@@ -273,6 +283,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
         else {
 
             Toast.makeText(mContext, "Provide all the details on previous screen.", Toast.LENGTH_SHORT).show();
+            mProgressBar.setVisibility(View.GONE);
 
         }
     }
@@ -293,7 +304,8 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
             if (checkInputs(mEtPhoneNumber.getText().toString(),mEtEmailId.getText().toString(),
                     mEtPassword.getText().toString(),mEtConfPassword.getText().toString()))
             {
-
+                mProgressBar.setVisibility(View.VISIBLE);
+                disableViews(mEtEmailId,mEtPassword,mEtConfPassword,mEtPhoneNumber, mRegister);
                 verifyPhoneNumber(phone_number);
 
             }
@@ -313,7 +325,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
 
 
 
-    public boolean checkInputs(String phoneNumber,
+    private boolean checkInputs(String phoneNumber,
                                String emailId,String password,
                                String confPassword)
     {
@@ -345,5 +357,25 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
 
         return true;
     }
+
+
+
+    private void enableViews(View... views)
+    {
+        for (View v:views)
+        {
+            v.setEnabled(true);
+        }
+    }
+
+    private void disableViews(View... views)
+    {
+        for (View v:views)
+        {
+            v.setEnabled(false);
+        }
+    }
+
+
 
 }

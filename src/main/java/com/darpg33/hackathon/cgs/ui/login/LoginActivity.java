@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 if (!user.isEmailVerified())
                                 {
                                     Toast.makeText(LoginActivity.this, "Email ID is not verified.", Toast.LENGTH_SHORT).show();
+                                    FirebaseAuth.getInstance().signOut();
                                     mProgressBar.setVisibility(View.GONE);
                                 }
                                 else{

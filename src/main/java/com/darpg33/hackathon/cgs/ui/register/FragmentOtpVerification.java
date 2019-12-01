@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
@@ -54,6 +54,7 @@ public class FragmentOtpVerification extends Fragment {
     private PhoneAuthProvider.ForceResendingToken mToken;
     private FirebaseAuth mAuth;
     private Context mContext;
+    private ProgressBar mProgressBar;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private RegisterViewModel registerViewModel;
 
@@ -77,6 +78,9 @@ public class FragmentOtpVerification extends Fragment {
             @Override
             public void onClick(View v) {
 
+                mProgressBar.setVisibility(View.VISIBLE);
+                disableViews(mOtp,mResendCode,mVerify);
+
                 final PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationCode, mOtp.getText().toString());
                 
                 mAuth.signInWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -84,8 +88,7 @@ public class FragmentOtpVerification extends Fragment {
                     public void onSuccess(AuthResult authResult) {
 
                         Log.d(TAG, "onSuccess: pone number verified.");
-                        Toast.makeText(mContext, "Phone number verified successfully.", Toast.LENGTH_SHORT).show();
-                        final FirebaseUser user = authResult.getUser();
+                        final FirebaseUser user = mAuth.getCurrentUser();
 
                         if (user!=null)
                         {
@@ -98,6 +101,7 @@ public class FragmentOtpVerification extends Fragment {
                                     user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            Toast.makeText(getContext(), "Phone number verified.", Toast.LENGTH_SHORT).show();
                                             Toast.makeText(mContext, "Email verification link sent to your email.", Toast.LENGTH_SHORT).show();
 
                                             User NewUser = new User();
@@ -115,16 +119,15 @@ public class FragmentOtpVerification extends Fragment {
                                             NewUser.setState(mState);
                                             NewUser.setDistrict(mDistrict);
                                             NewUser.setRegistered(true);
-
                                             saveUserToDatabase(NewUser);
-
-
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
 
                                             Log.e(TAG, "onFailure: "+e.getMessage());
+                                            mProgressBar.setVisibility(View.GONE);
+                                            enableViews(mOtp,mResendCode,mVerify);
                                             Toast.makeText(mContext, "Unable to send verification mail.\n Please retry after sometime.Or change your email ID.", Toast.LENGTH_LONG).show();
                                             user.delete();
                                         }
@@ -138,10 +141,14 @@ public class FragmentOtpVerification extends Fragment {
                                     {
                                         Log.d(TAG, "onFailure: User with this email id already exists.");
                                         Toast.makeText(mContext, "User with email :"+mEmail+" already exists.", Toast.LENGTH_SHORT).show();
+                                        mProgressBar.setVisibility(View.GONE);
+                                        enableViews(mOtp,mResendCode,mVerify);
                                         user.delete();
                                     }
                                     else {
                                         Toast.makeText(mContext, "Unable to register. Email already exists.", Toast.LENGTH_SHORT).show();
+                                        mProgressBar.setVisibility(View.GONE);
+                                        enableViews(mOtp,mResendCode,mVerify);
                                         user.delete();
                                     }
                                 }
@@ -175,9 +182,8 @@ public class FragmentOtpVerification extends Fragment {
                     mOtp.setText(credential.getSmsCode());
                 }
 
-
                 User NewUser = new User();
-                NewUser.setUser_id(Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+                NewUser.setUser_id(mAuth.getCurrentUser().getUid());
                 NewUser.setTimestamp(new Timestamp(new Date()));
                 NewUser.setEmail_id(mEmail);
                 NewUser.setFirst_name(mFirstname);
@@ -190,11 +196,8 @@ public class FragmentOtpVerification extends Fragment {
                 NewUser.setState(mState);
                 NewUser.setDistrict(mDistrict);
                 NewUser.setRegistered(true);
-
                 saveUserToDatabase(NewUser);
                 //signInWithPhoneAuthCredential(credential);
-                Navigation.findNavController(getActivity(),R.id.verifyPhoneNumber).navigate(R.id.nav_otp_verification);
-                Toast.makeText(getContext(), "Phone number verified.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -207,10 +210,15 @@ public class FragmentOtpVerification extends Fragment {
                     //  Invalid request
                     // ...
                     Toast.makeText(mContext, "Please check the number and try again.", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                    enableViews(mOtp,mResendCode,mVerify);
+
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                     // ...
                     Toast.makeText(mContext, "Unable to verify your at the moment.Please try again after some time.", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                    enableViews(mOtp,mResendCode,mVerify);
                 }
 
                 // Show a message and update the UI
@@ -261,33 +269,37 @@ public class FragmentOtpVerification extends Fragment {
 
                 if (user!=null)
                 {
-
-                    Objects.requireNonNull(getActivity()).finish();
+                    mAuth.signOut();
                     Toast.makeText(mContext, "Verify your email address and Sign In.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onChanged: User saved.");
                     startActivity(new Intent(getActivity(), LoginActivity.class));
-
+                    getActivity().finish();
                 }
                 else
                 {
                     Toast.makeText(mContext, "Error occurred.Unable to register user.Try again.", Toast.LENGTH_SHORT).show();
-                    Objects.requireNonNull(getActivity()).finish();
+                    mAuth.signOut();
+                    mAuth.getCurrentUser().delete();
+                    mProgressBar.setVisibility(View.GONE);
+                    Log.d(TAG, "onChanged: User not saved.");
                     startActivity(new Intent(getActivity(), LoginActivity.class));
+                    getActivity().finish();
                 }
-
 
             }
         });
 
     }
 
-
     private void init(View view){
 
         Log.d(TAG, "init: ");
         mContext = getContext();
         mOtp = view.findViewById(R.id.etOtp);
+
         mResendCode = view.findViewById(R.id.txtResendCode);
         mTimer = view.findViewById(R.id.txtTimer);
+        mProgressBar = view.findViewById(R.id.progressBar);
         mVerify = view.findViewById(R.id.verifyPhoneNumber);
         Bundle bundle = getArguments();
         //get parameters to be saved to database from bundle
@@ -338,6 +350,23 @@ public class FragmentOtpVerification extends Fragment {
                 Objects.requireNonNull(getActivity()),               // Activity (for callback binding)
                 mCallbacks,         // OnVerificationStateChangedCallbacks
                 token);
+    }
+
+
+    private void enableViews(View... views)
+    {
+        for (View v:views)
+        {
+            v.setEnabled(true);
+        }
+    }
+
+    private void disableViews(View... views)
+    {
+        for (View v:views)
+        {
+            v.setEnabled(false);
+        }
     }
 
 

@@ -17,16 +17,14 @@ public class RegisterViewModel extends ViewModel {
     public MutableLiveData<User> registerUser(User user, String password)
     {
 
-        userMutableLiveData = repository.registerUser(user, password);
-        return userMutableLiveData;
+        return  repository.registerUser(user, password);
 
     }
 
-    MutableLiveData<User> saveUserToDatabase(User user)
+     MutableLiveData<User> saveUserToDatabase(User user)
     {
 
-        userMutableLiveData = repository.saveUserToDatabase(user);
-        return userMutableLiveData;
+        return repository.saveUserToDatabase(user);
 
     }
 

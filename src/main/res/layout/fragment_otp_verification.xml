@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -28,6 +28,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/txtOtp"
+        android:id="@+id/relativeLayout"
         >
 
         <TextView
@@ -60,6 +62,14 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/verify"
-        android:id="@+id/verifyPhoneNumber"/>
+        android:id="@+id/verifyPhoneNumber"
+        android:layout_below="@id/relativeLayout"/>
 
-</LinearLayout>
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/progressBar"/>
+
+</RelativeLayout>

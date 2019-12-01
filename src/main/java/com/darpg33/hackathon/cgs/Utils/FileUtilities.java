@@ -5,7 +5,7 @@ import android.util.Log;
 public class FileUtilities {
 
     private static final String TAG = "FileUtilities";
-    private static final Long MAX_FILE_SIZE = 2000000L;
+    private static final Long MAX_FILE_SIZE = 6000000L;
 
 
     public static boolean checkFileSize(long l)

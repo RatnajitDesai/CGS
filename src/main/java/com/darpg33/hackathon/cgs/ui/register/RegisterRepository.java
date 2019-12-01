@@ -98,14 +98,16 @@ class RegisterRepository {
 
         db.collection("Users")
                 .document(user.getUser_id())
-                .set(user1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                .set(user1)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.e(TAG, "onSuccess: db stored for user :"+user.toString());
                 user.setRegistered(true);
                 userMutableLiveData.setValue(user);
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        })
+                .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 

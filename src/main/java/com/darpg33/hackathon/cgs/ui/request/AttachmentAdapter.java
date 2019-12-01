@@ -48,12 +48,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
     @Override
     public void onBindViewHolder(@NonNull final AttachmentViewHolder holder, int position) {
         position = holder.getAdapterPosition();
+
         holder.mAttachmentName.setText(mAttachments.get(position).getAttachment_name());
 
         switch (mAttachments.get(position).getAttachmentType())
         {
             case "image":
             {
+                holder.mAttachmentName.setText(mAttachments.get(position).getAttachment_name());
                 Glide.with(mContext)
                         .load(mAttachments.get(position).getAttachmentUri())
                         .placeholder(R.drawable.ic_icon_share_image)
@@ -62,11 +64,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
             }
             case "location":
             {
+                holder.mAttachmentName.setText(mAttachments.get(position).getAddress().getAddressLine(0));
                 holder.mAttachmentType.setImageResource(R.drawable.ic_icon_pin_drop);
                 break;
             }
             case "document":
             {
+                holder.mAttachmentName.setText(mAttachments.get(position).getAttachment_name());
                 holder.mAttachmentType.setImageResource(R.drawable.ic_icon_file);
                 break;
             }

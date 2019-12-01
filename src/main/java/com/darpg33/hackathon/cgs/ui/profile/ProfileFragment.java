@@ -117,7 +117,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         }
                     }
 
-                    mPhoneNumber.setText(user.getPhone_number());
+                    mPhoneNumber.setText(user.getPhone_number().substring(3));
                     mEmailId.setText(user.getEmail_id());
                     mAddress.setText(user.getAddress());
                     mCountry.setText(user.getCountry());

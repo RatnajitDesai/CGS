@@ -1,30 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_height="match_parent"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:weightSum="100">
+   >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="16dp"
+        android:elevation="10dp"
+        android:background="@drawable/white_rounded_border"
+        android:id="@+id/relativeLayout"
+        >
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:id="@+id/ivMagnify"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/search_icon"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_icon_magnify"
+            />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/ivMagnify"
+            android:id="@+id/etSearch"
+            android:layout_centerVertical="true"
+            android:layout_margin="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:background="@color/white"
+            android:inputType="textMultiLine"
+            android:maxLines="1"
+            android:hint="@string/enter_address_city_or_zip_code"
+            android:imeOptions="actionSearch"
+            tools:ignore="Autofill" />
+
+    </RelativeLayout>
+
+
 
     <fragment
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/map"
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
-        android:layout_weight="50"
+    android:layout_height="400dp"
     tools:context=".MapsActivity" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@id/relativeLayout"
+        android:layout_below="@id/map"
+        android:layout_margin="8dp"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_icon_place"
+            android:layout_marginStart="16dp"
+            android:id="@+id/pin_icon"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/place_icon" />
+
+
+        <TextView
+            android:id="@+id/txtSelectedLocation"
+            android:layout_width="match_parent"
+            android:layout_toEndOf="@id/pin_icon"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_margin="8dp"
+            />
+
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationAccuracy"
+        android:layout_marginStart="16dp"
+        android:layout_below="@id/relativeLayout"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
+        android:id="@+id/btnGPSLocation"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/share_current_location"
+        android:layout_below="@id/locationAccuracy"
+        android:text="@string/get_current_location"
         app:icon="@drawable/ic_my_location"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/shareLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_below="@id/btnGPSLocation"
+        app:icon="@drawable/ic_menu_share"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="@string/share_selected_location"
+        />
 
 
-</LinearLayout>
+</RelativeLayout>

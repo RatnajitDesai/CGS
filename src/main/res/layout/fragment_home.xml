@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,29 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        app:tabTextColor="@color/white">
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabHome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/menu_home"
-            android:icon="@drawable/ic_menu_home" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabMyRequests"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/my_requests"
-            android:icon="@drawable/ic_icon_myrequests" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabActionItems"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/action_items"
-            android:icon="@drawable/ic_icon_notifications" />
-    </com.google.android.material.tabs.TabLayout>
+        android:id="@+id/tabLayout"
+        />
 
     <include layout="@layout/fragment_overview" />
 
