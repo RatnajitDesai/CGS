@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.request;
+package com.darpg33.hackathon.cgs.ui.request.newrequest;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -7,13 +7,13 @@ import com.darpg33.hackathon.cgs.Model.Grievance;
 
 import java.util.HashMap;
 
-public class GrievanceViewModel extends ViewModel {
+public class NewGrievanceViewModel extends ViewModel {
 
-    private GrievanceRepository repository;
+    private NewGrievanceRepository repository;
 
-    public GrievanceViewModel() {
+    public NewGrievanceViewModel() {
 
-        repository = new GrievanceRepository();
+        repository = new NewGrievanceRepository();
 
     }
 

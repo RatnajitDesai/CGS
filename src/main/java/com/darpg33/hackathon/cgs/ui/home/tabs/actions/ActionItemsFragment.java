@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.home;
+package com.darpg33.hackathon.cgs.ui.home.tabs.actions;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,15 +11,14 @@ import androidx.fragment.app.Fragment;
 
 import com.darpg33.hackathon.cgs.R;
 
-public class MyRequestsFragment extends Fragment {
+public class ActionItemsFragment extends Fragment {
 
     private static final String TAG = "FeedsFragment";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_requests,container,false);
-
+        View view = inflater.inflate(R.layout.fragment_action_items, container,false);
 
         return view;
     }

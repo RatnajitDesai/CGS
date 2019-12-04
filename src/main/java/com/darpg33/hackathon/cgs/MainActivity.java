@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // menu should be considered as top level destinations.
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_grievance, R.id.nav_home, R.id.nav_profile, R.id.nav_edit_profile,
+                R.id.nav_new_grievance, R.id.nav_view_grievance, R.id.nav_home,
+                R.id.nav_profile, R.id.nav_edit_profile,
                 R.id.nav_settings, R.id.nav_share, R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();
@@ -84,9 +85,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         switch (menuItem.getItemId()) {
 
-            case R.id.nav_grievance: {
+            case R.id.nav_new_grievance: {
                 Log.d(TAG, "onNavigationItemSelected: nav_grievance ");
-                navController.navigate(R.id.nav_grievance);
+                navController.navigate(R.id.nav_new_grievance);
                 closeDrawer();
                 return true;
             }

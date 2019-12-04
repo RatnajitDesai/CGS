@@ -6,10 +6,19 @@
     app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/nav_grievance"
-        android:name="com.darpg33.hackathon.cgs.ui.request.GrievanceFragment"
+        android:id="@+id/nav_new_grievance"
+        android:name="com.darpg33.hackathon.cgs.ui.request.newrequest.NewGrievanceFragment"
         android:label="@string/menu_new_grievance"
-        tools:layout="@layout/fragment_new_grievance" />
+        tools:layout="@layout/fragment_new_grievance" >
+        <action
+            android:id="@+id/action_nav_new_grievance_to_nav_view_grievance"
+            app:destination="@id/nav_view_grievance" />
+    </fragment>
+
+    <fragment android:id="@+id/nav_view_grievance"
+        android:name="com.darpg33.hackathon.cgs.ui.home.tabs.myrequests.viewrequest.ViewGrievanceFragment"
+        android:label="Grievance ID"
+        tools:layout="@layout/fragment_view_grievance"/>
 
     <fragment
         android:id="@+id/nav_home"
@@ -29,8 +38,9 @@
             android:id="@+id/action_nav_home_to_nav_sign_out"
             app:destination="@id/nav_sign_out" />
         <action
-            android:id="@+id/action_nav_home_to_nav_grievance"
-            app:destination="@id/nav_grievance" />
+            android:id="@+id/action_nav_home_to_nav_new_grievance"
+            app:destination="@id/nav_new_grievance" />
+
     </fragment>
 
     <fragment

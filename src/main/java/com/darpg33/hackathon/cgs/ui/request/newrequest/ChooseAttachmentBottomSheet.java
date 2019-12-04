@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.request;
+package com.darpg33.hackathon.cgs.ui.request.newrequest;
 
 import android.app.Dialog;
 import android.content.Intent;

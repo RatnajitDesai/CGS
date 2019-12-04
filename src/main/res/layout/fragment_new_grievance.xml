@@ -5,14 +5,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:id="@+id/scrollView"
     android:focusable="true">
 
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtGrievanceTitle"
@@ -28,7 +26,6 @@
             android:layout_height="match_parent"
             android:hint="@string/enter_grievance_title"
             android:inputType="text"
-            android:maxLength="40"
             android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>

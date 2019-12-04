@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    android:focusable="true">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@id/relativeLayout1"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:elevation="10dp"
+            android:background="@drawable/white_rounded_border"
+            >
+
+            <TextView
+                android:id="@+id/grievanceTitle"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pass data to the tart destination"
+                android:layout_margin="8dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/childRelativeLayout"
+                android:layout_below="@id/grievanceTitle"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/linearLayout2">
+
+                    <TextView
+                        android:id="@+id/grievance_timestamp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="Jul 2, 2018"
+                        android:layout_alignParentStart="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/grievance_status"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="Pending"
+                        android:layout_alignParentEnd="true"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/grievanceDescription"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:layout_below="@id/childRelativeLayout"
+                android:text="bal actions using the same methods as described in the previous section."
+                />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/attachmentsRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/grievanceDescription"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal" />
+
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_centerInParent="true"
+            />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@id/relativeLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/actionsRecyclerView"
+            android:layout_centerHorizontal="true"
+            />
+
+    </RelativeLayout>
+
+
+</ScrollView>

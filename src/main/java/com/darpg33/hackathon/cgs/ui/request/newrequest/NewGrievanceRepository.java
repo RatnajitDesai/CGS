@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.request;
+package com.darpg33.hackathon.cgs.ui.request.newrequest;
 
 import android.net.Uri;
 import android.util.Log;
@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,15 +28,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
- class GrievanceRepository {
+ class NewGrievanceRepository {
 
-    private static final String TAG = "GrievanceRepository";
+    private static final String TAG = "NewGrievanceRepository";
     private FirebaseFirestore db;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mStorageReference;
     private FirebaseAuth mFirebaseAuth;
 
-    GrievanceRepository(){
+    NewGrievanceRepository(){
 
         db = FirebaseFirestore.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
@@ -59,6 +60,7 @@ import java.util.Objects;
                 if (!attachment.getAttachmentType().equals("location")) {
                     mStorageReference = mFirebaseStorage.getReference("Requests/" + request_id + "/attachments/" + attachment.getAttachment_name());
                     final UploadTask uploadTask = mStorageReference.putFile(attachment.getAttachmentUri());
+
                     mStorageReference.putFile(attachment.getAttachmentUri()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -78,8 +80,12 @@ import java.util.Objects;
                                     attachmentLiveData.setValue(attachmentMap);
                                 }
                             }
+                    }).addOnCanceledListener(new OnCanceledListener() {
+                        @Override
+                        public void onCanceled() {
+                            mStorageReference.delete();
+                        }
                     });
-
 //
 //                    uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
 //                        @Override

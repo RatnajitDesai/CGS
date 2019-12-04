@@ -7,7 +7,7 @@
 
 
         <item
-            android:id="@+id/nav_grievance"
+            android:id="@+id/nav_new_grievance"
             android:icon="@drawable/ic_ic_icon_add"
             android:title="@string/menu_new_grievance" />
 

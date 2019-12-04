@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.request;
+package com.darpg33.hackathon.cgs.ui.request.newrequest;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -64,7 +64,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
             }
             case "location":
             {
-                holder.mAttachmentName.setText(mAttachments.get(position).getAddress().getAddressLine(0));
+                holder.mAttachmentName.setText(mAttachments.get(position).getAddress().getLocality());
                 holder.mAttachmentType.setImageResource(R.drawable.ic_icon_pin_drop);
                 break;
             }

@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.home;
+package com.darpg33.hackathon.cgs.ui.home.tabs.feed;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

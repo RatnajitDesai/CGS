@@ -31,7 +31,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private Context mContext;
     private User mUser;
 
-
     //widgets
     private TextInputEditText mFirstName, mLastName,mPhoneNumber, mEmailId;
     private TextView mAddress, mCountry, mState, mDistrict, mPinCode;

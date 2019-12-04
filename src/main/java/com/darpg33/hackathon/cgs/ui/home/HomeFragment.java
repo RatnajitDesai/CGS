@@ -14,6 +14,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.darpg33.hackathon.cgs.HelperAdapters.SectionsPagerAdapter;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.ui.home.tabs.actions.ActionItemsFragment;
+import com.darpg33.hackathon.cgs.ui.home.tabs.feed.FeedsFragment;
+import com.darpg33.hackathon.cgs.ui.home.tabs.myrequests.MyRequestsFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
@@ -52,11 +55,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
         setTabIcons();
-
-
         mFab.setOnClickListener(this);
-
         return root;
+
     }
 
     private void setTabIcons() {
@@ -73,7 +74,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
 
         if (v.getId() == R.id.fabNewRequest) {
-            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.nav_grievance);
+            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.nav_new_grievance);
         }
     }
 }

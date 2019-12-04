@@ -97,5 +97,10 @@
     <string name="enter_address_city_or_zip_code">Enter Address, City or Zip Code</string>
     <string name="search_icon">Search Icon</string>
     <string name="place_icon">place icon</string>
+    <string name="request_id">Request ID:</string>
+    <string name="request_title">Request Title:</string>
+    <string name="request_status">Request Status:</string>
+    <string name="default_count_value">0</string>
+    <string name="total">Total</string>
 
 </resources>

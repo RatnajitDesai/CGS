@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.request;
+package com.darpg33.hackathon.cgs.ui.request.newrequest;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -40,22 +41,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class GrievanceFragment extends Fragment implements View.OnClickListener,
+public class NewGrievanceFragment extends Fragment implements View.OnClickListener,
         ChooseAttachmentBottomSheet.PhotoUriListener,
         ChooseAttachmentBottomSheet.DocumentUriListener,
         ChooseAttachmentBottomSheet.CameraUriListener,
         ChooseAttachmentBottomSheet.LocationListener,
         AttachmentAdapter.RemoveItemListener {
 
-    private static final String TAG = "GrievanceFragment";
+    private static final String TAG = "NewGrievanceFragment";
     private static final int VERIFY_PERMISSIONS_REQUEST = 201;
     //vars
-    private GrievanceViewModel grievanceViewModel;
+    private NewGrievanceViewModel grievanceViewModel;
     private Context mContext;
     private ArrayList<Attachment> mAttachments;
     private AttachmentAdapter mAttachmentAdapter;
 
     //widgets
+    private ScrollView scrollView ;
     private TextInputEditText mGrievanceTitle, mGrievanceDescription;
     private RadioGroup mPrivacy;
     private ProgressBar mProgressBar;
@@ -67,7 +69,7 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         grievanceViewModel =
-                ViewModelProviders.of(this).get(GrievanceViewModel.class);
+                ViewModelProviders.of(this).get(NewGrievanceViewModel.class);
 
         View view = inflater.inflate(R.layout.fragment_new_grievance, container, false);
         init(view);
@@ -75,6 +77,8 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
     }
 
     private void init(View view) {
+
+        scrollView = view.findViewById(R.id.scrollView);
 
         mGrievanceTitle = view.findViewById(R.id.grievanceTitle);
         mGrievanceDescription = view.findViewById(R.id.grievanceDescription);
@@ -149,17 +153,17 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
                     ,mGrievanceDescription.getText().toString()))
             {
                 mProgressBar.setVisibility(View.VISIBLE);
+                mAttachmentsRecycler.setClickable(false);
+                disableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
+                        mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
                 Grievance grievance = new Grievance();
                 grievance.setTitle(mGrievanceTitle.getText().toString());
                 grievance.setCategory(mGrievanceCategory.getSelectedItem().toString());
                 grievance.setDescription(mGrievanceDescription.getText().toString());
                 grievance.setAttachment(mAttachments);
-                grievance.setStatus("new");
+                grievance.setStatus("Pending");
 
                 grievance.setAttachment(mAttachments);
-                disableViews(mGrievanceTitle,mGrievanceCategory,mGrievanceDescription,
-                        mPrivacy,mPublic,mPrivate, mAttachmentButton,mAttachmentsRecycler,mSubmit);
-
                 submitNewRequest(grievance);
             }
         }
@@ -195,32 +199,30 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
 
         grievanceViewModel.getNewRequestId().observe(this, new Observer<String>() {
 
-            boolean b = true;
             @Override
             public void onChanged(String request_id) {
 
                 if (request_id != null)
                 {
 
-                    grievanceViewModel.uploadAttachments(grievance,request_id).observe(GrievanceFragment.this, new Observer<HashMap<String, HashMap<String, Object>>>() {
+                    grievanceViewModel.uploadAttachments(grievance,request_id).observe(NewGrievanceFragment.this, new Observer<HashMap<String, HashMap<String, Object>>>() {
                         @Override
                         public void onChanged(HashMap<String, HashMap<String, Object>> map) {
 
                                 if (map != null) {
 
-                                        grievanceViewModel.submitNewRequest(grievance, map).observe(GrievanceFragment.this, new Observer<Grievance>() {
+                                        grievanceViewModel.submitNewRequest(grievance, map).observe(NewGrievanceFragment.this, new Observer<Grievance>() {
                                             @Override
                                             public void onChanged(Grievance grievance) {
                                                 if (grievance != null) {
-                                                    mProgressBar.setVisibility(View.GONE);
                                                     Toast.makeText(mContext, "Request raised : " + grievance.getRequest_id(), Toast.LENGTH_SHORT).show();
                                                     Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.btnSubmit).navigate(R.id.nav_home);
                                                 } else {
                                                     Toast.makeText(mContext, "Error occurred while raising request.Please try again.", Toast.LENGTH_SHORT).show();
                                                     mProgressBar.setVisibility(View.GONE);
-
-                                                    enableViews(mGrievanceTitle, mGrievanceCategory, mGrievanceDescription,
-                                                            mPrivacy, mPublic, mPrivate, mAttachmentButton, mAttachmentsRecycler, mSubmit);
+                                                    mAttachmentsRecycler.setClickable(true);
+                                                    enableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
+                                                            mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
                                                 }
                                             }
                                         });
@@ -228,9 +230,9 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
                                     {
                                     Toast.makeText(mContext, "Error occurred while uploading files.", Toast.LENGTH_SHORT).show();
                                     mProgressBar.setVisibility(View.GONE);
-                                    b = false;
-                                    enableViews(mGrievanceTitle, mGrievanceCategory, mGrievanceDescription,
-                                            mPrivacy, mPublic, mPrivate, mAttachmentButton, mAttachmentsRecycler, mSubmit);
+                                    mAttachmentsRecycler.setClickable(false);
+                                    enableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
+                                            mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
                                 }
                         }
                     });
@@ -246,6 +248,7 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
     public void getPhotoUri(Uri uri, String display_name, long file_size) {
             Log.e(TAG, "getPhotoUri: "+uri.toString());
             Log.d(TAG, "getPhotoUri: display name: "+display_name);
+
 
                 if (FileUtilities.checkFileSize(file_size))
                 {
@@ -380,13 +383,32 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+
+
+
+    @Override
+    public void removeItem(Attachment attachment, int position) {
+
+     if (mAttachmentsRecycler.isClickable())
+         {
+
+            mAttachments.remove(attachment);
+            mAttachmentAdapter.notifyItemRemoved(position);
+            setAttachmentsButton();
+
+         }
+     }
+
+
     private void enableViews(View... views)
     {
         for (View v:views)
         {
             v.setEnabled(true);
         }
+
     }
+
 
     private void disableViews(View... views)
     {
@@ -394,15 +416,7 @@ public class GrievanceFragment extends Fragment implements View.OnClickListener,
         {
             v.setEnabled(false);
         }
+
     }
-
-    @Override
-    public void removeItem(Attachment attachment, int position) {
-        mAttachments.remove(attachment);
-        mAttachmentAdapter.notifyItemRemoved(position);
-        setAttachmentsButton();
-    }
-
-
 
 }
