@@ -87,6 +87,7 @@
             app:strokeWidth="0.2dp">
 
         </com.google.android.material.button.MaterialButton>
+        
 
 
         <TextView
@@ -107,7 +108,10 @@
             android:text="@string/forgot_password"
             android:textColor="@color/red" />
 
+
        </LinearLayout>
+
+
 
     </ScrollView>
 

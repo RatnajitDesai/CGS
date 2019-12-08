@@ -1,5 +1,6 @@
 package com.darpg33.hackathon.cgs.ui.request.newrequest;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -307,12 +308,15 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
             case GET_LOCATION_REQUEST: {
                 Log.d(TAG, "onActivityResult: resultCode : " + resultCode);
 
-                if (intent != null) {
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    if (intent != null) {
 
-                    Address address = intent.getParcelableExtra("location");
-                    mLocationListener.getLocation(address);
-                    dismiss();
+                        Address address = intent.getParcelableExtra("location");
+                        mLocationListener.getLocation(address);
+                        dismiss();
 
+                    }
                 }
 
                 break;

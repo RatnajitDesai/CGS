@@ -15,6 +15,4 @@ class ResetPasswordViewModel extends ViewModel {
         return resetPasswordLinkSent;
     }
 
-
-
 }

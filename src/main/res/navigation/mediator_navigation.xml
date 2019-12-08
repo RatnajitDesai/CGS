@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mediator_navigation.xml"
+    app:startDestination="@id/nav_dashboard">
+
+    <fragment android:id="@+id/nav_search"
+        android:label="@string/menu_search"
+        android:name="com.darpg33.hackathon.cgs.ui.ui_officer.search.MediatorSearchFragment"
+        tools:layout="@layout/fragment_search_grievance"/>
+
+    <fragment android:id="@+id/nav_view_grievance"
+        android:name="com.darpg33.hackathon.cgs.ui.request.viewrequest.ViewGrievanceFragment"
+        android:label="{grievance_request_id}"
+        tools:layout="@layout/fragment_view_grievance">
+
+        <argument
+            android:name="grievance_request_id"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment android:id="@+id/nav_dashboard"
+        android:label="@string/menu_dashboard"
+        android:name="com.darpg33.hackathon.cgs.ui.ui_officer.dashboard.DashboardFragment"
+        tools:layout="@layout/fragment_dashboard">
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_search"
+            app:destination="@id/nav_search" />
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_mediator_home"
+            app:destination="@id/nav_mediator_home" />
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_sign_out"
+            app:destination="@id/nav_sign_out" />
+        <action
+            android:id="@+id/action_nav_dashboard_to_nav_settings"
+            app:destination="@id/nav_settings" />
+    </fragment>
+
+    <fragment android:id="@+id/nav_mediator_home"
+        android:label="@string/menu_home"
+        android:name="com.darpg33.hackathon.cgs.ui.ui_officer.home.MediatorHomeFragment"
+        tools:layout="@layout/fragment_mediator_home"
+        />
+
+    <fragment android:id="@+id/nav_settings"
+        android:label="@string/menu_settings"
+        android:name="com.darpg33.hackathon.cgs.ui.settings.SettingsFragment"
+        tools:layout="@layout/fragment_settings"
+        />
+
+    <fragment android:id="@+id/nav_sign_out"
+        android:label="@string/menu_sign_out"
+        android:name="com.darpg33.hackathon.cgs.ui.signout.SignOutFragment"
+        tools:layout="@layout/fragment_sign_out"
+        />
+
+</navigation>

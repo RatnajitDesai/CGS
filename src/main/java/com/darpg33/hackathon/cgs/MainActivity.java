@@ -5,17 +5,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.darpg33.hackathon.cgs.HelperViewModels.MainActivityViewModel;
+import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.ui.login.LoginActivity;
 import com.darpg33.hackathon.cgs.ui.signout.SignOutFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -28,9 +34,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //vars
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
+    private MainActivityViewModel mainActivityViewModel;
 
     //widgets
     private DrawerLayout drawer;
+    private NavigationView navigationView;
 
 
     @Override
@@ -42,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -58,8 +66,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        mainActivityViewModel = ViewModelProviders.of(this,new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MainActivityViewModel.class);
 
         navigationView.setNavigationItemSelectedListener(this);
+        setDrawerHeader();
+
+    }
+
+
+    private void setDrawerHeader() {
+
+         final TextView username = navigationView.getHeaderView(0).findViewById(R.id.drawer_username);
+         final TextView email = navigationView.getHeaderView(0).findViewById(R.id.drawer_user_email);
+
+        mainActivityViewModel.getCurrentUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+
+                if (user!=null)
+                {
+                    String username1 = user.getFirst_name()+" "+user.getLast_name();
+                    username.setText(username1);
+                    email.setText(user.getEmail_id());
+                }
+
+            }
+        });
+
 
     }
 

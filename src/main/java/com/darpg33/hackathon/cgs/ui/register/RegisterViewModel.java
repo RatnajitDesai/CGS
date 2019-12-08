@@ -14,12 +14,6 @@ public class RegisterViewModel extends ViewModel {
     private RegisterRepository repository = new RegisterRepository();
 
 
-    public MutableLiveData<User> registerUser(User user, String password)
-    {
-
-        return  repository.registerUser(user, password);
-
-    }
 
      MutableLiveData<User> saveUserToDatabase(User user)
     {

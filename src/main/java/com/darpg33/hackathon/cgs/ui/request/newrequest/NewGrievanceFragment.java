@@ -108,12 +108,11 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
         mSubmit.setOnClickListener(this);
         mAttachmentButton.setOnClickListener(this);
         mAttachmentsRecycler = view.findViewById(R.id.attachmentsRecyclerView);
-        initRecyclerView();
-
+        setupRecyclerView();
 
     }
 
-    private void initRecyclerView(){
+    private void setupRecyclerView(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         mAttachmentsRecycler.setLayoutManager(linearLayoutManager);
         mAttachmentAdapter = new AttachmentAdapter(mAttachments);
@@ -135,9 +134,14 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             mGrievanceDescription.setError("Cannot be empty");
             flag = false;
         }
-        if (grievanceCategory.equals("Select State"))
+        if (grievanceCategory.equals(getString(R.string.select_grievance_category)))
         {
             mGrievanceCategory.setBackgroundResource(R.drawable.transaparent_background_with_red_rounded_border);
+            flag = false;
+        }
+        if (mPrivacy.getCheckedRadioButtonId() == -1)
+        {
+            mPrivacy.setBackgroundResource(R.drawable.transaparent_background_with_red_rounded_border);
             flag = false;
         }
         return flag;
@@ -162,7 +166,6 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                 grievance.setDescription(mGrievanceDescription.getText().toString());
                 grievance.setAttachment(mAttachments);
                 grievance.setStatus("Pending");
-
                 grievance.setAttachment(mAttachments);
                 submitNewRequest(grievance);
             }
@@ -192,6 +195,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             verifyPermissions(Permissions.PERMISSIONS);
 
         }
+
     }
 
     private void submitNewRequest(final Grievance grievance)
@@ -211,18 +215,23 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
 
                                 if (map != null) {
 
+
+
                                         grievanceViewModel.submitNewRequest(grievance, map).observe(NewGrievanceFragment.this, new Observer<Grievance>() {
                                             @Override
                                             public void onChanged(Grievance grievance) {
                                                 if (grievance != null) {
                                                     Toast.makeText(mContext, "Request raised : " + grievance.getRequest_id(), Toast.LENGTH_SHORT).show();
                                                     Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.btnSubmit).navigate(R.id.nav_home);
-                                                } else {
+                                                }
+                                                else {
+
                                                     Toast.makeText(mContext, "Error occurred while raising request.Please try again.", Toast.LENGTH_SHORT).show();
                                                     mProgressBar.setVisibility(View.GONE);
                                                     mAttachmentsRecycler.setClickable(true);
                                                     enableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
                                                             mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
+
                                                 }
                                             }
                                         });
@@ -261,7 +270,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                     mAttachmentAdapter.notifyItemInserted(position);
                 }
                 else {
-                    Toast.makeText(mContext, "Max. file should be less than 6 MB.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Max. file should be less than 3 MB.", Toast.LENGTH_SHORT).show();
                 }
     }
 
@@ -293,7 +302,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             mAttachmentAdapter.notifyItemInserted(position);
         }
         else {
-            Toast.makeText(mContext, "Max. file should be less than 6 MB.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Max. file should be less than 3 MB.", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -315,7 +324,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             mAttachmentAdapter.notifyItemInserted(position);
         }
         else {
-            Toast.makeText(mContext, "Max. file should be less than 6 MB.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Max. file should be less than 3 MB.", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -389,19 +398,15 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
     @Override
     public void removeItem(Attachment attachment, int position) {
 
-     if (mAttachmentsRecycler.isClickable())
-         {
-
             mAttachments.remove(attachment);
             mAttachmentAdapter.notifyItemRemoved(position);
             setAttachmentsButton();
-
-         }
      }
 
 
     private void enableViews(View... views)
     {
+        mAttachmentAdapter.isClickable = true;
         for (View v:views)
         {
             v.setEnabled(true);
@@ -412,6 +417,8 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
 
     private void disableViews(View... views)
     {
+        mAttachmentAdapter.isClickable = false ;
+        mAttachmentsRecycler.setEnabled(false);
         for (View v:views)
         {
             v.setEnabled(false);

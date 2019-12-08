@@ -102,5 +102,17 @@
     <string name="request_status">Request Status:</string>
     <string name="default_count_value">0</string>
     <string name="total">Total</string>
+    <string name="menu_feed">Feed</string>
+    <string name="select_grievance_category">Select Grievance Category</string>
+    <string name="citizen">citizen</string>
+    <string name="search">Search</string>
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_search">Search</string>
+    <string name="user_type">user_type</string>
+    <string name="assign">Assign</string>
+    <string name="reject">Reject</string>
+    <string name="forward">Forward</string>
+    <string name="complete">Complete</string>
+    <string name="enter_notes">Enter Notes</string>
 
 </resources>

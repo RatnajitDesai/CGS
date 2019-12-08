@@ -105,6 +105,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                             User NewUser = new User();
                                             NewUser.setUser_id(user.getUid());
                                             NewUser.setTimestamp(new Timestamp(new Date()));
+                                            NewUser.setUser_type(getString(R.string.citizen));
                                             NewUser.setEmail_id(email);
                                             NewUser.setFirst_name(firstname);
                                             NewUser.setLast_name(lastname);
@@ -122,7 +123,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.e(TAG, "onFailure: "+e.getMessage() );
-                                            Toast.makeText(mContext, "Unable to send verification mail.\n Please retry after sometime.Or change your email ID.", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(mContext, "Unable to send verification mail.\n Please retry after some time.Or try with other email ID.", Toast.LENGTH_LONG).show();
                                             mProgressBar.setVisibility(View.GONE);
                                             enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                             user.delete();

@@ -83,6 +83,7 @@ class RegisterRepository {
 
         HashMap<String,Object> user1 = new HashMap<>();
         user1.put("user_id",user.getUser_id());
+        user1.put("user_type",user.getUser_type());
         user1.put("first_name",user.getFirst_name());
         user1.put("last_name",user.getLast_name());
         user1.put("gender",user.getGender());
@@ -94,7 +95,7 @@ class RegisterRepository {
         user1.put("state",user.getState());
         user1.put("district",user.getDistrict());
         user1.put("timestamp",user.getTimestamp());
-        user1.put("registered",user.isRegistered());
+        user1.put("registered",user.getRegistered());
 
         db.collection("Users")
                 .document(user.getUser_id())

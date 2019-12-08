@@ -16,6 +16,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.darpg33.hackathon.cgs.HelperAdapters.RequestsAdapter;
 import com.darpg33.hackathon.cgs.Model.Grievance;
 import com.darpg33.hackathon.cgs.R;
 
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 
 public class MyRequestsFragment extends Fragment implements RequestsAdapter.GrievanceOnClickListener {
 
-    private static final String TAG = "FeedsFragment";
+    private static final String TAG = "MyRequestsFragment";
 
     //vars
     private RequestsAdapter mRequestsAdapter;
@@ -131,7 +132,6 @@ public class MyRequestsFragment extends Fragment implements RequestsAdapter.Grie
                 mCountResolved.setText(String.valueOf(integer));
             }
         });
-
 
     }
 

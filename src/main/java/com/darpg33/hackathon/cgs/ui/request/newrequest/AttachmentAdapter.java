@@ -21,6 +21,8 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
     private ArrayList<Attachment> mAttachments;
     private Context mContext;
     private RemoveItemListener removeItemListener;
+    public boolean isClickable = true;
+
     AttachmentAdapter(ArrayList<Attachment> attachments)
     {
         mAttachments = attachments;
@@ -64,8 +66,8 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
             }
             case "location":
             {
-                holder.mAttachmentName.setText(mAttachments.get(position).getAddress().getLocality());
-                holder.mAttachmentType.setImageResource(R.drawable.ic_icon_pin_drop);
+                holder.mAttachmentName.setText(mAttachments.get(position).getAddress().getAddressLine(0));
+                holder.mAttachmentType.setImageResource(R.drawable.ic_icon_map);
                 break;
             }
             case "document":
@@ -74,15 +76,15 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
                 holder.mAttachmentType.setImageResource(R.drawable.ic_icon_file);
                 break;
             }
-
         }
-
 
         holder.mDeleteAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                removeItemListener.removeItem(mAttachments.get(position),position);
+                if (isClickable) {
+                    int position = holder.getAdapterPosition();
+                    removeItemListener.removeItem(mAttachments.get(position), position);
+                }
             }
         });
 

@@ -4,25 +4,22 @@ package com.darpg33.hackathon.cgs.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.Timestamp;
 
 public class User implements Parcelable {
 
     private String user_id,
+    user_type,
     first_name, last_name, gender,
     phone_number, email_id,
     address,pin_code, country, state, district;
-
     private Timestamp timestamp;
-
     private Boolean registered;
 
-
-    public User(String user_id, String first_name, String last_name, String gender, String phone_number, String email_id,
+    public User(String user_id,String user_type, String first_name, String last_name, String gender, String phone_number, String email_id,
                 String address, String pin_code, String country, String state, String district, Timestamp timestamp, Boolean registered) {
         this.user_id = user_id;
+        this.user_type = user_type;
         this.first_name = first_name;
         this.last_name = last_name;
         this.gender = gender;
@@ -58,6 +55,7 @@ public class User implements Parcelable {
 
     protected User(Parcel in) {
         user_id = in.readString();
+        user_type = in.readString();
         first_name = in.readString();
         last_name = in.readString();
         gender = in.readString();
@@ -69,7 +67,8 @@ public class User implements Parcelable {
         state = in.readString();
         district = in.readString();
         timestamp = in.readParcelable(Timestamp.class.getClassLoader());
-        registered = in.readByte() != 0;
+        byte tmpRegistered = in.readByte();
+        registered = tmpRegistered == 0 ? null : tmpRegistered == 1;
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -90,6 +89,14 @@ public class User implements Parcelable {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getUser_type() {
+        return user_type;
+    }
+
+    public void setUser_type(String user_type) {
+        this.user_type = user_type;
     }
 
     public String getFirst_name() {
@@ -180,7 +187,7 @@ public class User implements Parcelable {
         this.timestamp = timestamp;
     }
 
-    public Boolean isRegistered() {
+    public Boolean getRegistered() {
         return registered;
     }
 
@@ -189,11 +196,34 @@ public class User implements Parcelable {
     }
 
 
-    @NonNull
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(user_id);
+        dest.writeString(user_type);
+        dest.writeString(first_name);
+        dest.writeString(last_name);
+        dest.writeString(gender);
+        dest.writeString(phone_number);
+        dest.writeString(email_id);
+        dest.writeString(address);
+        dest.writeString(pin_code);
+        dest.writeString(country);
+        dest.writeString(state);
+        dest.writeString(district);
+        dest.writeParcelable(timestamp, flags);
+        dest.writeByte((byte) (registered == null ? 0 : registered ? 1 : 2));
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "user_id='" + user_id + '\'' +
+                ", user_type='" + user_type + '\'' +
                 ", first_name='" + first_name + '\'' +
                 ", last_name='" + last_name + '\'' +
                 ", gender='" + gender + '\'' +
@@ -207,28 +237,6 @@ public class User implements Parcelable {
                 ", timestamp=" + timestamp +
                 ", registered=" + registered +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(user_id);
-        dest.writeString(first_name);
-        dest.writeString(last_name);
-        dest.writeString(gender);
-        dest.writeString(phone_number);
-        dest.writeString(email_id);
-        dest.writeString(address);
-        dest.writeString(pin_code);
-        dest.writeString(country);
-        dest.writeString(state);
-        dest.writeString(district);
-        dest.writeParcelable(timestamp, flags);
-        dest.writeByte((byte) (registered ? 1 : 0));
     }
 }
 

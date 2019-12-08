@@ -56,10 +56,9 @@ import java.util.HashMap;
                     user.setPin_code(documentSnapshot.getString("pin_code"));
                     user.setTimestamp(documentSnapshot.getTimestamp("timestamp"));
                     user.setRegistered(documentSnapshot.getBoolean("registered"));
-
                     data.setValue(user);
+                    
                 }
-
 
             }
         }).addOnFailureListener(new OnFailureListener() {

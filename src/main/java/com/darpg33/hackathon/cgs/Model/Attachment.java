@@ -3,23 +3,30 @@ package com.darpg33.hackathon.cgs.Model;
 import android.location.Address;
 import android.net.Uri;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 public class Attachment {
 
     private String attachmentPath,
-            attachmentType, attachment_name;
+            attachmentType, attachment_name, location_address;
     private Uri attachmentUri;
     private Timestamp timestamp;
     private Address address;
+    private GeoPoint geoPoint;
 
     public Attachment(Address address,String attachmentType, Timestamp timestamp)
     {
         this.address = address;
         this.attachmentType = attachmentType;
         this.timestamp = timestamp;
+    }
+
+    public Attachment(String attachmentType, Timestamp timestamp, GeoPoint geoPoint, String location_address) {
+        this.attachmentType = attachmentType;
+        this.timestamp = timestamp;
+        this.geoPoint = geoPoint;
+        this.location_address = location_address;
     }
 
     public Attachment(String attachmentPath, String attachmentType, String attachment_name, Uri attachmentUri, Timestamp timestamp) {
@@ -40,6 +47,21 @@ public class Attachment {
     public Attachment() {
     }
 
+    public String getLocation_address() {
+        return location_address;
+    }
+
+    public void setLocation_address(String location_address) {
+        this.location_address = location_address;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return geoPoint;
+    }
+
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.geoPoint = geoPoint;
+    }
 
     public Address getAddress() {
         return address;
@@ -89,13 +111,17 @@ public class Attachment {
         this.timestamp = timestamp;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "Attachment{" +
                 "attachmentPath='" + attachmentPath + '\'' +
                 ", attachmentType='" + attachmentType + '\'' +
+                ", attachment_name='" + attachment_name + '\'' +
+                ", location_address='" + location_address + '\'' +
+                ", attachmentUri=" + attachmentUri +
                 ", timestamp=" + timestamp +
+                ", address=" + address +
+                ", geoPoint=" + geoPoint +
                 '}';
     }
 }

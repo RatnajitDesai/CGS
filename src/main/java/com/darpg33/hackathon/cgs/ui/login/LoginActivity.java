@@ -13,8 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.darpg33.hackathon.cgs.DepartmentActivity;
 import com.darpg33.hackathon.cgs.MainActivity;
+import com.darpg33.hackathon.cgs.MediatorActivity;
+import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.WorkerActivity;
 import com.darpg33.hackathon.cgs.ui.dialogs.auth.ResetPasswordDialogFragment;
 import com.darpg33.hackathon.cgs.ui.register.RegisterActivity;
 import com.google.android.material.button.MaterialButton;
@@ -38,10 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-        {
-            loadUI();
-        }
+
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mSignIn = findViewById(R.id.signInBtn);
@@ -53,7 +54,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mSignIn.setOnClickListener(this);
         mCreateAccount.setOnClickListener(this);
         mForgotPassword.setOnClickListener(this);
-
+        if (FirebaseAuth.getInstance().getCurrentUser() != null)
+        {
+            loadUI(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
 
     }
 
@@ -78,13 +82,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             {
                                 if (!user.isEmailVerified())
                                 {
+
                                     Toast.makeText(LoginActivity.this, "Email ID is not verified.", Toast.LENGTH_SHORT).show();
                                     FirebaseAuth.getInstance().signOut();
                                     mProgressBar.setVisibility(View.GONE);
+
                                 }
                                 else{
-                                    loadUI();
-                                    mProgressBar.setVisibility(View.GONE);
+                                    loadUI(user.getUid());
                                 }
                             }
                             else {
@@ -115,7 +120,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
     private boolean checkInputs(String email, String password)
     {
         if (email.isEmpty())
@@ -134,11 +138,65 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-    private void loadUI()
+    private void loadUI(String uid)
     {
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+
+        loginViewModel.getUser(uid).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+
+                if (user!= null)
+                {
+
+                    switch (user.getUser_type()){
+                        case "citizen":
+                        {
+                            mProgressBar.setVisibility(View.GONE);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra(getString(R.string.user_type),user.getUser_type());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            mProgressBar.setVisibility(View.GONE);
+
+                            break;
+                        }
+                        case "mediator":
+                        {
+                            Intent intent = new Intent(LoginActivity.this, MediatorActivity.class);
+                            intent.putExtra(getString(R.string.user_type),user.getUser_type());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            mProgressBar.setVisibility(View.GONE);
+                            break;
+                        }
+                        case "dep_incharge":
+                        {
+                            Intent intent = new Intent(LoginActivity.this, DepartmentActivity.class);
+                            intent.putExtra(getString(R.string.user_type),user.getUser_type());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            mProgressBar.setVisibility(View.GONE);
+                            break;
+                        }
+                        case "worker":
+                        {
+                            Intent intent = new Intent(LoginActivity.this, WorkerActivity.class);
+                            intent.putExtra(getString(R.string.user_type),user.getUser_type());
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            mProgressBar.setVisibility(View.GONE);
+                            break;
+                        }
+
+                    }
+
+
+                }
+            }
+        });
+
+
+
     }
 
 }

@@ -46,7 +46,6 @@ public class FragmentOtpVerification extends Fragment {
 
     private static final String TAG = "FragmentOtpVerification";
 
-
     //vars
     private String mVerificationCode, mCode, mEmail, mPassword, mPhone_number,
             mFirstname, mLastname,mGender,
@@ -103,10 +102,12 @@ public class FragmentOtpVerification extends Fragment {
                                         public void onSuccess(Void aVoid) {
                                             Toast.makeText(getContext(), "Phone number verified.", Toast.LENGTH_SHORT).show();
                                             Toast.makeText(mContext, "Email verification link sent to your email.", Toast.LENGTH_SHORT).show();
-
                                             User NewUser = new User();
 
                                             NewUser.setUser_id(user.getUid());
+
+                                            NewUser.setUser_type(getString(R.string.citizen));
+
                                             NewUser.setTimestamp(new Timestamp(new Date()));
                                             NewUser.setEmail_id(mEmail);
                                             NewUser.setFirst_name(mFirstname);
@@ -146,7 +147,7 @@ public class FragmentOtpVerification extends Fragment {
                                         user.delete();
                                     }
                                     else {
-                                        Toast.makeText(mContext, "Unable to register. Email already exists.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, "Unable to register.", Toast.LENGTH_SHORT).show();
                                         mProgressBar.setVisibility(View.GONE);
                                         enableViews(mOtp,mResendCode,mVerify);
                                         user.delete();
@@ -184,7 +185,9 @@ public class FragmentOtpVerification extends Fragment {
 
                 User NewUser = new User();
                 NewUser.setUser_id(mAuth.getCurrentUser().getUid());
+                NewUser.setUser_type(getString(R.string.citizen));
                 NewUser.setTimestamp(new Timestamp(new Date()));
+                NewUser.setUser_type(getString(R.string.citizen));
                 NewUser.setEmail_id(mEmail);
                 NewUser.setFirst_name(mFirstname);
                 NewUser.setLast_name(mLastname);
@@ -253,9 +256,6 @@ public class FragmentOtpVerification extends Fragment {
             }
         });
 
-
-
-
         return view;
     }
 
@@ -306,20 +306,21 @@ public class FragmentOtpVerification extends Fragment {
 
         if (bundle != null)
         {
-        mVerificationCode = bundle.getString(getString(R.string.verification_Id));
-        mEmail = bundle.getString(getString(R.string.email_id));
-        mPassword = bundle.getString(getString(R.string.password));
-        mPhone_number = bundle.getString(getString(R.string.phone_number));
-        mToken = bundle.getParcelable(getString(R.string.resend_token));
-        mFirstname = bundle.getString(getString(R.string.first_name));
-        mLastname = bundle.getString(getString(R.string.last_name));
-        mGender = bundle.getString(getString(R.string.gender));
-        mAddress = bundle.getString(getString(R.string.address));
-        mPincode = bundle.getString(getString(R.string.pin_code));
-        mCountry = bundle.getString(getString(R.string.country));
-        mState = bundle.getString(getString(R.string.state));
-        mDistrict = bundle.getString(getString(R.string.district));
-        startTimer();
+
+            mVerificationCode = bundle.getString(getString(R.string.verification_Id));
+            mEmail = bundle.getString(getString(R.string.email_id));
+            mPassword = bundle.getString(getString(R.string.password));
+            mPhone_number = bundle.getString(getString(R.string.phone_number));
+            mToken = bundle.getParcelable(getString(R.string.resend_token));
+            mFirstname = bundle.getString(getString(R.string.first_name));
+            mLastname = bundle.getString(getString(R.string.last_name));
+            mGender = bundle.getString(getString(R.string.gender));
+            mAddress = bundle.getString(getString(R.string.address));
+            mPincode = bundle.getString(getString(R.string.pin_code));
+            mCountry = bundle.getString(getString(R.string.country));
+            mState = bundle.getString(getString(R.string.state));
+            mDistrict = bundle.getString(getString(R.string.district));
+            startTimer();
 
         }
     }

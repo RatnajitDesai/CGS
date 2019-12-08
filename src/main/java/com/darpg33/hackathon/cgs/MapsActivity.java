@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,16 +43,13 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
 
-
     private static final String TAG = "MapsActivity";
     private static final Float DEFAULT_ZOOM = 15f;
-
 
     //widgets
     private EditText mSearchText;
     private MaterialButton mGPS, mShareLocation;
     private TextView selectedLocation, locationAccuracy;
-
 
     //vars
     private Address mAddress;
@@ -126,9 +124,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             finish();
         }
         else {
-            Log.d(TAG, "shareLocation: share location");
-            setResult(Activity.RESULT_CANCELED, returnIntent);
-            finish();
+            Snackbar.make(mShareLocation.getRootView(),"Select a location first.",Snackbar.LENGTH_SHORT).show();
         }
 
     }
@@ -153,7 +149,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         {
             Address address = addressList.get(0);
             Log.d(TAG, "geoLocate: found address: "+address.toString());
-
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),DEFAULT_ZOOM, address.getAddressLine(0));
             mAddress = address;
             selectedLocation.setText(mAddress.getAddressLine(0));
@@ -179,8 +174,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if (currentLocation != null) {
                                 try {
                                     currentLocation.setAccuracy(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                                moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM,"My Location");
-                                Geocoder geocoder = new Geocoder(MapsActivity.this);
+                                    moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM,"My Location");
+                                    Geocoder geocoder = new Geocoder(MapsActivity.this);
 
                                     List<Address> address = geocoder.getFromLocation(currentLocation.getLatitude(),currentLocation.getLongitude(),1);
                                     mAddress = address.get(0);
@@ -189,6 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                    mAddress = null;
                                 }
                             }
                          }
@@ -239,6 +235,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                // Creating a marker
+                MarkerOptions markerOptions = new MarkerOptions();
+
+                // Setting the position for the marker
+                markerOptions.position(latLng);
+
+                Geocoder geocoder = new Geocoder(MapsActivity.this);
+
+                List<Address> addressList = new ArrayList<>();
+
+                try {
+                    addressList = geocoder.getFromLocation(latLng.latitude,latLng.longitude,1);
+                } catch (IOException e) {
+
+                    Log.e(TAG, "geoLocate:IOException "+e.getMessage() );
+                }
+
+                if (addressList.size() > 0 )
+                {
+                    Address address = addressList.get(0);
+                    Log.d(TAG, "geoLocate: found address: "+address.toString());
+
+                    moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),DEFAULT_ZOOM, address.getAddressLine(0));
+                    mAddress = address;
+                    selectedLocation.setText(mAddress.getAddressLine(0));
+
+                    // Setting the title for the marker.
+                    // This will be displayed on taping the marker
+
+                    markerOptions.title(mAddress.getAddressLine(0));
+                }
+
+
+
+                // Clears the previously touched position
+                mMap.clear();
+
+                // Placing a marker on the touched position
+                mMap.addMarker(markerOptions);
+
+            }
+        });
         if (checkGPSEnabled()) {
             getDeviceLocation();
             mMap.setMyLocationEnabled(true);

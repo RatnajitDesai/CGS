@@ -28,7 +28,7 @@ public class NewGrievanceViewModel extends ViewModel {
 
     }
 
-     LiveData<Grievance> submitNewRequest(Grievance grievance,HashMap<String, HashMap<String,Object>> attachmentMap){
+     LiveData<Grievance> submitNewRequest(Grievance grievance,  HashMap<String, HashMap<String,Object>> attachmentMap){
          return repository.submitNewRequest(grievance, attachmentMap);
     }
 

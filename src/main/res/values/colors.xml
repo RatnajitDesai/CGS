@@ -11,6 +11,6 @@
     <color name="light_grey">#E0E0E0</color>
     <color name="link_blue">#44a6c6</color>
     <color name="red">#f00</color>
-    <color name="transparent">#00000000</color>
+    <color name="transparent">#00ffffff</color>
 
 </resources>

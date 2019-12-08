@@ -3,12 +3,12 @@ package com.darpg33.hackathon.cgs.ui.home;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 
@@ -17,58 +17,42 @@ import com.darpg33.hackathon.cgs.R;
 import com.darpg33.hackathon.cgs.ui.home.tabs.actions.ActionItemsFragment;
 import com.darpg33.hackathon.cgs.ui.home.tabs.feed.FeedsFragment;
 import com.darpg33.hackathon.cgs.ui.home.tabs.myrequests.MyRequestsFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
     private static final String TAG = "HomeFragment";
 
     //vars
-    private HomeViewModel homeViewModel;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private MenuItem prevMenuItem;
 
-    //widgets
-    private FloatingActionButton mFab;
-    private TabLayout mTabLayout;
+    private BottomNavigationView mBottomNavigationView;
     private ViewPager mViewPager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         Log.d(TAG, "onCreateView: called.");
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        mFab = root.findViewById(R.id.fabNewRequest);
+        //widgets
+        FloatingActionButton mFab = root.findViewById(R.id.fabNewRequest);
         mViewPager = root.findViewById(R.id.viewpager);
-        mTabLayout = root.findViewById(R.id.tabLayout);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(),3);
-
-        mSectionsPagerAdapter.addFragment(new FeedsFragment(), "Feed");
-        mSectionsPagerAdapter.addFragment(new MyRequestsFragment(),"Requests");
-        mSectionsPagerAdapter.addFragment(new ActionItemsFragment(),"Actions");
+        mBottomNavigationView = root.findViewById(R.id.citizen_home_nav);
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(), 3);
+        mSectionsPagerAdapter.addFragment(new FeedsFragment());
+        mSectionsPagerAdapter.addFragment(new MyRequestsFragment());
+        mSectionsPagerAdapter.addFragment(new ActionItemsFragment());
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
-        setTabIcons();
         mFab.setOnClickListener(this);
+        mViewPager.addOnPageChangeListener(this);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
         return root;
-
     }
-
-    private void setTabIcons() {
-
-        mTabLayout.getTabAt(0).setIcon(R.drawable.ic_menu_home);
-        mTabLayout.getTabAt(1).setIcon(R.drawable.ic_icon_myrequests);
-        mTabLayout.getTabAt(2).setIcon(R.drawable.ic_icon_notifications);
-
-
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -76,5 +60,55 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.fabNewRequest) {
             Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.nav_new_grievance);
         }
+    }
+
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (prevMenuItem != null)
+            prevMenuItem.setChecked(false);
+        else
+            mBottomNavigationView.getMenu().getItem(0).setChecked(false);
+
+        mBottomNavigationView.getMenu().getItem(position).setChecked(true);
+        prevMenuItem = mBottomNavigationView.getMenu().getItem(position);
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId())
+        {
+
+            case R.id.menu_actions:
+            {
+                mViewPager.setCurrentItem(2, true);
+                break;
+            }
+            case R.id.menu_my_requests:
+            {
+                mViewPager.setCurrentItem(1, true);
+                break;
+            }
+            case R.id.menu_feed:
+            {
+                mViewPager.setCurrentItem(0, true);
+                break;
+            }
+        }
+
+
+        return false;
     }
 }

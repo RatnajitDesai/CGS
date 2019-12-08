@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/viewFragmentRelativeLayout"
+    >
 
 <ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollView"
+    android:layout_above="@id/relativeLayout1"
     android:focusable="true">
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,11 +46,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:id="@+id/linearLayout2">
+                    android:id="@+id/relativeLayout2">
 
                     <TextView
                         android:id="@+id/grievance_timestamp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
@@ -55,7 +60,7 @@
 
                     <TextView
                         android:id="@+id/grievance_status"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
@@ -67,16 +72,32 @@
 
             </RelativeLayout>
 
-            <TextView
+            <com.ms.square.android.expandabletextview.ExpandableTextView
                 android:id="@+id/grievanceDescription"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:layout_below="@id/childRelativeLayout"
-                android:text="bal actions using the same methods as described in the previous section."
-                />
+                expandableTextView:maxCollapsedLines="4"
+                expandableTextView:animDuration="200">
 
+                <TextView
+                    android:id="@id/expandable_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textSize="16sp"
+
+                     />
+                <ImageButton
+                    android:id="@id/expand_collapse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_gravity="end|bottom"
+                    android:background="@android:color/transparent"/>
+            </com.ms.square.android.expandabletextview.ExpandableTextView>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/attachmentsRecyclerView"
@@ -87,6 +108,19 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/grievanceSubmittedBy"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="Ratnajit Desai"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@id/attachmentsRecyclerView"
+                />
+
+
 
 
         </RelativeLayout>
@@ -110,5 +144,85 @@
 
     </RelativeLayout>
 
-
 </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@id/relativeLayout1"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout1"
+            android:weightSum="100"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSave"
+                android:layout_width="0dp"
+                android:layout_weight="33"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:layout_margin="8dp"
+                />
+
+
+            <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAssign"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            android:text="@string/assign"
+            android:layout_margin="8dp"
+            />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReject"
+            android:layout_width="0dp"
+            android:layout_weight="33"
+            android:layout_height="wrap_content"
+            android:text="@string/reject"
+            android:layout_margin="8dp"
+            />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="100"
+            android:id="@+id/linearLayout2"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_below="@id/linearLayout1">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnForward"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="@string/forward"
+            android:layout_margin="8dp"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnComplete"
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:layout_height="wrap_content"
+            android:text="@string/complete"
+            android:layout_margin="8dp"
+            />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

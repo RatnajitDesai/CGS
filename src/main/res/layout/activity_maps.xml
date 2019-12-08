@@ -26,7 +26,7 @@
             android:src="@drawable/ic_icon_magnify"
             />
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/ivMagnify"
@@ -36,11 +36,10 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:background="@color/white"
-            android:inputType="textMultiLine"
-            android:maxLines="1"
+            android:inputType="textAutoComplete"
             android:hint="@string/enter_address_city_or_zip_code"
             android:imeOptions="actionSearch"
-            tools:ignore="Autofill" />
+            />
 
     </RelativeLayout>
 
@@ -65,12 +64,11 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_icon_place"
+            android:src="@drawable/ic_icon_map"
             android:layout_marginStart="16dp"
             android:id="@+id/pin_icon"
             android:layout_centerVertical="true"
             android:contentDescription="@string/place_icon" />
-
 
         <TextView
             android:id="@+id/txtSelectedLocation"

@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.home.tabs.myrequests;
+package com.darpg33.hackathon.cgs.HelperAdapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,7 @@ public class RequestsAdapter extends RecyclerView.Adapter< RequestsAdapter.Griev
     private GrievanceOnClickListener mGrievanceOnClickListener;
 
 
-    RequestsAdapter(ArrayList<Grievance> grievances, GrievanceOnClickListener listener)
+    public RequestsAdapter(ArrayList<Grievance> grievances, GrievanceOnClickListener listener)
     {
         mGrievances = grievances;
         mGrievanceOnClickListener = listener;
