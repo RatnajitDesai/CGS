@@ -80,7 +80,7 @@
     <string name="get_current_location">Get Current location</string>
     <string name="confirm_sign_out_text">Do you really want to sign out?</string>
     <string name="edit">Edit</string>
-    <string name="save">Save</string>
+    <string name="save">SAVE</string>
     <string name="resolved">Resolved</string>
     <string name="in_process">In Process</string>
     <string name="verify">Verify</string>
@@ -109,10 +109,14 @@
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_search">Search</string>
     <string name="user_type">user_type</string>
-    <string name="assign">Assign</string>
-    <string name="reject">Reject</string>
-    <string name="forward">Forward</string>
-    <string name="complete">Complete</string>
+    <string name="assign">ASSIGN</string>
+    <string name="reject">REJECT</string>
+    <string name="forward">FORWARD</string>
+    <string name="complete">COMPLETE</string>
     <string name="enter_notes">Enter Notes</string>
+    <string name="action_title">Action Title</string>
+    <string name="assigned_to">Assigned To:</string>
+    <string name="action_done">action_done</string>
+    <string name="priority">Priority:</string>
 
 </resources>

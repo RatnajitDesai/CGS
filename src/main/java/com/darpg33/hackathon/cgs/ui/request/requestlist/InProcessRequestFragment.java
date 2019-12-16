@@ -49,27 +49,30 @@ public class InProcessRequestFragment extends Fragment implements RequestsAdapte
 
     private void init()
     {
-
-        getPendingRequests();
+        mInProcessRequestViewModel.getUserType().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s!= null)
+                {
+                    getAllInProcessRequests(s);
+                }
+            }
+        });
     }
 
-    private void getPendingRequests() {
+    private void getAllInProcessRequests(String user_type) {
 
-        mInProcessRequestViewModel.getAllInProcessRequests().observe(this, new Observer<ArrayList<Grievance>>() {
+
+        mInProcessRequestViewModel.getAllInProcessRequests(user_type).observe(this, new Observer<ArrayList<Grievance>>() {
             @Override
             public void onChanged(ArrayList<Grievance> grievances) {
 
                 mGrievances.addAll(grievances);
                 mRequestsAdapter.notifyDataSetChanged();
 
-
             }
         });
-
-
-
     }
-
 
     private void setupRecyclerView() {
 

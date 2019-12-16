@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="department_list">
+
+
+        <item>Department of Water</item>
+        <item>Department of Road</item>
+        <item>Department of Health</item>
+        <item>Department of Safety</item>
+        <item>Department of Finance</item>
+
+    </string-array>
+
+
+</resources>

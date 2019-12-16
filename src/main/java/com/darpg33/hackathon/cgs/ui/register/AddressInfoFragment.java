@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -100,6 +101,10 @@ public class AddressInfoFragment extends Fragment {
         mEtAddress = view.findViewById(R.id.address);
         mEtPinCode = view.findViewById(R.id.pinCode);
 
+        mSpSelectCountry = view.findViewById(R.id.spinner_select_country);
+        mSpSelectState = view.findViewById(R.id.spinner_select_state);
+        mSpSelectDistrict = view.findViewById(R.id.spinner_select_district);
+
         final int listSize = SpinnerListProvider.getCountryList().size()-1;
         ArrayAdapter<String> countryAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, SpinnerListProvider.getCountryList()){
             @Override
@@ -109,34 +114,58 @@ public class AddressInfoFragment extends Fragment {
             }
         };
 
-        mSpSelectCountry = view.findViewById(R.id.spinner_select_country);
         mSpSelectCountry.setAdapter(countryAdapter);
         mSpSelectCountry.setSelection(listSize);
+        mSpSelectCountry.setSelection(0);
 
+        final int stateListSize = SpinnerListProvider.getStates().size()-1;
+        ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
+                SpinnerListProvider.getStates()){
 
-        final int stateListSize = SpinnerListProvider.getStateList().size()-1;
-        ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, SpinnerListProvider.getStateList()){
             @Override
             public int getCount() {
                 return stateListSize;
             }
+
         };
-        mSpSelectState = view.findViewById(R.id.spinner_select_state);
         mSpSelectState.setAdapter(stateAdapter);
         mSpSelectState.setSelection(stateListSize);
 
 
-        final int districtListSize = SpinnerListProvider.getDistrictList().size() - 1;
-        ArrayAdapter<String> districtAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, SpinnerListProvider.getDistrictList()){
+
+        mSpSelectState.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+                final int districtListSize = SpinnerListProvider.getDistricts(mSpSelectState.getSelectedItem().toString()).size() - 1;
+                ArrayAdapter<String> districtAdapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
+                        SpinnerListProvider.getDistricts(mSpSelectState.getSelectedItem().toString())){
+
+                    @Override
+                    public int getCount() {
+                        return districtListSize;
+                    }
+
+                };
+                mSpSelectDistrict.setAdapter(districtAdapter);
+                mSpSelectDistrict.setSelection(districtListSize);
+
+            }
 
             @Override
-            public int getCount() {
-                return districtListSize;
+            public void onNothingSelected(AdapterView<?> parent) {
+
+
+
+
             }
-        };
-        mSpSelectDistrict = view.findViewById(R.id.spinner_select_district);
-        mSpSelectDistrict.setAdapter(districtAdapter);
-        mSpSelectDistrict.setSelection(districtListSize);
+        });
+
+
+
+
+
 
         mNext = view.findViewById(R.id.btnNext);
 
@@ -158,23 +187,22 @@ public class AddressInfoFragment extends Fragment {
         }
         if(country.equals("Select Country"))
         {
-            mSpSelectCountry.setFocusable(true);
+            Toast.makeText(mContext, "Please enter all the details", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (state.equals("Select State"))
         {
-            mSpSelectState.setFocusable(true);
+            Toast.makeText(mContext, "Please enter all the details", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (district.equals("Select District"))
         {
-            mSpSelectDistrict.setFocusable(true);
+            Toast.makeText(mContext, "Please enter all the details", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
     }
-
 
 
 }

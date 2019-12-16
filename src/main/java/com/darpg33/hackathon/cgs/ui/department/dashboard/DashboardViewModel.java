@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.ui_officer.dashboard;
+package com.darpg33.hackathon.cgs.ui.department.dashboard;
 
 import androidx.lifecycle.ViewModel;
 

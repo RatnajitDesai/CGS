@@ -109,7 +109,8 @@ public class ResetPasswordDialogFragment extends DialogFragment implements View.
                 }
             }
         });
-
     }
+
+
 
 }

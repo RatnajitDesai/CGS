@@ -8,12 +8,14 @@ import com.google.firebase.Timestamp;
 
 public class Action implements Parcelable{
 
-    private String user_id,user_type,username, email_id, action_performed , action_info, action_description, action_request_id;
+    private String user_id,user_type,username, email_id, action_performed,
+            action_info, action_description, action_request_id,
+            action_priority;
     private Timestamp timestamp;
 
 
     public Action(String user_id, String user_type,String username, String email_id, String action_performed,
-                  String action_info, String action_description, String action_request_id, Timestamp timestamp) {
+                  String action_info, String action_description, String action_request_id, Timestamp timestamp, String action_priority) {
         this.user_id = user_id;
         this.user_type = user_type;
         this.username = username;
@@ -23,6 +25,14 @@ public class Action implements Parcelable{
         this.action_description = action_description;
         this.action_request_id = action_request_id;
         this.timestamp = timestamp;
+        this.action_priority = action_priority;
+    }
+
+
+
+
+    public Action() {
+
     }
 
     protected Action(Parcel in) {
@@ -33,6 +43,8 @@ public class Action implements Parcelable{
         action_performed = in.readString();
         action_info = in.readString();
         action_description = in.readString();
+        action_request_id = in.readString();
+        action_priority = in.readString();
         timestamp = in.readParcelable(Timestamp.class.getClassLoader());
     }
 
@@ -48,7 +60,19 @@ public class Action implements Parcelable{
         }
     };
 
-    public Action() {
+    public String getAction_priority() {
+        return action_priority;
+    }
+
+    public void setAction_priority(String action_priority) {
+
+        if (!this.user_type.equals("dep_incharge"))
+        {
+            this.action_priority = null;
+        }
+        else{
+            this.action_priority = action_priority;
+        }
 
     }
 
@@ -108,10 +132,6 @@ public class Action implements Parcelable{
         this.timestamp = timestamp;
     }
 
-    public static Creator<Action> getCREATOR() {
-        return CREATOR;
-    }
-
     public String getAction_info() {
         switch (action_performed)
         {
@@ -122,12 +142,12 @@ public class Action implements Parcelable{
             }
             case "ASSIGN":
             {
-                action_info = "Request assigned to ";
+                action_info = "Request assigned to:";
                 break;
             }
             case "FORWARD":
             {
-                action_info = "Request forwarded to ";
+                action_info = "Request forwarded to:";
                 break;
             }
             case "REJECT":
@@ -137,7 +157,7 @@ public class Action implements Parcelable{
             }
             case "SAVE":
             {
-                action_info = "Update : ";
+                action_info = "Update:";
                 break;
             }
             case "COMPLETE":
@@ -181,6 +201,22 @@ public class Action implements Parcelable{
         dest.writeString(action_info);
         dest.writeString(action_description);
         dest.writeParcelable(timestamp, flags);
+    }
+
+    @Override
+    public String toString() {
+        return "Action{" +
+                "user_id='" + user_id + '\'' +
+                ", user_type='" + user_type + '\'' +
+                ", username='" + username + '\'' +
+                ", email_id='" + email_id + '\'' +
+                ", action_performed='" + action_performed + '\'' +
+                ", action_info='" + action_info + '\'' +
+                ", action_description='" + action_description + '\'' +
+                ", action_request_id='" + action_request_id + '\'' +
+                ", action_priority='" + action_priority + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }
 

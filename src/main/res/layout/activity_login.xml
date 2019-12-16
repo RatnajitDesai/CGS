@@ -108,7 +108,6 @@
             android:text="@string/forgot_password"
             android:textColor="@color/red" />
 
-
        </LinearLayout>
 
 

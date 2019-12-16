@@ -130,8 +130,10 @@ public class MediatorActivity extends AppCompatActivity implements NavigationVie
 
         if (userSignedOut)
         {
+
             finish();
             startActivity(new Intent(MediatorActivity.this, LoginActivity.class));
+
         }
 
     }

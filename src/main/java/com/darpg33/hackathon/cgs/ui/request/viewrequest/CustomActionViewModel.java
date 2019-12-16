@@ -14,8 +14,27 @@ public class CustomActionViewModel extends ViewModel {
         mRepository = new CustomActionRepository();
     }
 
-    LiveData<Action> saveAction(Action action)
+    LiveData<Action> addNote(Action action)
     {
-        return mRepository.saveAction(action);
+        return mRepository.addNote(action);
+    }
+
+     LiveData<Action> assignRequest(Action action, String assignTo, String priority) {
+        return mRepository.assignRequest(action,assignTo,priority);
+    }
+
+    LiveData<Action> completeRequest(Action action) {
+
+        return mRepository.completeRequest(action);
+    }
+
+     LiveData<Action> rejectRequest(Action action) {
+
+        return mRepository.rejectRequest(action);
+    }
+
+    LiveData<Action> forwardRequest(Action action, String forwardTo) {
+
+        return mRepository.forwardRequest(action,forwardTo);
     }
 }

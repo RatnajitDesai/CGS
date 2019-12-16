@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.ui_officer.home;
+package com.darpg33.hackathon.cgs.ui.mediator.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,9 +14,9 @@ public class MediatorHomeViewModel extends ViewModel {
     }
 
 
-    LiveData<Integer> getGrievanceCount(String status) {
+    LiveData<Integer> getGrievanceCount(String status, String user_type) {
 
-        return mediatorHomeRepository.getGrievanceCount(status);
+        return mediatorHomeRepository.getGrievanceCount(status, user_type);
 
     }
 }

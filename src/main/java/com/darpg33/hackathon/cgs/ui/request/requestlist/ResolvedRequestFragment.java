@@ -49,25 +49,28 @@ public class ResolvedRequestFragment extends Fragment implements RequestsAdapter
 
     private void init()
     {
-
-        getPendingRequests();
+        mResolvedRequestViewModel.getUserType().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if (s!= null)
+                {
+                    getAllResolvedRequests(s);
+                }
+            }
+        });
     }
 
-    private void getPendingRequests() {
+    private void getAllResolvedRequests(String user_type) {
 
-        mResolvedRequestViewModel.getAllResolvedRequests().observe(this, new Observer<ArrayList<Grievance>>() {
+        mResolvedRequestViewModel.getAllResolvedRequests(user_type).observe(this, new Observer<ArrayList<Grievance>>() {
             @Override
             public void onChanged(ArrayList<Grievance> grievances) {
 
                 mGrievances.addAll(grievances);
                 mRequestsAdapter.notifyDataSetChanged();
 
-
             }
         });
-
-
-
     }
 
 
@@ -81,7 +84,6 @@ public class ResolvedRequestFragment extends Fragment implements RequestsAdapter
 
     }
 
-
     @Override
     public void viewGrievance(String requestID) {
 
@@ -89,8 +91,5 @@ public class ResolvedRequestFragment extends Fragment implements RequestsAdapter
         bundle.putString("grievance_request_id",requestID);
         Navigation.findNavController(getActivity(),R.id.requestsRecyclerView).navigate(R.id.nav_view_grievance, bundle);
 
-
     }
-
-
 }

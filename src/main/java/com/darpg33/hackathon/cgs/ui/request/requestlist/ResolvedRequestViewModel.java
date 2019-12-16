@@ -18,9 +18,15 @@ public class ResolvedRequestViewModel extends ViewModel {
     }
 
 
-    LiveData<ArrayList<Grievance>> getAllResolvedRequests() {
+    LiveData<String> getUserType()
+    {
 
-        return mRepository.getResolvedRequests();
+        return mRepository.getUserType();
+    }
+
+    LiveData<ArrayList<Grievance>> getAllResolvedRequests(String user_type) {
+
+        return mRepository.getResolvedRequests(user_type);
     }
 
 }

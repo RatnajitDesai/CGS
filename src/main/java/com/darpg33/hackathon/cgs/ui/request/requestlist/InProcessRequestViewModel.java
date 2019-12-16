@@ -18,10 +18,17 @@ public class InProcessRequestViewModel extends ViewModel {
 
     }
 
+    LiveData<String> getUserType()
+    {
 
-    LiveData<ArrayList<Grievance>> getAllInProcessRequests() {
+        return mRepository.getUserType();
+    }
 
-        return mRepository.getInProcessRequests();
+
+
+    LiveData<ArrayList<Grievance>> getAllInProcessRequests(String s) {
+
+        return mRepository.getInProcessRequests(s);
     }
 
 }

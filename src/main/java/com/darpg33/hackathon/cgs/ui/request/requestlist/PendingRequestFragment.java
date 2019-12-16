@@ -42,32 +42,35 @@ public class PendingRequestFragment extends Fragment implements RequestsAdapter.
         mRecyclerView = view.findViewById(R.id.requestsRecyclerView);
         mGrievances = new ArrayList<>();
         mPendingRequestViewModel = ViewModelProviders.of(this).get(PendingRequestViewModel.class);
-        init();
         setupRecyclerView();
+        init();
 
         return view;
     }
 
     private void init()
     {
-        getPendingRequests();
-    }
-
-    private void getPendingRequests() {
-
-        mPendingRequestViewModel.getAllPendingRequests().observe(this, new Observer<ArrayList<Grievance>>() {
+        mPendingRequestViewModel.getUserType().observe(this, new Observer<String>() {
             @Override
-            public void onChanged(ArrayList<Grievance> grievances) {
-
-                mGrievances.addAll(grievances);
-                mRequestsAdapter.notifyDataSetChanged();
-
-
+            public void onChanged(String s) {
+                if (s!= null)
+                {
+                    getPendingRequests(s);
+                }
             }
         });
 
+    }
 
+    private void getPendingRequests(String s) {
 
+        mPendingRequestViewModel.getAllPendingRequests(s).observe(this, new Observer<ArrayList<Grievance>>() {
+            @Override
+            public void onChanged(ArrayList<Grievance> grievances) {
+                mGrievances.addAll(grievances);
+                mRequestsAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
 

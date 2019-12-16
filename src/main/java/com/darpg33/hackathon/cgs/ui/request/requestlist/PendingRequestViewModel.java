@@ -18,9 +18,15 @@ public class PendingRequestViewModel extends ViewModel {
 
     }
 
+    LiveData<String> getUserType()
+    {
 
-     LiveData<ArrayList<Grievance>> getAllPendingRequests() {
+        return mRepository.getUserType();
+    }
 
-         return mRepository.getPendingRequests();
+
+     LiveData<ArrayList<Grievance>> getAllPendingRequests(String s) {
+
+         return mRepository.getPendingRequests(s);
     }
 }

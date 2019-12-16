@@ -7,14 +7,14 @@
 
     <fragment android:id="@+id/nav_search"
         android:label="@string/menu_search"
-        android:name="com.darpg33.hackathon.cgs.ui.ui_officer.search.MediatorSearchFragment"
+        android:name="com.darpg33.hackathon.cgs.ui.mediator.search.MediatorSearchFragment"
         tools:layout="@layout/fragment_search_grievance"/>
 
     <fragment android:id="@+id/nav_view_grievance"
         android:name="com.darpg33.hackathon.cgs.ui.request.viewrequest.ViewGrievanceFragment"
         android:label="{grievance_request_id}"
         tools:layout="@layout/fragment_view_grievance">
-
+        
         <argument
             android:name="grievance_request_id"
             app:argType="string" />
@@ -23,7 +23,7 @@
 
     <fragment android:id="@+id/nav_dashboard"
         android:label="@string/menu_dashboard"
-        android:name="com.darpg33.hackathon.cgs.ui.ui_officer.dashboard.DashboardFragment"
+        android:name="com.darpg33.hackathon.cgs.ui.mediator.dashboard.DashboardFragment"
         tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_nav_dashboard_to_nav_search"
@@ -41,7 +41,7 @@
 
     <fragment android:id="@+id/nav_mediator_home"
         android:label="@string/menu_home"
-        android:name="com.darpg33.hackathon.cgs.ui.ui_officer.home.MediatorHomeFragment"
+        android:name="com.darpg33.hackathon.cgs.ui.mediator.home.MediatorHomeFragment"
         tools:layout="@layout/fragment_mediator_home"
         />
 

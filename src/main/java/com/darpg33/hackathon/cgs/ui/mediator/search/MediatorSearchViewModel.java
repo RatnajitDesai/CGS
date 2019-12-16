@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.ui_officer.search;
+package com.darpg33.hackathon.cgs.ui.mediator.search;
 
 import androidx.lifecycle.ViewModel;
 

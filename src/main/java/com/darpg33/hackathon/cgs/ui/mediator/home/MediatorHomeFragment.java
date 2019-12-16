@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.ui_officer.home;
+package com.darpg33.hackathon.cgs.ui.mediator.home;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +25,7 @@ public class MediatorHomeFragment extends Fragment implements
         ViewPager.OnPageChangeListener,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "MediatorHomeFragment";
+    private static final String TAG = "DepartmentHomeFragment";
 
     //vars
     private MenuItem prevMenuItem;
@@ -80,10 +80,9 @@ public class MediatorHomeFragment extends Fragment implements
 
     }
 
-
     private void getCountPending(){
 
-        mediatorHomeViewModel.getGrievanceCount("Pending").observe(this, new Observer<Integer>() {
+        mediatorHomeViewModel.getGrievanceCount("Pending", "mediator").observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -103,13 +102,12 @@ public class MediatorHomeFragment extends Fragment implements
     private void getCountInProcess(){
 
 
-        mediatorHomeViewModel.getGrievanceCount("In Process").observe(this, new Observer<Integer>() {
+        mediatorHomeViewModel.getGrievanceCount("In Process", "mediator").observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
                     inProcessBadge.setVisible(true);
                     inProcessBadge.setNumber(integer);
-
                 }
                 else {
                     inProcessBadge.setVisible(false);
@@ -124,7 +122,7 @@ public class MediatorHomeFragment extends Fragment implements
 
     private void getCountResolved(){
 
-        mediatorHomeViewModel.getGrievanceCount("Resolved").observe(this, new Observer<Integer>() {
+        mediatorHomeViewModel.getGrievanceCount("Resolved", "mediator").observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {

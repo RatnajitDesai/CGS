@@ -25,6 +25,7 @@ import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.TimeDateUtilities;
 import com.darpg33.hackathon.cgs.ui.CustomDialogs.CustomActionDialog;
 import com.google.android.material.button.MaterialButton;
@@ -38,7 +39,11 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         ViewAttachmentAdapter.DocumentViewListener,
         ViewAttachmentAdapter.LocationViewListener,
         View.OnClickListener,
-        CustomActionDialog.SaveListener {
+        CustomActionDialog.SaveListener,
+        CustomActionDialog.AssignListener,
+        CustomActionDialog.RejectListener,
+        CustomActionDialog.CompleteListener,
+        CustomActionDialog.ForwardListener {
 
     private static final String TAG = "ViewGrievanceFragment";
 
@@ -117,7 +122,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         viewGrievanceViewModel.getUserType().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                
+
                 mUserType = s;
 
                 switch (s)
@@ -130,8 +135,6 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                     }
                     case "mediator":
                     {
-                        removeViews(mForward,mComplete);
-                        setProcessing(false);
                         break;
                     }
 
@@ -140,6 +143,36 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
 
             }
         });
+    }
+
+    private void setupMediatorView(String request_status) {
+
+        switch (request_status)
+        {
+            case Fields
+                    .GR_STATUS_PENDING:
+            {
+                removeViews(mComplete,mForward);
+
+                break;
+            }
+            case Fields
+                    .GR_STATUS_IN_PROCESS:
+            {
+
+                removeViews(mComplete,mForward,mAssign,mReject);
+                break;
+            }
+            case Fields
+                    .GR_STATUS_RESOLVED:
+            {
+                removeViews(mSave,mComplete,mForward,mAssign,mReject);
+                break;
+            }
+
+        }
+        setProcessing(false);
+
     }
 
 
@@ -154,8 +187,6 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     }
 
 
-
-
     private void setGrievanceView(Bundle bundle) {
 
         mRequestId = bundle.getString("grievance_request_id");
@@ -165,7 +196,6 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
             public void onChanged(Grievance grievance) {
                 if (grievance != null)
                 {
-
                     viewGrievanceViewModel.getGrievanceAttachments(mRequestId).observe(ViewGrievanceFragment.this, new Observer<ArrayList<Attachment>>() {
                         @Override
                         public void onChanged(ArrayList<Attachment> attachments) {
@@ -181,6 +211,15 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                     mDescription.setText(grievance.getDescription());
                     mTimeStamp.setText(TimeDateUtilities.getDateAndTime(grievance.getTimestamp()));
                     mStatus.setText(grievance.getStatus());
+                    switch (mUserType)
+                    {
+                        case "mediator":
+                        {
+                            setupMediatorView(grievance.getStatus());
+                        }
+
+
+                    }
                     getActions();
                     setProcessing(false);
                 }
@@ -317,53 +356,78 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
             {
                 Log.d(TAG, "onClick: save.");
                 CustomActionDialog fragment = new CustomActionDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("action_by",mUserType);
+                bundle.putString("action_done",getString(R.string.save));
+                fragment.setArguments(bundle);
                 fragment.setSaveListener(this);
-                fragment.show(Objects.requireNonNull(getFragmentManager()), "Sign out Fragment.");
+                fragment.show(Objects.requireNonNull(getFragmentManager()), "Custom Dialog Fragment.");
                 break;
             }
             case R.id.btnAssign:
             {
                 Log.d(TAG, "onClick: assign.");
-
-
+                CustomActionDialog fragment = new CustomActionDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("action_by",mUserType);
+                bundle.putString("action_done",getString(R.string.assign));
+                fragment.setArguments(bundle);
+                fragment.setAssignListener(this);
+                fragment.show(Objects.requireNonNull(getFragmentManager()), "Custom Dialog Fragment.");
                 break;
             }
             case R.id.btnReject:
             {
                 Log.d(TAG, "onClick: reject.");
-
+                CustomActionDialog fragment = new CustomActionDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("action_by",mUserType);
+                bundle.putString("action_done",getString(R.string.reject));
+                fragment.setArguments(bundle);
+                fragment.setRejectListener(this);
+                fragment.show(Objects.requireNonNull(getFragmentManager()), "Custom Dialog Fragment.");
 
                 break;
             }
             case R.id.btnForward:
             {
                 Log.d(TAG, "onClick: forward.");
-
-
+                CustomActionDialog fragment = new CustomActionDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("action_by",mUserType);
+                bundle.putString("action_done",getString(R.string.forward));
+                fragment.setArguments(bundle);
+                fragment.setForwardListener(this);
+                fragment.show(Objects.requireNonNull(getFragmentManager()), "Custom Dialog Fragment.");
                 break;
             }
             case R.id.btnComplete:
             {
                 Log.d(TAG, "onClick: complete.");
+                CustomActionDialog fragment = new CustomActionDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString("action_by",mUserType);
+                bundle.putString("action_done",getString(R.string.complete));
+                fragment.setArguments(bundle);
+                fragment.setCompleteListener(this);
+                fragment.show(Objects.requireNonNull(getFragmentManager()), "Custom Dialog Fragment.");
 
                 break;
             }
         }
-
     }
 
     @Override
-    public void saveNotes(String note) {
-
+    public void addNote(String note)
+    {
         setProcessing(true);
-
         Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("SAVE");
         action.setUser_type(mUserType);
 
-        customActionViewModel.saveAction(action).observe(this, new Observer<Action>() {
+        customActionViewModel.addNote(action).observe(this, new Observer<Action>() {
             @Override
             public void onChanged(Action action) {
 
@@ -378,6 +442,120 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                 }
             }
         });
+
+    }
+
+
+    @Override
+    public void assignRequest(String note, String assignTo, String priority) {
+
+        Action action = new Action();
+        action.setAction_request_id(mRequestId);
+        action.setAction_description(note);
+        action.setAction_performed("ASSIGN");
+        action.setUser_type(mUserType);
+
+        customActionViewModel.assignRequest(action, assignTo, priority).observe(this, new Observer<Action>() {
+            @Override
+            public void onChanged(Action action) {
+
+                if (action!=null)
+                {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+    }
+
+    @Override
+    public void completeRequest(String note) {
+
+        Action action = new Action();
+        action.setAction_request_id(mRequestId);
+        action.setAction_description(note);
+        action.setAction_performed("SAVE");
+        action.setUser_type(mUserType);
+
+        customActionViewModel.completeRequest(action).observe(this, new Observer<Action>() {
+            @Override
+            public void onChanged(Action action) {
+
+                if (action!=null)
+                {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void rejectRequest(String note) {
+
+        Action action = new Action();
+        action.setAction_request_id(mRequestId);
+        action.setAction_description(note);
+        action.setAction_performed("SAVE");
+        action.setUser_type(mUserType);
+
+        customActionViewModel.rejectRequest(action).observe(this, new Observer<Action>() {
+            @Override
+            public void onChanged(Action action) {
+
+                if (action!=null)
+                {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void forwardRequest(String note, String forwardTo) {
+
+        Action action = new Action();
+        action.setAction_request_id(mRequestId);
+        action.setAction_description(note);
+        action.setAction_performed("SAVE");
+        action.setUser_type(mUserType);
+
+        customActionViewModel.forwardRequest(action, forwardTo).observe(this, new Observer<Action>() {
+            @Override
+            public void onChanged(Action action) {
+
+                if (action!=null)
+                {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
     }
 }

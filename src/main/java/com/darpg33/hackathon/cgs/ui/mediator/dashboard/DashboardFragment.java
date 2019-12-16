@@ -1,4 +1,4 @@
-package com.darpg33.hackathon.cgs.ui.ui_officer.dashboard;
+package com.darpg33.hackathon.cgs.ui.mediator.dashboard;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -38,10 +38,14 @@ class ViewGrievanceRepository {
         final MutableLiveData<Grievance> liveData = new MutableLiveData<>();
 
         db.collection("Requests")
-                .document(requestID)
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                .document(requestID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                if (e!=null)
+                {
+                    return;
+                }
 
                 Grievance grievance = new Grievance();
 
@@ -53,23 +57,21 @@ class ViewGrievanceRepository {
                 grievance.setTimestamp(documentSnapshot.getTimestamp("grievance_timestamp"));
                 grievance.setCategory(documentSnapshot.getString("grievance_category"));
                 liveData.setValue(grievance);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Log.e(TAG, "onFailure: Exception :"+e.getMessage() );
-                liveData.setValue(null);
 
             }
         });
-
 
 
         return liveData;
 
     }
 
+
+    /**
+     * Get attachments of request
+     * @param requestID - request id to which attachments are to be retrieved
+     * @return
+     */
     LiveData<ArrayList<Attachment>> getGrievanceAttachments(final String requestID) {
         final MutableLiveData<ArrayList<Attachment>> liveData = new MutableLiveData<>();
 
