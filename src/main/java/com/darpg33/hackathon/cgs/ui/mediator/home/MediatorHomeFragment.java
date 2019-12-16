@@ -43,7 +43,7 @@ public class MediatorHomeFragment extends Fragment implements
 
         Log.d(TAG, "onCreateView: called.");
 
-        View root = inflater.inflate(R.layout.fragment_mediator_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_officers_home, container, false);
 
         //widgets
         mViewPager = root.findViewById(R.id.viewpager);

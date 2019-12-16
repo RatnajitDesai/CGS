@@ -23,7 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 public class MediatorActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SignOutFragment.SignOutUserListener{
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MediatorActivity";
 
     //vars
     private AppBarConfiguration mAppBarConfiguration;
@@ -64,7 +64,7 @@ public class MediatorActivity extends AppCompatActivity implements NavigationVie
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        getMenuInflater().inflate(R.menu.mediator_actionbar_menu,menu);
+        getMenuInflater().inflate(R.menu.search_actionbar_menu, menu);
 
         return true;
     }
