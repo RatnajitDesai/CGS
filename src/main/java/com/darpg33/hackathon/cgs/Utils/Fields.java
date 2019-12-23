@@ -32,7 +32,6 @@ public class Fields {
     public static final String DBC_REQ_ACTIONS = "Actions";
 
 
-
     //Requests fields
     public static final String DB_GR_DESCRIPTION = "grievance_description";
     public static final String DB_GR_REQUEST_ID = "grievance_request_id";
@@ -42,6 +41,12 @@ public class Fields {
     public static final String DB_GR_USER_ID = "grievance_user_id";
     public static final String DB_GR_CATEGORY = "grievance_category";
     public static final String DB_GR_ATTACHMENTS = "grievance_attachments";
+    public static final String DB_GR_PRIORITY = "grievance_priority";
+    public static final String DB_GR_PRIVACY = "grievance_privacy";
+    public static final String DB_GR_HANDLED_BY = "grievance_handled_by";
+    public static final String DB_GR_REQUESTED_BY = "grievance_requested_by";
+    public static final String DB_GR_UPVOTES = "grievance_upvotes";
+
 
     //Request attachment fields
     public static final String DB_GR_ATTACHMENT_NAME = "name";
@@ -76,7 +81,8 @@ public class Fields {
     public static final String DB_USER_USER_ID = "user_id";
     public static final String DB_USER_USER_TYPE = "user_type";
     public static final String DB_USER_REGISTERED = "registered";
-    public static final String DB_USER_PICCODE = "pin_code";
+    public static final String DB_USER_PINCODE = "pin_code";
+    public static final String DB_USER_DEPARTMENT = "user_department";
 
 
     /**
@@ -87,6 +93,19 @@ public class Fields {
     public static final String GR_STATUS_RESOLVED = "Resolved";
 
 
+    /**
+     * Roles - department InCharge,worker, mediator,citizen
+     */
+    public static final String USER_TYPE_DEP_INCHARGE = "department in-charge";
+    public static final String USER_TYPE_DEP_WORKER = "worker";
+    public static final String USER_TYPE_MEDIATOR = "mediator";
+    public static final String USER_TYPE_CITIZEN = "citizen";
+
+
+    /**
+     * Bundles
+     */
+    public static final String BUNDLE_USER_INFO = "user_info";
 
 
 

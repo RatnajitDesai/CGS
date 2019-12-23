@@ -15,7 +15,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.darpg33.hackathon.cgs.HelperAdapters.RequestsAdapter;
 import com.darpg33.hackathon.cgs.Model.Grievance;
 import com.darpg33.hackathon.cgs.R;
 
@@ -54,6 +53,7 @@ public class InProcessRequestFragment extends Fragment implements RequestsAdapte
             public void onChanged(String s) {
                 if (s!= null)
                 {
+
                     getAllInProcessRequests(s);
                 }
             }
@@ -62,14 +62,11 @@ public class InProcessRequestFragment extends Fragment implements RequestsAdapte
 
     private void getAllInProcessRequests(String user_type) {
 
-
         mInProcessRequestViewModel.getAllInProcessRequests(user_type).observe(this, new Observer<ArrayList<Grievance>>() {
             @Override
             public void onChanged(ArrayList<Grievance> grievances) {
-
                 mGrievances.addAll(grievances);
                 mRequestsAdapter.notifyDataSetChanged();
-
             }
         });
     }

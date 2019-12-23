@@ -15,7 +15,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.darpg33.hackathon.cgs.HelperAdapters.RequestsAdapter;
 import com.darpg33.hackathon.cgs.Model.Grievance;
 import com.darpg33.hackathon.cgs.R;
 

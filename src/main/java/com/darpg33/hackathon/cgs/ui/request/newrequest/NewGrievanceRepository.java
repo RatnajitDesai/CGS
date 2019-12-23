@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -132,25 +133,14 @@ class NewGrievanceRepository {
      */
 
 
-    MutableLiveData<Grievance> submitNewRequest(final Grievance grievance, HashMap<String, HashMap<String, Object>> attachmentMap) {
+    MutableLiveData<Grievance> submitNewRequest(final Grievance grievance, final HashMap<String, HashMap<String, Object>> attachmentMap) {
 
         final MutableLiveData<Grievance> grievanceMutableLiveData = new MutableLiveData<>();
 
 
-        final HashMap<String, Object> grievanceMap = new HashMap<>();
-        grievanceMap.put("grievance_request_id", grievance.getRequest_id());
-        grievanceMap.put("grievance_user_id", Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid());
-        grievanceMap.put("grievance_title", grievance.getTitle());
-        grievanceMap.put("grievance_category", grievance.getCategory());
-        grievanceMap.put("grievance_description", grievance.getDescription());
-        grievanceMap.put("grievance_timestamp", new Timestamp(new Date()));
-        grievanceMap.put("grievance_status", grievance.getStatus());
-        grievanceMap.put("grievance_attachments", attachmentMap);
-
-
         grievance.setUser_id(mFirebaseAuth.getCurrentUser().getUid());
 
-        db.collection("Users")
+        db.collection(Fields.DBC_USERS)
                 .document(grievance.getUser_id())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -158,61 +148,77 @@ class NewGrievanceRepository {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                         if (documentSnapshot.exists()) {
-                            String firstname = documentSnapshot.getString("first_name");
-                            String lastname = documentSnapshot.getString("last_name");
+                            String firstname = documentSnapshot.getString(Fields.DB_USER_FIRSTNAME);
+                            String lastname = documentSnapshot.getString(Fields.DB_USER_LASTNAME);
                             String username = firstname + " " + lastname;
-                            String user_email = documentSnapshot.getString("email_id");
+                            String user_email = documentSnapshot.getString(Fields.DB_USER_EMAIL_ID);
+
+                            final HashMap<String, Object> grievanceMap = new HashMap<>();
+                            grievanceMap.put(Fields.DB_GR_REQUEST_ID, grievance.getRequest_id());
+                            grievanceMap.put(Fields.DB_GR_USER_ID, Objects.requireNonNull(mFirebaseAuth.getCurrentUser()).getUid());
+                            grievanceMap.put(Fields.DB_GR_TITLE, grievance.getTitle());
+                            grievanceMap.put(Fields.DB_GR_CATEGORY, grievance.getCategory());
+                            grievanceMap.put(Fields.DB_GR_DESCRIPTION, grievance.getDescription());
+                            grievanceMap.put(Fields.DB_GR_PRIVACY, grievance.getPrivacy());
+                            grievanceMap.put(Fields.DB_GR_TIMESTAMP, new Timestamp(new Date()));
+                            grievanceMap.put(Fields.DB_GR_STATUS, grievance.getStatus());
+                            grievanceMap.put(Fields.DB_GR_ATTACHMENTS, attachmentMap);
+                            grievanceMap.put(Fields.DB_GR_HANDLED_BY, Fields.USER_TYPE_MEDIATOR);  //initialize as 'mediator' department will be handling this request.
+                            grievanceMap.put(Fields.DB_GR_REQUESTED_BY, username);
 
                             final Action action = new Action();
                             action.setAction_performed("SUBMIT");
                             action.setAction_description("Our executive will look into this as soon as possible.");
                             action.setUsername(username);
-                            action.setUser_type("citizen");
+                            action.setUser_type(Fields.USER_TYPE_CITIZEN);
                             action.setEmail_id(user_email);
 
                             final HashMap<String, Object> actionHashmap = new HashMap<>();
-                            actionHashmap.put("action_performed", action.getAction_performed());
-                            actionHashmap.put("action_info", action.getAction_info());
-                            actionHashmap.put("action_description", action.getAction_description());
-                            actionHashmap.put("action_username", action.getUsername());
-                            actionHashmap.put("action_user_type", action.getUser_type());
-                            actionHashmap.put("action_user_email", action.getEmail_id());
-                            actionHashmap.put("action_user_id", mFirebaseAuth.getCurrentUser().getUid());
-                            actionHashmap.put("action_timestamp", new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_PERFORMED, action.getAction_performed());
+                            actionHashmap.put(Fields.DB_GR_ACTION_INFO, action.getAction_info());
+                            actionHashmap.put(Fields.DB_GR_ACTION_DESCRIPTION, action.getAction_description());
+                            actionHashmap.put(Fields.DB_GR_ACTION_USERNAME, action.getUsername());
+                            actionHashmap.put(Fields.DB_GR_ACTION_USER_TYPE, action.getUser_type());
+                            actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
+                            actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mFirebaseAuth.getCurrentUser().getUid());
+                            actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
 
                             //adding request to requests  database
-
-                            db.collection("Requests")
+                            db.collection(Fields.DBC_REQUESTS)
                                     .document(grievance.getRequest_id())
                                     .set(grievanceMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     //adding request to user's MyRequests database
-                                    db.collection("Users")
+                                    db.collection(Fields.DBC_USERS)
                                             .document(grievance.getUser_id())
-                                            .collection("MyRequests")
+                                            .collection(Fields.DBC_USERS_MY_REQUESTS)
                                             .document(grievance.getRequest_id())
                                             .set(grievanceMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
 
-                                            db.collection("Mediators")
-                                                    .document("Requests")
-                                                    .collection("All Requests")
+                                            db.collection(Fields.DBC_MEDIATORS)
+                                                    .document(Fields.DBC_REQUESTS)
+                                                    .collection(Fields.DBC_MED_ALL_REQUESTS)
                                                     .document(grievance.getRequest_id())
                                                     .set(grievanceMap)
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
 
-                                                            db.collection("Requests")
+                                                            db.collection(Fields.DBC_REQUESTS)
                                                                     .document(grievance.getRequest_id())
-                                                                    .collection("Actions")
+                                                                    .collection(Fields.DBC_REQ_ACTIONS)
                                                                     .document().set(actionHashmap)
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
+
+
+                                                                            Log.d(TAG, "onSuccess: new grievance saved.");
                                                                             grievanceMutableLiveData.setValue(grievance);
+
                                                                         }
                                                                     }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
@@ -220,7 +226,7 @@ class NewGrievanceRepository {
                                                                     Log.d(TAG, "onFailure: Failed to load action.");
                                                                     grievanceMutableLiveData.setValue(null);
                                                                     mStorageReference.delete();
-                                                                    db.collection("Requests")
+                                                                    db.collection(Fields.DBC_REQUESTS)
                                                                             .document(grievance.getRequest_id())
                                                                             .delete();
                                                                 }
@@ -238,7 +244,7 @@ class NewGrievanceRepository {
 
                                             grievanceMutableLiveData.setValue(null);
                                             mStorageReference.delete();
-                                            db.collection("Requests")
+                                            db.collection(Fields.DBC_REQUESTS)
                                                     .document(grievance.getRequest_id())
                                                     .delete();
                                         }
@@ -279,8 +285,8 @@ class NewGrievanceRepository {
         Log.d(TAG, "getNewRequestId:");
         final MutableLiveData<String> request_id = new MutableLiveData<>();
 
-        db.collection("Requests")
-                .orderBy("grievance_timestamp", Query.Direction.DESCENDING)
+        db.collection(Fields.DBC_REQUESTS)
+                .orderBy(Fields.DB_GR_TIMESTAMP, Query.Direction.DESCENDING) //order by grievance timestamp descending
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

@@ -13,7 +13,7 @@
 
     <fragment android:id="@+id/nav_view_grievance"
         android:name="com.darpg33.hackathon.cgs.ui.request.viewrequest.ViewGrievanceFragment"
-        android:label="{grievance_request_id}"
+        android:label="CG#{grievance_request_id}"
         tools:layout="@layout/fragment_view_grievance"/>
 
     <fragment

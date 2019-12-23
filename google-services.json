@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "948613551345-f1t5qfpm4811v93gjl9n3bdtiscj8ajq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.darpg33.hackathon.cgs",
+            "certificate_hash": "339a362e746595f02de29214013313348f296379"
+          }
+        },
+        {
           "client_id": "948613551345-jkdlfttbr8a5ukor3lpe4h9vurtviplj.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

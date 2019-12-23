@@ -6,55 +6,72 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.darpg33.hackathon.cgs.Utils.Fields;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 class DepartmentHomeRepository {
 
-     private static final String TAG = "DeptHomeRepository";
+    private static final String TAG = "DeptHomeRepository";
+    private FirebaseFirestore db;
 
-     MutableLiveData<Integer> getGrievanceCount(String status, String user_type) {
+    DepartmentHomeRepository() {
 
-         final MutableLiveData<Integer> data = new MutableLiveData<>();
+        db = FirebaseFirestore.getInstance();
 
+    }
 
-         switch (user_type){
+    MutableLiveData<Integer> getGrievanceCount(final String status, String user_type) {
 
-             case "mediator":
-             {
-                 FirebaseFirestore.getInstance()
-                         .collection(Fields.DBC_MEDIATORS)
-                         .document(Fields.DBC_REQUESTS)
-                         .collection(Fields.DBC_MED_ALL_REQUESTS)
-                         .orderBy(Fields.DB_GR_TIMESTAMP, Query.Direction.DESCENDING)
-                         .whereEqualTo(Fields.DB_GR_STATUS,status)
-                         .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                             @Override
-                             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+        final MutableLiveData<Integer> data = new MutableLiveData<>();
 
-                                 if (e != null) {
-                                     Log.w(TAG, "Listen failed."+e.getMessage());
-                                     return;
-                                 }
-
-                                 if (!queryDocumentSnapshots.isEmpty())
-                                 {
-                                     data.setValue(queryDocumentSnapshots.size());
-                                 }
-                                 else {
-                                     data.setValue(0);
-                                 }
-                             }
-                         });
-                }
-
-             }
-
-         return data;
+        db.collection(Fields.DBC_USERS)
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        if (documentSnapshot.exists()) {
+                            Log.d(TAG, "onSuccess: getting count.");
+                            String user_dept = documentSnapshot.getString(Fields.DB_USER_DEPARTMENT);
+                            Log.d(TAG, "onSuccess: getting count..." + user_dept + "  " + status);
 
 
-     }
+                            try {
+                                db.collection(Fields.DBC_DEPARTMENTS)
+                                        .document(user_dept)
+                                        .collection(Fields.DBC_REQUESTS)
+                                        .whereEqualTo(Fields.DB_GR_STATUS, status)
+                                        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+
+                                                if (e != null) {
+                                                    Log.w(TAG, "Listen failed." + e.getMessage());
+                                                    return;
+                                                }
+
+                                                Log.d(TAG, "onEvent: " + queryDocumentSnapshots.size());
+                                                if (!queryDocumentSnapshots.isEmpty()) {
+                                                    data.setValue(queryDocumentSnapshots.size());
+                                                    Log.d(TAG, "onSuccess: getting count....." + queryDocumentSnapshots.size());
+
+                                                }
+
+                                            }
+                                        });
+                            } catch (Exception er) {
+                                Log.e(TAG, "onEvent: " + er.getMessage());
+                            }
+                        }
+                    }
+                });
+
+
+        return data;
+
+
+    }
 }

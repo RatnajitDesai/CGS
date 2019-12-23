@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.FileUtilities;
 import com.darpg33.hackathon.cgs.Utils.Permissions;
 import com.darpg33.hackathon.cgs.Utils.SpinnerListProvider;
@@ -161,11 +162,23 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                 disableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
                         mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
                 Grievance grievance = new Grievance();
+
+                switch (mPrivacy.getCheckedRadioButtonId()) {
+                    case R.id.rbPublic: {
+                        grievance.setPrivacy("public");
+                        break;
+                    }
+
+                    case R.id.rbPrivate: {
+                        grievance.setPrivacy("private");
+                        break;
+                    }
+                }
                 grievance.setTitle(mGrievanceTitle.getText().toString());
                 grievance.setCategory(mGrievanceCategory.getSelectedItem().toString());
                 grievance.setDescription(mGrievanceDescription.getText().toString());
                 grievance.setAttachment(mAttachments);
-                grievance.setStatus("Pending");
+                grievance.setStatus(Fields.GR_STATUS_PENDING);
                 grievance.setAttachment(mAttachments);
                 submitNewRequest(grievance);
             }
@@ -255,9 +268,6 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void getPhotoUri(Uri uri, String display_name, long file_size) {
-            Log.e(TAG, "getPhotoUri: "+uri.toString());
-            Log.d(TAG, "getPhotoUri: display name: "+display_name);
-
 
                 if (FileUtilities.checkFileSize(file_size))
                 {
@@ -403,7 +413,6 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             setAttachmentsButton();
      }
 
-
     private void enableViews(View... views)
     {
         mAttachmentAdapter.isClickable = true;
@@ -411,9 +420,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
         {
             v.setEnabled(true);
         }
-
     }
-
 
     private void disableViews(View... views)
     {

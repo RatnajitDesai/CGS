@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +34,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private User mUser;
 
     //widgets
-    private TextInputEditText mFirstName, mLastName,mPhoneNumber, mEmailId;
-    private TextView mAddress, mCountry, mState, mDistrict, mPinCode;
+    private TextInputEditText mPhoneNumber, mEmailId;
+    private ProgressBar mProgressBar;
+    private RelativeLayout mParentLayout;
+    private TextView mFirstName, mLastName, mAddress, mCountry, mState, mDistrict, mPinCode;
     private RadioGroup mGender;
     private FloatingActionButton mfab;
     private RadioButton mMale, mFemale, mTransgender;
@@ -46,8 +50,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         init(view);
-
-
         return view;
     }
 
@@ -68,8 +70,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mDistrict = view.findViewById(R.id.district);
         mPinCode = view.findViewById(R.id.pinCode);
         mfab = view.findViewById(R.id.fabEditProfile);
+        mProgressBar = view.findViewById(R.id.progressBar);
+        mParentLayout = view.findViewById(R.id.relativeLayout);
         mfab.setOnClickListener(this);
         mContext = getContext();
+        isProcessing(true);
         setUpWidgets();
 
     }
@@ -93,24 +98,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         case "Male":
                         {
                             mGender.check(R.id.rbMale);
+
+                            mMale.setVisibility(View.VISIBLE);
                             mMale.setEnabled(true);
-                            mFemale.setEnabled(false);
-                            mTransgender.setEnabled(false);
+                            mFemale.setVisibility(View.GONE);
+                            mTransgender.setVisibility(View.GONE);
                             break;
                         }
                         case "Female":
                         {
                             mGender.check(R.id.rbFemale);
-                            mMale.setEnabled(false);
+                            mMale.setVisibility(View.GONE);
+                            mFemale.setVisibility(View.VISIBLE);
                             mFemale.setEnabled(true);
-                            mTransgender.setEnabled(false);
+                            mTransgender.setVisibility(View.GONE);
                             break;
                         }
                         case "Transgender":
                         {
                             mGender.check(R.id.rbTransGender);
-                            mMale.setEnabled(false);
-                            mFemale.setEnabled(false);
+                            mTransgender.setVisibility(View.VISIBLE);
+                            mMale.setVisibility(View.GONE);
+                            mFemale.setVisibility(View.GONE);
                             mTransgender.setEnabled(true);
                             break;
                         }
@@ -123,11 +132,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     mState.setText(user.getState());
                     mDistrict.setText(user.getDistrict());
                     mPinCode.setText(user.getPin_code());
+                    isProcessing(false);
 
                 }
                 else {
                     Toast.makeText(mContext, "Unable to retrieve information right now.\nPlease check your network connection.", Toast.LENGTH_SHORT).show();
                     Navigation.findNavController(getView()).navigate(R.id.nav_home);
+                    isProcessing(false);
                 }
 
             }
@@ -151,6 +162,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+    private void isProcessing(boolean b) {
+
+        if (b) {
+            mParentLayout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mParentLayout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+
+        }
+
+    }
 
 
 

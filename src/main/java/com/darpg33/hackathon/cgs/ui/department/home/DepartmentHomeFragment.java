@@ -15,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.darpg33.hackathon.cgs.HelperAdapters.SectionsPagerAdapter;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.ui.request.requestlist.InProcessRequestFragment;
 import com.darpg33.hackathon.cgs.ui.request.requestlist.PendingRequestFragment;
 import com.darpg33.hackathon.cgs.ui.request.requestlist.ResolvedRequestFragment;
@@ -25,7 +26,7 @@ public class DepartmentHomeFragment extends Fragment implements
         ViewPager.OnPageChangeListener,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "DepartmentHomeFragment";
+    private static final String TAG = "WorkerHomeFragment";
 
     //vars
     private MenuItem prevMenuItem;
@@ -43,11 +44,11 @@ public class DepartmentHomeFragment extends Fragment implements
 
         Log.d(TAG, "onCreateView: called.");
 
-        View root = inflater.inflate(R.layout.fragment_officers_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_department_home, container, false);
 
         //widgets
         mViewPager = root.findViewById(R.id.viewpager);
-        mBottomNavigationView = root.findViewById(R.id.citizen_home_nav);
+        mBottomNavigationView = root.findViewById(R.id.department_home_nav);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(), 3);
         mSectionsPagerAdapter.addFragment(new PendingRequestFragment());
         mSectionsPagerAdapter.addFragment(new InProcessRequestFragment());
@@ -82,7 +83,7 @@ public class DepartmentHomeFragment extends Fragment implements
 
     private void getCountPending(){
 
-        departmentHomeViewModel.getGrievanceCount("Pending", "mediator").observe(this, new Observer<Integer>() {
+        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_PENDING, Fields.USER_TYPE_DEP_INCHARGE).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -102,7 +103,7 @@ public class DepartmentHomeFragment extends Fragment implements
     private void getCountInProcess(){
 
 
-        departmentHomeViewModel.getGrievanceCount("In Process", "mediator").observe(this, new Observer<Integer>() {
+        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_IN_PROCESS, Fields.USER_TYPE_DEP_INCHARGE).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -122,7 +123,7 @@ public class DepartmentHomeFragment extends Fragment implements
 
     private void getCountResolved(){
 
-        departmentHomeViewModel.getGrievanceCount("Resolved", "mediator").observe(this, new Observer<Integer>() {
+        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_RESOLVED, Fields.USER_TYPE_DEP_INCHARGE).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {

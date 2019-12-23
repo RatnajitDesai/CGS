@@ -4,6 +4,7 @@ package com.darpg33.hackathon.cgs.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.firebase.Timestamp;
 
 public class Action implements Parcelable{
@@ -66,7 +67,7 @@ public class Action implements Parcelable{
 
     public void setAction_priority(String action_priority) {
 
-        if (!this.user_type.equals("dep_incharge"))
+        if (!this.user_type.equals(Fields.USER_TYPE_DEP_INCHARGE))
         {
             this.action_priority = null;
         }
@@ -142,7 +143,7 @@ public class Action implements Parcelable{
             }
             case "ASSIGN":
             {
-                action_info = "Request assigned to:";
+                action_info = "Being handled by:";
                 break;
             }
             case "FORWARD":

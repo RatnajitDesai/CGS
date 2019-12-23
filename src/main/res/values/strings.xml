@@ -6,7 +6,6 @@
     <string name="nav_header_subtitle">user@domain.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
@@ -62,7 +61,7 @@
     <string name="country">country</string>
     <string name="state">state</string>
     <string name="district">district</string>
-    <string name="personal_info">Personal Info</string>
+    <string name="personal_info">Basic Info</string>
     <string name="enter_address">Enter Address</string>
     <string name="enter_contact_info">Enter contact info</string>
     <string name="verification_Id">Verification ID</string>
@@ -85,7 +84,7 @@
     <string name="in_process">In Process</string>
     <string name="verify">Verify</string>
     <string name="address_info">Address Info</string>
-    <string name="txt_profile_address">Address :</string>
+    <string name="txt_profile_address">Lives in</string>
     <string name="txt_profile_country">Country :</string>
     <string name="txt_profile_state">State :</string>
     <string name="txt_profile_district">District :</string>
@@ -117,6 +116,14 @@
     <string name="action_title">Action Title</string>
     <string name="assigned_to">Assigned To:</string>
     <string name="action_done">action_done</string>
-    <string name="priority">Priority:</string>
+    <string name="priority">Priority</string>
+    <string name="requested_by">Requested by :</string>
+    <string name="add_note">Add note</string>
+    <string name="provide_your_feedback">Provide your feedback</string>
+    <string name="mediator">mediator</string>
+    <string name="handled_by">Handled by:</string>
+    <string name="upvote">Upvote</string>
+    <string name="upvoted">Upvoted</string>
+    <string name="privacy">Privacy:</string>
 
 </resources>

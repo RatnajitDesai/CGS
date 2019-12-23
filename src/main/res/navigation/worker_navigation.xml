@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/worker_navigation.xml"
+    app:startDestination="@id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_search"
+        android:label="@string/menu_search"
+        android:name="com.darpg33.hackathon.cgs.ui.worker.search.WorkerSearchFragment"
+        tools:layout="@layout/fragment_search_grievance" />
+
+    <fragment
+        android:id="@+id/nav_view_grievance"
+        android:name="com.darpg33.hackathon.cgs.ui.request.viewrequest.ViewGrievanceFragment"
+        android:label="CG#{grievance_request_id}"
+        tools:layout="@layout/fragment_view_grievance">
+
+        <argument
+            android:name="grievance_request_id"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:label="@string/menu_dashboard"
+        android:name="com.darpg33.hackathon.cgs.ui.worker.dashboard.WorkerDashboardFragment"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_worker_home"
+        android:label="@string/menu_home"
+        android:name="com.darpg33.hackathon.cgs.ui.worker.home.WorkerHomeFragment"
+        tools:layout="@layout/fragment_worker_home" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:label="@string/menu_settings"
+        android:name="com.darpg33.hackathon.cgs.ui.settings.SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/nav_sign_out"
+        android:label="@string/menu_sign_out"
+        android:name="com.darpg33.hackathon.cgs.ui.signout.SignOutFragment"
+        tools:layout="@layout/fragment_sign_out" />
+
+</navigation>

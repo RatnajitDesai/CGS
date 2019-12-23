@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+        android:id="@+id/relativeLayout">
 
 
     <ScrollView
@@ -31,47 +36,30 @@
 
                 />
 
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtFirstName"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:boxStrokeColor="@color/colorPrimary">
+                android:orientation="horizontal"
+                android:layout_gravity="center">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
                     android:id="@+id/firstName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawableStart="@drawable/ic_menu_profile"
-                    android:drawablePadding="8dp"
-                    android:hint="@string/first_name"
-                    android:inputType="textEmailAddress"
-                    android:enabled="false"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="First Name"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtLastName"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:boxStrokeColor="@color/colorPrimary">
-
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
                     android:id="@+id/lastName"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawableStart="@drawable/ic_menu_profile"
-                    android:drawablePadding="8dp"
-                    android:hint="@string/last_name"
-                    android:inputType="text"
-                    android:enabled="false"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last name"
+                    android:layout_marginStart="8dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
 
 
 
@@ -127,7 +115,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txtPhoneNumber"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -150,7 +138,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/txtEmailId"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -348,7 +336,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_margin="16dp"
         android:src="@drawable/ic_icon_edit" />
+
+</RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 </RelativeLayout>
