@@ -86,7 +86,7 @@ public class FragmentOtpVerification extends Fragment {
                     @Override
                     public void onSuccess(AuthResult authResult) {
 
-                        Log.d(TAG, "onSuccess: pone number verified.");
+                        Log.d(TAG, "onSuccess: phone number verified.");
                         final FirebaseUser user = mAuth.getCurrentUser();
 
                         if (user!=null)
@@ -100,8 +100,6 @@ public class FragmentOtpVerification extends Fragment {
                                     user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            Toast.makeText(getContext(), "Phone number verified.", Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(mContext, "Email verification link sent to your email.", Toast.LENGTH_SHORT).show();
                                             User NewUser = new User();
 
                                             NewUser.setUser_id(user.getUid());
@@ -270,7 +268,8 @@ public class FragmentOtpVerification extends Fragment {
                 if (user!=null)
                 {
                     mAuth.signOut();
-                    Toast.makeText(mContext, "Verify your email address and Sign In.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Phone number verified.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Email verification link sent to your email.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onChanged: User saved.");
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                     getActivity().finish();

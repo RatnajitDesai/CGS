@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Grievance {
 
-    private String request_id, user_id, title, category, description;
+    private String request_id, user_id, title, category, description, priority;
     private ArrayList<Attachment> attachment;
     private String status;
     private Timestamp timestamp;
@@ -15,12 +15,13 @@ public class Grievance {
 
     }
 
-    public Grievance(String request_id, String user_id, String title, String category, String description, ArrayList<Attachment> attachment, String status, Timestamp timestamp) {
+    public Grievance(String request_id, String user_id, String title, String category, String description, String priority, ArrayList<Attachment> attachment, String status, Timestamp timestamp) {
         this.request_id = request_id;
         this.user_id = user_id;
         this.title = title;
         this.category = category;
         this.description = description;
+        this.priority = priority;
         this.attachment = attachment;
         this.status = status;
         this.timestamp = timestamp;
@@ -66,6 +67,14 @@ public class Grievance {
         this.description = description;
     }
 
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
     public ArrayList<Attachment> getAttachment() {
         return attachment;
     }
@@ -98,6 +107,7 @@ public class Grievance {
                 ", title='" + title + '\'' +
                 ", category='" + category + '\'' +
                 ", description='" + description + '\'' +
+                ", priority='" + priority + '\'' +
                 ", attachment=" + attachment +
                 ", status='" + status + '\'' +
                 ", timestamp=" + timestamp +

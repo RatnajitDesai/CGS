@@ -47,7 +47,7 @@ public class DepartmentActivity extends AppCompatActivity implements NavigationV
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_search, R.id.nav_view_grievance,
-                R.id.nav_dashboard, R.id.nav_home,
+                R.id.nav_dashboard, R.id.nav_department_home,
                 R.id.nav_settings, R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();

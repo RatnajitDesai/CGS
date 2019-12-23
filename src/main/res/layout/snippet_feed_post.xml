@@ -1,7 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_background_tile">
+
+        <TextView
+            android:id="@+id/grievanceUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@color/link_blue"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/grievanceTitle"
+            android:text="Frequent water flooding in our area."
+            android:layout_below="@id/grievanceUsername"
+            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+            android:padding="8dp" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/grievanceDescription"
+            android:maxLines="5"
+            android:text="Water flooded frequently in rainy seasons. Please do needful ASAP.Water flooded frequently in rainy seasons. Please do needful ASAP.Water flooded frequently in rainy seasons. Please do needful ASAP.Water flooded frequently in rainy seasons. Please do needful ASAP.Water flooded frequently in rainy seasons. Please do needful ASAP.Water flooded frequently in rainy seasons. Please do needful ASAP."
+            android:layout_below="@id/grievanceTitle"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/grievanceTimestamp"
+            android:maxLines="5"
+            android:text="12 Dec,19 20:09"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/grievanceDescription"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Info"
+            android:padding="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/grievanceStatus"
+            android:maxLines="5"
+            android:text="In Process"
+            android:layout_below="@id/grievanceDescription"
+            android:layout_alignParentEnd="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:padding="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/grievanceUpVote"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:icon="@drawable/ic_thumb_up_grey_24dp"
+            android:maxLines="5"
+            android:text="Upvote"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/grievanceStatus"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:padding="8dp" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

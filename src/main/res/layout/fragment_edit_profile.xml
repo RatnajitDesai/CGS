@@ -352,6 +352,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_margin="16dp"
         android:src="@drawable/ic_icon_check" />
 

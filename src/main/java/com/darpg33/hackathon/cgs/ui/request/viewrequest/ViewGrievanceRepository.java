@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
@@ -37,29 +38,115 @@ class ViewGrievanceRepository {
 
         final MutableLiveData<Grievance> liveData = new MutableLiveData<>();
 
-        db.collection("Requests")
-                .document(requestID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        db.collection(Fields.DBC_USERS)
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                if (e!=null)
-                {
-                    return;
+                if (documentSnapshot.exists()) {
+
+                    String user_type = documentSnapshot.getString(Fields.DB_USER_USER_TYPE);
+
+                    if (user_type != null) {
+                        switch (user_type) {
+
+                            case Fields.USER_TYPE_CITIZEN:
+                            case Fields.USER_TYPE_MEDIATOR: {
+                                db.collection(Fields.DBC_REQUESTS)
+                                        .document(requestID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                                        if (e != null) {
+                                            return;
+                                        }
+
+                                        Grievance grievance = new Grievance();
+                                        grievance.setRequest_id(requestID);
+                                        grievance.setTitle(documentSnapshot.getString("grievance_title"));
+                                        grievance.setStatus(documentSnapshot.getString("grievance_status"));
+                                        grievance.setUser_id(documentSnapshot.getString("grievance_user_id"));
+                                        grievance.setDescription(documentSnapshot.getString("grievance_description"));
+                                        grievance.setTimestamp(documentSnapshot.getTimestamp("grievance_timestamp"));
+                                        grievance.setCategory(documentSnapshot.getString("grievance_category"));
+                                        liveData.setValue(grievance);
+
+                                    }
+                                });
+                                break;
+                            }
+
+                            case Fields.USER_TYPE_DEP_INCHARGE: {
+
+                                String user_dept = documentSnapshot.getString(Fields.DB_USER_DEPARTMENT);
+                                db.collection(Fields.DBC_DEPARTMENTS)
+                                        .document(user_dept)
+                                        .collection(Fields.DBC_REQUESTS)
+                                        .document(requestID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                                        if (e != null) {
+                                            return;
+                                        }
+
+                                        Grievance grievance = new Grievance();
+                                        grievance.setRequest_id(requestID);
+                                        grievance.setTitle(documentSnapshot.getString("grievance_title"));
+                                        grievance.setStatus(documentSnapshot.getString("grievance_status"));
+                                        grievance.setUser_id(documentSnapshot.getString("grievance_user_id"));
+                                        grievance.setDescription(documentSnapshot.getString("grievance_description"));
+                                        grievance.setTimestamp(documentSnapshot.getTimestamp("grievance_timestamp"));
+                                        grievance.setCategory(documentSnapshot.getString("grievance_category"));
+                                        liveData.setValue(grievance);
+
+                                    }
+                                });
+                                break;
+                            }
+
+                            case Fields.USER_TYPE_DEP_WORKER: {
+
+                                String user_dept = documentSnapshot.getString(Fields.DB_USER_DEPARTMENT);
+                                db.collection(Fields.DBC_DEPARTMENTS)
+                                        .document(user_dept)
+                                        .collection(Fields.DBC_USERS)
+                                        .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .collection(Fields.DBC_REQUESTS)
+                                        .document(requestID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+
+                                        if (e != null) {
+                                            return;
+                                        }
+
+                                        Grievance grievance = new Grievance();
+                                        grievance.setRequest_id(requestID);
+                                        grievance.setTitle(documentSnapshot.getString("grievance_title"));
+                                        grievance.setStatus(documentSnapshot.getString("grievance_status"));
+                                        grievance.setUser_id(documentSnapshot.getString("grievance_user_id"));
+                                        grievance.setDescription(documentSnapshot.getString("grievance_description"));
+                                        grievance.setTimestamp(documentSnapshot.getTimestamp("grievance_timestamp"));
+                                        grievance.setCategory(documentSnapshot.getString("grievance_category"));
+                                        liveData.setValue(grievance);
+
+                                    }
+                                });
+                                break;
+                            }
+
+                        }
+                    }
+
                 }
-
-                Grievance grievance = new Grievance();
-
-                grievance.setRequest_id(requestID);
-                grievance.setTitle(documentSnapshot.getString("grievance_title"));
-                grievance.setStatus(documentSnapshot.getString("grievance_status"));
-                grievance.setUser_id(documentSnapshot.getString("grievance_user_id"));
-                grievance.setDescription(documentSnapshot.getString("grievance_description"));
-                grievance.setTimestamp(documentSnapshot.getTimestamp("grievance_timestamp"));
-                grievance.setCategory(documentSnapshot.getString("grievance_category"));
-                liveData.setValue(grievance);
 
             }
         });
+
+
+
 
 
         return liveData;
@@ -69,13 +156,13 @@ class ViewGrievanceRepository {
 
     /**
      * Get attachments of request
-     * @param requestID - request id to which attachments are to be retrieved
+     * @param requestID - request id for which attachments are to be retrieved
      * @return
      */
     LiveData<ArrayList<Attachment>> getGrievanceAttachments(final String requestID) {
         final MutableLiveData<ArrayList<Attachment>> liveData = new MutableLiveData<>();
 
-        db.collection("Requests")
+        db.collection(Fields.DBC_REQUESTS)
                 .document(requestID)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -145,23 +232,17 @@ class ViewGrievanceRepository {
                                             attachment1.setAttachmentType((String)attachmentDetails.getValue());
                                             break;
                                         }
-
-
                                     }
                                 }
-
                             }
                             attachmentArrayList.add(attachment1);
                         }
-
                         if (attachmentArrayList.size()==grievanceAttachments.size())
                         {
                             liveData.setValue(attachmentArrayList);
                         }
                     }
-
                 }
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mediator_navigation.xml"
+    android:id="@+id/department_navigation.xml"
     app:startDestination="@id/nav_dashboard">
 
     <fragment
@@ -27,13 +27,13 @@
         android:id="@+id/nav_dashboard"
         android:label="@string/menu_dashboard"
         android:name="com.darpg33.hackathon.cgs.ui.department.dashboard.DashboardFragment"
-        tools:layout="@layout/fragment_dashboard"></fragment>
+        tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/nav_department_home"
         android:label="@string/menu_home"
         android:name="com.darpg33.hackathon.cgs.ui.department.home.DepartmentHomeFragment"
-        tools:layout="@layout/fragment_officers_home" />
+        tools:layout="@layout/fragment_department_home" />
 
     <fragment
         android:id="@+id/nav_settings"

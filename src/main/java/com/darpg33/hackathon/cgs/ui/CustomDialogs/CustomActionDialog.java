@@ -1,14 +1,15 @@
 package com.darpg33.hackathon.cgs.ui.CustomDialogs;
 
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,11 +17,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
+import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 public class CustomActionDialog extends BottomSheetDialogFragment implements View.OnClickListener {
 
@@ -32,6 +39,10 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
 
     public interface AssignListener{
         void assignRequest(String note, String assignedTo, String priority);
+    }
+
+    public interface AssignWorkerListener {
+        void assignToWorker(String note, User assignedTo, String priority);
     }
 
     public interface CompleteListener{
@@ -54,13 +65,19 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
     private ForwardListener mForwardListener;
     private RejectListener mRejectListener;
     private CompleteListener mCompleteListener;
+    private AssignWorkerListener mAssignWorkerListener;
     private String mActionBy, mActionDone;
+    private CustomActionDialogViewModel customActionDialogViewModel;
+    private ArrayList<String> mUsers;
+    private ArrayList<User> userArrayList;
 
     //Widgets
     private TextInputEditText mNotes;
+    private TextView mActionTitle;
     private Toolbar mToolbar;
-    private AppCompatSpinner mAssignTo,mPriority;
-    private LinearLayout mlinAssignTo, mlinPriority;
+    private RelativeLayout mRelativeLayout;
+    private AppCompatSpinner mAssignTo, mPriority, mAssignWorker;
+    private LinearLayout mlinAssignTo, mlinPriority, mlinAssignWorker;
     private ProgressBar mProgressBar;
 
     @Override
@@ -72,6 +89,7 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         {
             mActionDone = bundle.getString("action_done");
             mActionBy = bundle.getString("action_by");
+
 
         }
     }
@@ -85,10 +103,23 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         mPriority = root.findViewById(R.id.spPriority);
         mlinAssignTo = root.findViewById(R.id.linAssignSpinner);
         mlinPriority = root.findViewById(R.id.linSpinnerPriority);
+        mlinAssignWorker = root.findViewById(R.id.linAssignWorkerSpinner);
+        mAssignWorker = root.findViewById(R.id.spAssignToWorker);
+        mActionTitle = root.findViewById(R.id.action_toolbar_title);
+        mRelativeLayout = root.findViewById(R.id.relativeLayout);
+
+        mUsers = new ArrayList<>();
+        userArrayList = new ArrayList<>();
+        mActionTitle.setText(mActionDone);
+
+
         mNotes = root.findViewById(R.id.actionNotes);
         mProgressBar = root.findViewById(R.id.progressBar);
         MaterialButton btnSubmit = root.findViewById(R.id.btnSubmit);
         MaterialButton btnCancel = root.findViewById(R.id.btnCancel);
+
+        customActionDialogViewModel = ViewModelProviders.of(this).get(CustomActionDialogViewModel.class);
+
         btnCancel.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         init(mActionBy);
@@ -99,86 +130,88 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
 
         switch (mActionBy)
         {
-            case "citizen":
+            case Fields
+                    .USER_TYPE_CITIZEN:
             {
                 Log.d(TAG, "init: citizen");
-                makeViewsInvisible(mlinAssignTo,mlinPriority);
+                makeViewsInvisible(mlinAssignWorker, mlinAssignTo, mlinPriority);
                 break;
             }
-            case "mediator":
+            case Fields
+                    .USER_TYPE_MEDIATOR:
             {
                 Log.d(TAG, "init: mediator");
                 switch (mActionDone)
                 {
                     case "ASSIGN":
                     {
-                        makeViewsInvisible(mlinPriority);
+                        makeViewsInvisible(mlinAssignWorker, mlinPriority);
                         break;
                     }
                     case "REJECT":
                     case "SAVE": {
-                        makeViewsInvisible(mlinPriority,mlinAssignTo);
+                        makeViewsInvisible(mlinAssignWorker, mlinPriority, mlinAssignTo);
                         break;
                     }
                 }
                 break;
             }
-            case "dep_incharge":
+            case Fields.USER_TYPE_DEP_INCHARGE:
             {
-                Log.d(TAG, "init: dep_incharge");
+                Log.d(TAG, "init: department in-charge");
                 switch (mActionDone)
                 {
                     case "ASSIGN":
                     {
-
+                        getUsersInDepartment();
                         break;
                     }
                     case "REJECT":
                     {
-                        makeViewsInvisible(mlinPriority,mlinAssignTo);
+                        makeViewsInvisible(mlinAssignWorker, mlinPriority, mlinAssignTo);
                         break;
                     }
                     case "FORWARD":
                     {
-                        makeViewsInvisible(mlinPriority);
+                        makeViewsInvisible(mlinAssignWorker, mlinPriority);
                         break;
                     }
                     case "COMPLETE":
                     {
-                        makeViewsInvisible(mlinAssignTo,mlinPriority);
+                        makeViewsInvisible(mlinAssignWorker, mlinAssignTo, mlinPriority, mlinAssignWorker);
                         break;
                     }
                     case "SAVE":
                     {
-                        makeViewsInvisible(mlinPriority,mlinAssignTo);
+                        makeViewsInvisible(mlinPriority, mlinAssignTo, mlinAssignWorker);
                     }
                 }
 
                 break;
             }
-            case "worker":
+            case Fields.USER_TYPE_DEP_WORKER:
             {
                 Log.d(TAG, "init: worker");
                 switch (mActionDone)
                 {
                     case "REJECT":
                     {
-                        makeViewsInvisible(mlinPriority,mlinAssignTo);
+                        makeViewsInvisible(mlinPriority, mlinAssignTo, mlinAssignWorker);
                         break;
                     }
                     case "FORWARD":
                     {
-                        makeViewsInvisible(mlinPriority);
+                        makeViewsInvisible(mlinPriority, mlinAssignWorker);
                         break;
                     }
                     case "COMPLETE":
                     {
-                        makeViewsInvisible(mlinAssignTo,mlinPriority);
+                        makeViewsInvisible(mlinAssignTo, mlinPriority, mlinAssignWorker);
                         break;
                     }
                     case "SAVE":
                     {
-                        makeViewsInvisible(mlinPriority,mlinAssignTo);
+                        makeViewsInvisible(mlinPriority, mlinAssignTo, mlinAssignWorker);
                     }
                 }
                 break;
@@ -186,6 +219,41 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         }
     }
 
+    private void getUsersInDepartment() {
+
+        isProcessing(true);
+
+        customActionDialogViewModel.getUsersInDepartment().observe(this, new Observer<ArrayList<User>>() {
+            @Override
+            public void onChanged(ArrayList<User> users) {
+
+
+                if (!users.isEmpty()) {
+                    userArrayList.addAll(users);
+                    for (User user :
+                            users) {
+
+                        String username = user.getFirst_name() + " " + user.getLast_name();
+                        mUsers.add(username);
+                    }
+
+                    setupAssignedWorkerSpinner(mUsers);
+
+                }
+
+
+            }
+        });
+
+
+    }
+
+    private void setupAssignedWorkerSpinner(ArrayList<String> mUsers) {
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, mUsers);
+        mAssignWorker.setAdapter(adapter);
+        isProcessing(false);
+    }
 
 
     private void makeViewsInvisible(View... views) {
@@ -198,14 +266,6 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         }
 
 
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().setTitle(mActionDone);
-        return dialog;
     }
 
     public void setSaveListener(SaveListener listener)
@@ -233,7 +293,9 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         mRejectListener = listener;
     }
 
-
+    public void setAssignWorkerListener(AssignWorkerListener listener) {
+        mAssignWorkerListener = listener;
+    }
 
 
 
@@ -264,14 +326,30 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         {
             case "ASSIGN":
             {
-                if (checkInputs(mAssignTo,mNotes,mPriority))
-                {
-                    mAssignListener.assignRequest(mNotes.getText().toString(),
-                            mAssignTo.getSelectedItem().toString(),
-                            mPriority.getSelectedItem().toString());
-                    dismiss();
 
+                switch (mActionBy) {
+
+                    case Fields.USER_TYPE_MEDIATOR: {
+                        if (checkInputs(mAssignTo, mNotes, mPriority)) {
+                            mAssignListener.assignRequest(mNotes.getText().toString(),
+                                    mAssignTo.getSelectedItem().toString(),
+                                    mPriority.getSelectedItem().toString());
+                        }
+                        break;
+                    }
+                    case Fields.USER_TYPE_DEP_INCHARGE: {
+                        if (checkInputs(mAssignWorker, mNotes, mPriority)) {
+                            int i = mAssignWorker.getSelectedItemPosition();
+
+                            User user = userArrayList.get(i);
+                            mAssignWorkerListener.assignToWorker(mNotes.getText().toString(),
+                                    user,
+                                    mPriority.getSelectedItem().toString());
+                        }
+                        break;
+                    }
                 }
+                    dismiss();
                 break;
             }
             case "FORWARD":
@@ -280,7 +358,6 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
                 {
                     mForwardListener.forwardRequest(mNotes.getText().toString(), mAssignTo.getSelectedItem().toString());
                     dismiss();
-
                 }
                 break;
             }
@@ -290,7 +367,6 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
                 {
                     mRejectListener.rejectRequest(mNotes.getText().toString());
                     dismiss();
-
                 }
                 break;
             }
@@ -342,5 +418,18 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         }
 
         return true;
+    }
+
+
+    private void isProcessing(boolean b) {
+
+        if (b) {
+            mRelativeLayout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mRelativeLayout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
+
     }
 }

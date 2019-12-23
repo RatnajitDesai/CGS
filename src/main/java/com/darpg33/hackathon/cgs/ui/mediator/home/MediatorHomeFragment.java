@@ -25,7 +25,7 @@ public class MediatorHomeFragment extends Fragment implements
         ViewPager.OnPageChangeListener,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "DepartmentHomeFragment";
+    private static final String TAG = "WorkerHomeFragment";
 
     //vars
     private MenuItem prevMenuItem;
@@ -43,11 +43,11 @@ public class MediatorHomeFragment extends Fragment implements
 
         Log.d(TAG, "onCreateView: called.");
 
-        View root = inflater.inflate(R.layout.fragment_officers_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_mediator_home, container, false);
 
         //widgets
         mViewPager = root.findViewById(R.id.viewpager);
-        mBottomNavigationView = root.findViewById(R.id.citizen_home_nav);
+        mBottomNavigationView = root.findViewById(R.id.mediator_home_nav);
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(), 3);
         mSectionsPagerAdapter.addFragment(new PendingRequestFragment());
         mSectionsPagerAdapter.addFragment(new InProcessRequestFragment());

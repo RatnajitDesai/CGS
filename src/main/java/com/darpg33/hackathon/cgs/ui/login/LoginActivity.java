@@ -18,6 +18,7 @@ import com.darpg33.hackathon.cgs.MainActivity;
 import com.darpg33.hackathon.cgs.MediatorActivity;
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.WorkerActivity;
 import com.darpg33.hackathon.cgs.ui.dialogs.auth.ResetPasswordDialogFragment;
 import com.darpg33.hackathon.cgs.ui.register.RegisterActivity;
@@ -137,6 +138,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+    //Load ui based on user
 
     private void loadUI(String uid)
     {
@@ -147,9 +149,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                 if (user!= null)
                 {
-
                     switch (user.getUser_type()){
-                        case "citizen":
+                        case Fields.USER_TYPE_CITIZEN:
                         {
                             mProgressBar.setVisibility(View.GONE);
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -160,7 +161,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             break;
                         }
-                        case "mediator":
+                        case Fields.USER_TYPE_MEDIATOR:
                         {
                             Intent intent = new Intent(LoginActivity.this, MediatorActivity.class);
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());
@@ -169,7 +170,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             mProgressBar.setVisibility(View.GONE);
                             break;
                         }
-                        case "dep_incharge":
+                        case Fields.USER_TYPE_DEP_INCHARGE:
                         {
                             Intent intent = new Intent(LoginActivity.this, DepartmentActivity.class);
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());
@@ -178,7 +179,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             mProgressBar.setVisibility(View.GONE);
                             break;
                         }
-                        case "worker":
+                        case Fields.USER_TYPE_DEP_WORKER:
                         {
                             Intent intent = new Intent(LoginActivity.this, WorkerActivity.class);
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());

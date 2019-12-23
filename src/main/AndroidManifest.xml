@@ -45,6 +45,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ui.register.RegisterActivity" />
         <activity android:name=".DepartmentActivity" />
+        <activity android:name=".WorkerActivity" />
 
         <meta-data
             android:name="com.google.android.gms.version"

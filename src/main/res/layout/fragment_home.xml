@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_icon_edit"
-        android:background="@color/colorPrimaryDark"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@id/viewpager"
         android:layout_margin="16dp"

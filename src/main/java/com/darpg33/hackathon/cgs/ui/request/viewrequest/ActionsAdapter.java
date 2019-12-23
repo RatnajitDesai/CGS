@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.TimeDateUtilities;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -44,16 +45,20 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.ViewActi
         Log.d(TAG, "onBindViewHolder: "+mActions.get(position).toString());
         holder.actionTitle.setText(mActions.get(position).getAction_info());
         holder.actionDescription.setText(mActions.get(position).getAction_description());
-
-        if (mActions.get(position).getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-        {
-            holder.actionSubmittedBy.setText("Me");
-        }
-        else {
-            holder.actionSubmittedBy.setText(mActions.get(position).getUsername());
-        }
         holder.actionTime.setText(TimeDateUtilities.getTime(mActions.get(position).getTimestamp()));
         holder.actionDate.setText(TimeDateUtilities.getDate(mActions.get(position).getTimestamp()));
+
+        if (position == 0) {
+            holder.actionSubmittedBy.setVisibility(View.GONE);
+            holder.actionUserType.setText(Fields.USER_TYPE_MEDIATOR);
+        } else {
+            if (mActions.get(position).getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                holder.actionSubmittedBy.setText("You");
+            } else {
+                holder.actionSubmittedBy.setText(mActions.get(position).getUsername());
+            }
+            holder.actionUserType.setText(mActions.get(position).getUser_type());
+        }
 
     }
 
@@ -65,7 +70,7 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.ViewActi
 
     class ViewActionViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView actionTitle, actionDescription, actionTime, actionDate, actionSubmittedBy;
+        private TextView actionTitle, actionDescription, actionTime, actionDate, actionSubmittedBy, actionUserType;
 
         ViewActionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +80,7 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.ViewActi
              actionTime = itemView.findViewById(R.id.actionTime);
              actionDate = itemView.findViewById(R.id.actionDate);
              actionSubmittedBy = itemView.findViewById(R.id.actionSubmittedBy);
+            actionUserType = itemView.findViewById(R.id.actionUserType);
         }
 
     }

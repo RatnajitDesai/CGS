@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/menu_pending"
+        android:icon="@drawable/ic_pending"
+        android:title="@string/pending"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/menu_in_process"
+        android:icon="@drawable/ic_in_process"
+        android:title="@string/in_process"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_resolved"
+        android:icon="@drawable/ic_resolved"
+        android:title="@string/resolved"
+        app:showAsAction="ifRoom" />
+
+</menu>

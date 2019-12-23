@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class InProcessRequestViewModel extends ViewModel {
 
-
     private RequestRepository mRepository;
 
     public InProcessRequestViewModel(){
@@ -20,11 +19,8 @@ public class InProcessRequestViewModel extends ViewModel {
 
     LiveData<String> getUserType()
     {
-
         return mRepository.getUserType();
     }
-
-
 
     LiveData<ArrayList<Grievance>> getAllInProcessRequests(String s) {
 

@@ -88,7 +88,6 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                     public void onSuccess(AuthResult authResult) {
 
                         Log.d(TAG, "onSuccess: phone number verified.");
-                        Toast.makeText(mContext, "Phone number verified successfully.", Toast.LENGTH_SHORT).show();
                         final FirebaseUser user = mAuth.getCurrentUser();
 
                         if (user!=null)
@@ -232,6 +231,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                 if (user!=null)
                 {
                     mAuth.signOut();
+                    Toast.makeText(mContext, "Phone number verified successfully.", Toast.LENGTH_SHORT).show();
                     Toast.makeText(mContext, "Verify your email address and Sign In.", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "onChanged: User saved.");
                     mProgressBar.setVisibility(View.GONE);

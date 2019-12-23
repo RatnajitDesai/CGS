@@ -23,7 +23,7 @@ class MediatorHomeRepository {
 
          switch (user_type){
 
-             case "mediator":
+             case Fields.USER_TYPE_MEDIATOR:
              {
                  FirebaseFirestore.getInstance()
                          .collection(Fields.DBC_MEDIATORS)
@@ -43,9 +43,6 @@ class MediatorHomeRepository {
                                  if (!queryDocumentSnapshots.isEmpty())
                                  {
                                      data.setValue(queryDocumentSnapshots.size());
-                                 }
-                                 else {
-                                     data.setValue(0);
                                  }
                              }
                          });

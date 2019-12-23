@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
+import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.TimeDateUtilities;
@@ -41,6 +42,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         View.OnClickListener,
         CustomActionDialog.SaveListener,
         CustomActionDialog.AssignListener,
+        CustomActionDialog.AssignWorkerListener,
         CustomActionDialog.RejectListener,
         CustomActionDialog.CompleteListener,
         CustomActionDialog.ForwardListener {
@@ -123,23 +125,23 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
             @Override
             public void onChanged(String s) {
 
+                Log.d(TAG, "onChanged: usertype:" + s);
                 mUserType = s;
 
                 switch (s)
                 {
-                    case "citizen":
+                    case Fields.USER_TYPE_CITIZEN:
                     {
                         removeViews(mAssign,mReject,mForward,mComplete);
-                        setProcessing(false);
                         break;
                     }
-                    case "mediator":
+                    case Fields.USER_TYPE_MEDIATOR:
                     {
+                        removeViews(mComplete, mForward);
                         break;
                     }
 
                 }
-
 
             }
         });
@@ -176,6 +178,72 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     }
 
 
+    private void setupDepartmentWorkerView(String request_status) {
+
+        switch (request_status) {
+            case Fields
+                    .GR_STATUS_PENDING: {
+                removeViews(mReject, mAssign);
+                break;
+            }
+            case Fields
+                    .GR_STATUS_IN_PROCESS: {
+                removeViews(mAssign, mReject);
+                break;
+            }
+            case Fields
+                    .GR_STATUS_RESOLVED: {
+                removeViews(mSave, mComplete, mForward, mAssign, mReject);
+                break;
+            }
+
+        }
+
+        setProcessing(false);
+
+    }
+
+    private void setupDepartmentInChargeView(String request_status) {
+
+        switch (request_status) {
+            case Fields
+                    .GR_STATUS_PENDING: {
+                break;
+            }
+            case Fields
+                    .GR_STATUS_IN_PROCESS: {
+                removeViews(mAssign);
+                break;
+            }
+            case Fields
+                    .GR_STATUS_RESOLVED: {
+                removeViews(mSave, mComplete, mForward, mAssign, mReject);
+                break;
+            }
+
+        }
+        setProcessing(false);
+
+    }
+
+
+    private void setupCitizenView(String request_status) {
+
+        switch (request_status) {
+
+            case Fields
+                    .GR_STATUS_RESOLVED: {
+                removeViews(mSave, mComplete, mForward, mAssign, mReject);
+                break;
+            }
+
+        }
+        setProcessing(false);
+
+    }
+
+
+
     private void removeViews(View... views)
     {
 
@@ -189,7 +257,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
 
     private void setGrievanceView(Bundle bundle) {
 
-        mRequestId = bundle.getString("grievance_request_id");
+        mRequestId = bundle.getString(Fields.DB_GR_REQUEST_ID);
 
         viewGrievanceViewModel.getGrievanceData(mRequestId).observe(this, new Observer<Grievance>() {
             @Override
@@ -201,6 +269,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                         public void onChanged(ArrayList<Attachment> attachments) {
                             if (attachments!=null)
                             {
+                                mAttachments.clear();
                                 mAttachments.addAll(attachments);
                                 mAttachmentAdapter.notifyDataSetChanged();
                             }
@@ -213,13 +282,27 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                     mStatus.setText(grievance.getStatus());
                     switch (mUserType)
                     {
-                        case "mediator":
+                        case Fields.USER_TYPE_CITIZEN: {
+                            setupCitizenView(grievance.getStatus());
+                            break;
+                        }
+                        case Fields.USER_TYPE_MEDIATOR:
                         {
                             setupMediatorView(grievance.getStatus());
+                            break;
+                        }
+                        case Fields.USER_TYPE_DEP_INCHARGE: {
+                            setupDepartmentInChargeView(grievance.getStatus());
+                            break;
+                        }
+                        case Fields.USER_TYPE_DEP_WORKER: {
+                            Log.d(TAG, "onChanged: viewing :" + mUserType);
+                            setupDepartmentWorkerView(grievance.getStatus());
+                            break;
                         }
 
-
                     }
+
                     getActions();
                     setProcessing(false);
                 }
@@ -248,6 +331,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                         mActions.clear();
                         mActions.addAll(actions);
                         mActionsAdapter.notifyDataSetChanged();
+                        mActionsRecyclerView.smoothScrollToPosition(mActions.size() - 1);
                     }
                 }
                 else {
@@ -372,6 +456,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
                 bundle.putString("action_by",mUserType);
                 bundle.putString("action_done",getString(R.string.assign));
                 fragment.setArguments(bundle);
+                fragment.setAssignWorkerListener(this);
                 fragment.setAssignListener(this);
                 fragment.show(Objects.requireNonNull(getFragmentManager()), "Custom Dialog Fragment.");
                 break;
@@ -449,11 +534,15 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     @Override
     public void assignRequest(String note, String assignTo, String priority) {
 
+
+        setProcessing(true);
+
         Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("ASSIGN");
         action.setUser_type(mUserType);
+
 
         customActionViewModel.assignRequest(action, assignTo, priority).observe(this, new Observer<Action>() {
             @Override
@@ -478,10 +567,12 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     @Override
     public void completeRequest(String note) {
 
+        setProcessing(true);
+
         Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
-        action.setAction_performed("SAVE");
+        action.setAction_performed("COMPLETE");
         action.setUser_type(mUserType);
 
         customActionViewModel.completeRequest(action).observe(this, new Observer<Action>() {
@@ -506,10 +597,12 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     @Override
     public void rejectRequest(String note) {
 
+
+        setProcessing(true);
         Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
-        action.setAction_performed("SAVE");
+        action.setAction_performed("REJECT");
         action.setUser_type(mUserType);
 
         customActionViewModel.rejectRequest(action).observe(this, new Observer<Action>() {
@@ -534,22 +627,52 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     @Override
     public void forwardRequest(String note, String forwardTo) {
 
+
+        setProcessing(true);
         Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
-        action.setAction_performed("SAVE");
+        action.setAction_performed("FORWARD");
         action.setUser_type(mUserType);
 
         customActionViewModel.forwardRequest(action, forwardTo).observe(this, new Observer<Action>() {
             @Override
             public void onChanged(Action action) {
 
-                if (action!=null)
-                {
+                if (action != null) {
                     setProcessing(false);
                     Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                } else {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
                 }
-                else {
+            }
+        });
+
+
+    }
+
+    @Override
+    public void assignToWorker(String note, User assignTo, String priority) {
+
+        setProcessing(true);
+        Action action = new Action();
+        action.setAction_request_id(mRequestId);
+        action.setAction_description(note);
+        action.setUser_type(mUserType);
+        action.setAction_performed("ASSIGN");
+        action.setAction_priority(priority);
+        action.setUser_type(mUserType);
+
+
+        customActionViewModel.assignToWorkerRequest(action, assignTo).observe(this, new Observer<Action>() {
+            @Override
+            public void onChanged(Action action) {
+
+                if (action!=null) {
+                    setProcessing(false);
+                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                } else {
                     setProcessing(false);
                     Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
                 }

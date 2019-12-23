@@ -42,7 +42,7 @@
     <fragment android:id="@+id/nav_mediator_home"
         android:label="@string/menu_home"
         android:name="com.darpg33.hackathon.cgs.ui.mediator.home.MediatorHomeFragment"
-        tools:layout="@layout/fragment_officers_home"
+        tools:layout="@layout/fragment_mediator_home"
         />
 
     <fragment android:id="@+id/nav_settings"
