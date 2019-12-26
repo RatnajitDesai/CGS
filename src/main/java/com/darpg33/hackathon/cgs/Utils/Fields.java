@@ -108,5 +108,13 @@ public class Fields {
     public static final String BUNDLE_USER_INFO = "user_info";
 
 
+    /**
+     * Shared preferences
+     */
+
+    public static final String SHARED_PREF_SETTINGS = "settings";
+    public static final String SHARED_PREF_SETTINGS_LOCALE = "locale";
+
+
 
 }

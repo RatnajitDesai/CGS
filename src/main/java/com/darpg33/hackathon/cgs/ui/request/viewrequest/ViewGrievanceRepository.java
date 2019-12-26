@@ -33,7 +33,6 @@ class ViewGrievanceRepository {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
     MutableLiveData<Grievance> getGrievanceData(final String requestID) {
 
         final MutableLiveData<Grievance> liveData = new MutableLiveData<>();
@@ -41,6 +40,7 @@ class ViewGrievanceRepository {
         db.collection(Fields.DBC_USERS)
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
             @Override
             public void onSuccess(DocumentSnapshot ds) {
 
@@ -400,7 +400,6 @@ class ViewGrievanceRepository {
                         }
                     }
                 });
-
 
         return data;
     }

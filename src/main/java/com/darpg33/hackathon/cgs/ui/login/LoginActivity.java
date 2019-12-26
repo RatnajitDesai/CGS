@@ -1,7 +1,13 @@
 package com.darpg33.hackathon.cgs.ui.login;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -27,6 +33,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Locale;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "LoginActivity";
 
@@ -42,8 +50,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_login);
-
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mSignIn = findViewById(R.id.signInBtn);
@@ -198,6 +206,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
+    }
+
+
+    private void setAppLocale(String locale) {
+        Resources resources = getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(locale));
+        resources.updateConfiguration(configuration, metrics);
+        Log.d(TAG, "setAppLocale: :" + locale);
+
+        //shared preferences
+        SharedPreferences.Editor editor = getSharedPreferences(Fields.SHARED_PREF_SETTINGS, Context.MODE_PRIVATE).edit();
+        editor.putString(Fields.SHARED_PREF_SETTINGS_LOCALE, locale);
+        editor.apply();
+
+    }
+
+    private void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences(Fields.SHARED_PREF_SETTINGS, Activity.MODE_PRIVATE);
+        String locale = preferences.getString(Fields.SHARED_PREF_SETTINGS_LOCALE, Locale.getDefault().getLanguage());
+        setAppLocale(locale);
     }
 
 }

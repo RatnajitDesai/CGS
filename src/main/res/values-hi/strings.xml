@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="selected_language">Selected Language</string>
+    <string name="english">English</string>
+    <string name="change_language">भाषा बदला</string>
+    <string name="language">भाषा</string>
+    <string name="marathi">मराठी</string>
+</resources>
