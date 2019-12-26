@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.PatternChecker;
 import com.darpg33.hackathon.cgs.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -90,8 +91,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                         Log.d(TAG, "onSuccess: phone number verified.");
                         final FirebaseUser user = mAuth.getCurrentUser();
 
-                        if (user!=null)
-                        {
+                        if (user!=null) {
 
                             final AuthCredential emailAuthCredential = EmailAuthProvider.getCredential(email, password);
 
@@ -104,7 +104,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                             User NewUser = new User();
                                             NewUser.setUser_id(user.getUid());
                                             NewUser.setTimestamp(new Timestamp(new Date()));
-                                            NewUser.setUser_type(getString(R.string.citizen));
+                                            NewUser.setUser_type(Fields.USER_TYPE_CITIZEN);
                                             NewUser.setEmail_id(email);
                                             NewUser.setFirst_name(firstname);
                                             NewUser.setLast_name(lastname);
@@ -117,6 +117,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                             NewUser.setDistrict(district);
                                             NewUser.setRegistered(true);
                                             saveUserToDatabase(NewUser);
+                                            getActivity().finish();
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -126,6 +127,7 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                             mProgressBar.setVisibility(View.GONE);
                                             enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                             user.delete();
+                                            getActivity().finish();
                                         }
                                     });
                                 }
@@ -133,23 +135,41 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            if (e instanceof FirebaseAuthUserCollisionException)
-                                            {
+                                            if (e instanceof FirebaseAuthUserCollisionException) {
                                                 Log.d(TAG, "onFailure: User with this email id already exists.");
                                                 Toast.makeText(mContext, "User with email :"+email+" already exists.", Toast.LENGTH_SHORT).show();
                                                 mProgressBar.setVisibility(View.GONE);
                                                 enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                                 user.delete();
-                                            }
-                                            else {
+                                            } else {
                                                 Toast.makeText(mContext, "Unable to register. Email already exists.", Toast.LENGTH_SHORT).show();
                                                 mProgressBar.setVisibility(View.GONE);
                                                 enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                                                 user.delete();
+
                                             }
                                         }
                                     });
                         }
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        if (e instanceof FirebaseAuthUserCollisionException) {
+
+                            Log.e(TAG, "onFailure: User with this phone number already exists.", e);
+                            Toast.makeText(mContext, "User with this phone number already exists.", Toast.LENGTH_SHORT).show();
+                            mProgressBar.setVisibility(View.GONE);
+                            enableViews(mEtEmailId, mEtPhoneNumber, mEtPassword, mEtConfPassword, mRegister);
+                        } else {
+                            Log.e(TAG, "onFailure: ", e);
+                            Toast.makeText(mContext, "Unable to register with given phone number.", Toast.LENGTH_SHORT).show();
+                            mProgressBar.setVisibility(View.GONE);
+                            enableViews(mEtEmailId, mEtPhoneNumber, mEtPassword, mEtConfPassword, mRegister);
+                        }
+
 
                     }
                 });
@@ -160,20 +180,35 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                 // This callback is invoked in an invalid request for verification is made,
                 // for instance if the the phone number format is not valid.
                 Log.w(TAG, "onVerificationFailed", e);
+                Log.e(TAG, "onVerificationFailed: ", e);
 
                 if (e instanceof FirebaseAuthInvalidCredentialsException) {
                     // Invalid request
                     // ...
+                    Log.e(TAG, "onVerificationFailed: ", e);
                     Toast.makeText(mContext, "OTP denied.", Toast.LENGTH_SHORT).show();
+                    mAuth.getCurrentUser().delete();
                     mProgressBar.setVisibility(View.GONE);
                     enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
 
                 } else if (e instanceof FirebaseTooManyRequestsException) {
                     // The SMS quota for the project has been exceeded
                     // ...
+                    Log.e(TAG, "onVerificationFailed: ", e);
+
                     Toast.makeText(mContext, "Too many request.Please try again after some time.", Toast.LENGTH_SHORT).show();
                     mProgressBar.setVisibility(View.GONE);
+                    mAuth.getCurrentUser().delete();
+                    enableViews(mEtEmailId, mEtPhoneNumber, mEtPassword, mEtConfPassword, mRegister);
+                } else if (e instanceof FirebaseAuthUserCollisionException) {
+
+                    Log.e(TAG, "onVerificationFailed: ", e);
+
+                    Toast.makeText(mContext, "User already exists!", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                    mAuth.getCurrentUser().delete();
                     enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
+
                 }
 
                 // Show a message and update the UI
@@ -201,11 +236,11 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                 mBundle.putString(getString(R.string.phone_number),phone_number);
                 mBundle.putString(getString(R.string.email_id),email);
                 mBundle.putString(getString(R.string.password),password);
-                mBundle.putString(getString(R.string.verification_Id),verificationId);
+                mBundle.putString(getString(R.string.verification_Id), verificationId); // verification code required to construct credential.
                 mBundle.putParcelable(getString(R.string.resend_token),token);
                 mProgressBar.setVisibility(View.GONE);
                 enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
-                Navigation.findNavController(Objects.requireNonNull(getActivity()),R.id.signUpBtn).navigate(R.id.nav_otp_verification,mBundle);
+                Navigation.findNavController(getView()).navigate(R.id.nav_otp_verification, mBundle);
                 Toast.makeText(getContext(), "New OTP sent to your number", Toast.LENGTH_SHORT).show();
 
                 // Save verification ID and resending token so we can use them later
@@ -241,8 +276,8 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
                 else
                 {
                     Toast.makeText(mContext, "Error occurred.Unable to register user.Try again.", Toast.LENGTH_SHORT).show();
-                    mAuth.signOut();
                     mAuth.getCurrentUser().delete();
+                    mAuth.signOut();
                     mProgressBar.setVisibility(View.GONE);
                     enableViews(mEtEmailId,mEtPhoneNumber,mEtPassword,mEtConfPassword, mRegister);
                     Log.d(TAG, "onChanged: User not saved.");
@@ -296,20 +331,35 @@ public class ContactInfoFragment extends Fragment implements View.OnClickListene
         if (v.getId() == R.id.signUpBtn)
         {
 
-            Log.d(TAG, "onClick: clicked.");
+
             phone_number = "+91"+mEtPhoneNumber.getText().toString();
             email = mEtEmailId.getText().toString();
             password = mEtPassword.getText().toString();
             confPassword = mEtConfPassword.getText().toString();
 
             if (checkInputs(mEtPhoneNumber.getText().toString(),mEtEmailId.getText().toString(),
-                    mEtPassword.getText().toString(),mEtConfPassword.getText().toString()))
-            {
-                mProgressBar.setVisibility(View.VISIBLE);
-                disableViews(mEtEmailId,mEtPassword,mEtConfPassword,mEtPhoneNumber, mRegister);
-                verifyPhoneNumber(phone_number);
+                    mEtPassword.getText().toString(), mEtConfPassword.getText().toString())) {
 
+
+                registerViewModel.checkIfUserExists(phone_number, email).observe(this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+
+                        if (!aBoolean) //user does not exists
+                        {
+                            Log.d(TAG, "onClick: clicked.");
+                            mProgressBar.setVisibility(View.VISIBLE);
+                            disableViews(mEtEmailId, mEtPassword, mEtConfPassword, mEtPhoneNumber, mRegister);
+                            verifyPhoneNumber(phone_number);
+                        } else {
+                            mProgressBar.setVisibility(View.GONE);
+                            enableViews(mEtEmailId, mEtPassword, mEtConfPassword, mEtPhoneNumber, mRegister);
+                            Toast.makeText(mContext, "user with given phone/Email already exists.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
+
         }
     }
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="grievance_category_list">
+
+        <item>Select Grievance Category</item>
+        <item>Administration</item>
+        <item>Agriculture</item>
+        <item>Consumer</item>
+        <item>Defence</item>
+        <item>Education</item>
+        <item>Electricity</item>
+        <item>Finance/Economics</item>
+        <item>Food</item>
+        <item>Health/Hygiene</item>
+        <item>Industry/Corporate</item>
+        <item>Justice/Legal Affairs</item>
+        <item>Research/Development</item>
+        <item>Road/Transport</item>
+        <item>Safety</item>
+        <item>Science/Technology</item>
+        <item>Services</item>
+        <item>Sports</item>
+        <item>Tourism</item>
+        <item>Tourism</item>
+        <item>Tribal Affairs</item>
+        <item>Water</item>
+        <item>Women/Child Development</item>
+        <item>Not Sure</item>
+
+    </string-array>
+
+</resources>

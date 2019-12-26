@@ -1,9 +1,16 @@
 package com.darpg33.hackathon.cgs.ui.login;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +34,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Locale;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "LoginActivity";
 
@@ -38,15 +47,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView mCreateAccount, mForgotPassword;
     private TextInputEditText mEmail,mPassword;
     private ProgressBar mProgressBar;
+    private LinearLayout mLinearLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLocale();
         setContentView(R.layout.activity_login);
-
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mSignIn = findViewById(R.id.signInBtn);
+        mLinearLayout = findViewById(R.id.loginLinearLayout);
         mCreateAccount = findViewById(R.id.createAccountLink);
         mForgotPassword = findViewById(R.id.forgotPasswordLink);
         mEmail = findViewById(R.id.emailId);
@@ -55,9 +66,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mSignIn.setOnClickListener(this);
         mCreateAccount.setOnClickListener(this);
         mForgotPassword.setOnClickListener(this);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null)
-        {
+        isProcessing(true);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             loadUI(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            isProcessing(false);
+        } else {
+            isProcessing(false);
         }
 
     }
@@ -69,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.signInBtn:
             {
 
-                mProgressBar.setVisibility(View.VISIBLE);
+                isProcessing(true);
 
                 if (checkInputs(mEmail.getText().toString(), mPassword.getText().toString()))
                 {
@@ -86,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                     Toast.makeText(LoginActivity.this, "Email ID is not verified.", Toast.LENGTH_SHORT).show();
                                     FirebaseAuth.getInstance().signOut();
-                                    mProgressBar.setVisibility(View.GONE);
+                                    isProcessing(false);
 
                                 }
                                 else{
@@ -95,6 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                             else {
                                 mProgressBar.setVisibility(View.GONE);
+                                isProcessing(false);
                                 Toast.makeText(LoginActivity.this, "Incorrect Email/password!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -143,6 +158,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void loadUI(String uid)
     {
 
+        isProcessing(true);
         loginViewModel.getUser(uid).observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
@@ -152,13 +168,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     switch (user.getUser_type()){
                         case Fields.USER_TYPE_CITIZEN:
                         {
-                            mProgressBar.setVisibility(View.GONE);
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                            mProgressBar.setVisibility(View.GONE);
-
+                            isProcessing(false);
                             break;
                         }
                         case Fields.USER_TYPE_MEDIATOR:
@@ -167,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                            mProgressBar.setVisibility(View.GONE);
+                            isProcessing(false);
                             break;
                         }
                         case Fields.USER_TYPE_DEP_INCHARGE:
@@ -176,7 +190,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                            mProgressBar.setVisibility(View.GONE);
+                            isProcessing(false);
                             break;
                         }
                         case Fields.USER_TYPE_DEP_WORKER:
@@ -185,12 +199,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             intent.putExtra(getString(R.string.user_type),user.getUser_type());
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                            mProgressBar.setVisibility(View.GONE);
+                            isProcessing(false);
                             break;
                         }
 
                     }
-
 
                 }
             }
@@ -200,4 +213,39 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+
+    private void setAppLocale(String locale) {
+
+        Resources resources = getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(locale));
+        resources.updateConfiguration(configuration, metrics);
+        Log.d(TAG, "setAppLocale: :" + locale);
+
+        //shared preferences
+        SharedPreferences.Editor editor = getSharedPreferences(Fields.SHARED_PREF_SETTINGS, Context.MODE_PRIVATE).edit();
+        editor.putString(Fields.SHARED_PREF_SETTINGS_LOCALE, locale);
+        editor.apply();
+
+    }
+
+    private void loadLocale() {
+        SharedPreferences preferences = getSharedPreferences(Fields.SHARED_PREF_SETTINGS, Activity.MODE_PRIVATE);
+        String locale = preferences.getString(Fields.SHARED_PREF_SETTINGS_LOCALE, Locale.getDefault().getLanguage());
+        setAppLocale(locale);
+    }
+
+
+    private void isProcessing(boolean b) {
+        Log.d(TAG, "isProcessing: " + b);
+        if (b) {
+            mLinearLayout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            mLinearLayout.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
+
+    }
 }

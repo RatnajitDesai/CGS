@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -74,7 +75,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         mfab = view.findViewById(R.id.fabSaveProfile);
         mfab.setOnClickListener(this);
 
-        User user = Objects.requireNonNull(getArguments()).getParcelable("user");
+        User user = Objects.requireNonNull(getArguments()).getParcelable(Fields.BUNDLE_PROFILE_INFO);
         mUser = user;
         Log.d(TAG, "init: "+user.toString());
         setUpWidgets(user);
@@ -125,7 +126,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             if (checkInputs(mFirstName.getText().toString(), mLastName.getText().toString())) {
 
                 mProgressBar.setVisibility(View.VISIBLE);
-                disableViews(mFirstName,mLastName,mMale,mFemale,mTransgender,mPhoneNumber,mEmailId);
+                disableViews(mFirstName, mLastName, mMale, mFemale, mTransgender, mPhoneNumber, mEmailId, mfab);
                 mUser.setFirst_name(mFirstName.getText().toString());
                 mUser.setLast_name(mLastName.getText().toString());
 
@@ -152,14 +153,14 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                         if (user != null) {
 
                             Snackbar.make(getView(), "Profile updated.", Snackbar.LENGTH_LONG).show();
-                            Navigation.findNavController(getActivity(), R.id.fabSaveProfile).navigate(R.id.nav_profile);
+                            Navigation.findNavController(getView()).navigate(R.id.action_nav_edit_profile_to_nav_profile);
 
                             mProgressBar.setVisibility(View.GONE);
-                            disableViews(mFirstName,mLastName,mMale,mFemale,mTransgender,mPhoneNumber,mEmailId);
+                            disableViews(mFirstName, mLastName, mMale, mFemale, mTransgender, mPhoneNumber, mEmailId, mfab);
                         } else {
                             Snackbar.make(getView(), "Could not update profile.", Snackbar.LENGTH_LONG).show();
                             mProgressBar.setVisibility(View.GONE);
-                            enableViews(mFirstName,mLastName,mMale,mFemale,mTransgender,mPhoneNumber,mEmailId);
+                            enableViews(mFirstName, mLastName, mMale, mFemale, mTransgender, mPhoneNumber, mEmailId, mfab);
                         }
                     }
                 });

@@ -7,16 +7,19 @@ import android.os.Parcelable;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.firebase.Timestamp;
 
+import java.util.ArrayList;
+
 public class Action implements Parcelable{
 
     private String user_id,user_type,username, email_id, action_performed,
             action_info, action_description, action_request_id,
             action_priority;
+    private ArrayList<Attachment> Attachments;
     private Timestamp timestamp;
 
 
-    public Action(String user_id, String user_type,String username, String email_id, String action_performed,
-                  String action_info, String action_description, String action_request_id, Timestamp timestamp, String action_priority) {
+    public Action(String user_id, String user_type, String username, String email_id, String action_performed, String action_info,
+                  String action_description, String action_request_id, String action_priority, ArrayList<Attachment> attachments, Timestamp timestamp) {
         this.user_id = user_id;
         this.user_type = user_type;
         this.username = username;
@@ -25,12 +28,10 @@ public class Action implements Parcelable{
         this.action_info = action_info;
         this.action_description = action_description;
         this.action_request_id = action_request_id;
-        this.timestamp = timestamp;
         this.action_priority = action_priority;
+        Attachments = attachments;
+        this.timestamp = timestamp;
     }
-
-
-
 
     public Action() {
 
@@ -48,6 +49,7 @@ public class Action implements Parcelable{
         action_priority = in.readString();
         timestamp = in.readParcelable(Timestamp.class.getClassLoader());
     }
+
 
     public static final Creator<Action> CREATOR = new Creator<Action>() {
         @Override
@@ -117,6 +119,15 @@ public class Action implements Parcelable{
         this.action_performed = action_performed;
     }
 
+
+    public ArrayList<Attachment> getAttachments() {
+        return Attachments;
+    }
+
+    public void setAttachments(ArrayList<Attachment> attachments) {
+        Attachments = attachments;
+    }
+
     public String getAction_description() {
         return action_description;
     }
@@ -143,12 +154,12 @@ public class Action implements Parcelable{
             }
             case "ASSIGN":
             {
-                action_info = "Being handled by:";
+                action_info = "Request Assigned.";
                 break;
             }
             case "FORWARD":
             {
-                action_info = "Request forwarded to:";
+                action_info = "Request forwarded.";
                 break;
             }
             case "REJECT":
@@ -158,7 +169,7 @@ public class Action implements Parcelable{
             }
             case "SAVE":
             {
-                action_info = "Update:";
+                action_info = "Note:";
                 break;
             }
             case "COMPLETE":
@@ -201,23 +212,9 @@ public class Action implements Parcelable{
         dest.writeString(action_performed);
         dest.writeString(action_info);
         dest.writeString(action_description);
+        dest.writeString(action_request_id);
+        dest.writeString(action_priority);
         dest.writeParcelable(timestamp, flags);
-    }
-
-    @Override
-    public String toString() {
-        return "Action{" +
-                "user_id='" + user_id + '\'' +
-                ", user_type='" + user_type + '\'' +
-                ", username='" + username + '\'' +
-                ", email_id='" + email_id + '\'' +
-                ", action_performed='" + action_performed + '\'' +
-                ", action_info='" + action_info + '\'' +
-                ", action_description='" + action_description + '\'' +
-                ", action_request_id='" + action_request_id + '\'' +
-                ", action_priority='" + action_priority + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
     }
 }
 

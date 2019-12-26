@@ -1,14 +1,15 @@
 package com.darpg33.hackathon.cgs.ui.home.tabs.feed;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.darpg33.hackathon.cgs.Model.Grievance;
@@ -47,6 +48,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GrievanceViewH
     private GrievanceOnClickListener mGrievanceOnClickListener;
     private UpvoteClickListener mUpvoteClickListener;
     private UsernameClickListener mUsernameClickListener;
+    private Context mContext;
 
 
     FeedAdapter(ArrayList<Grievance> grievances, GrievanceOnClickListener listener, UpvoteClickListener upvoteClickListener, UsernameClickListener usernameClickListener) {
@@ -62,12 +64,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GrievanceViewH
     @Override
     public GrievanceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.snippet_feed_post, parent, false);
-
         return new GrievanceViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final GrievanceViewHolder holder, final int position) {
+
+
         StringBuffer title_buffer = new StringBuffer(mGrievances.get(position).getTitle());
         int title_length = 30;
         if (title_buffer.length() > title_length) {
@@ -103,17 +106,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GrievanceViewH
         holder.mGrievanceTitle.setText(title_buffer);
 
         if (mGrievances.get(position).getUpvotes() != null) {
-            holder.mGrievanceUpvotes.setText(String.format(Locale.ENGLISH, "%d votes", (mGrievances.get(position).getUpvotes().size())));
+            Log.d(TAG, "onBindViewHolder: upvotes size :" + mGrievances.get(position).getUpvotes().size());
+            holder.mGrievanceUpvotes.setText(String.format(Locale.ENGLISH, "%d", (mGrievances.get(position).getUpvotes().size())));
         }
+
 
         //initialize Toggle button
         if (mGrievances.get(position).getUpvotes() != null) {
+            Log.d(TAG, "onBindViewHolder: initialize button .");
             if (mGrievances.get(position).getUpvotes().contains(mCurrentUser.getUid())) {
-                holder.mUpvote.setChecked(true);
+                Log.d(TAG, "onBindViewHolder: initialize  button ." + true);
                 holder.mUpvote.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_thumb_up_colored_24dp, 0, 0, 0);
-
             } else {
-                holder.mUpvote.setChecked(false);
+                Log.d(TAG, "onBindViewHolder: initialize button ." + false);
                 holder.mUpvote.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_thumb_up_grey_24dp, 0, 0, 0);
             }
         }
@@ -123,25 +128,38 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GrievanceViewH
             @Override
             public void onClick(View view) {
 
-                if (holder.mUpvote.isChecked()) {
-                    Log.d(TAG, "onClick: resetting upvote." + mCurrentUser.getUid());
-                    mUpvoteClickListener.resetUpvote(mCurrentUser.getUid(),
-                            mGrievances.get(position).getRequest_id(), position);
+                Log.d(TAG, "onClick: clicked.");
+
+                if (mGrievances.get(position).getUpvotes() != null) {
+
+                    if (mGrievances.get(position).getUpvotes().contains(mCurrentUser.getUid())) {
+                        Log.d(TAG, "onClick: resetting upvote." + mCurrentUser.getUid());
+                        holder.mUpvote.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_thumb_up_colored_24dp, 0, 0, 0);
+                        mUpvoteClickListener.resetUpvote(mCurrentUser.getUid(),
+                                mGrievances.get(position).getRequest_id(), position);
+                    } else {
+                        Log.d(TAG, "onClick: setting upvote." + mCurrentUser.getUid());
+                        holder.mUpvote.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_thumb_up_grey_24dp, 0, 0, 0);
+                        mUpvoteClickListener.setUpvote(mCurrentUser.getUid(),
+                                mGrievances.get(position).getRequest_id(), position);
+                    }
                 } else {
                     Log.d(TAG, "onClick: setting upvote." + mCurrentUser.getUid());
+                    holder.mUpvote.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_thumb_up_grey_24dp, 0, 0, 0);
                     mUpvoteClickListener.setUpvote(mCurrentUser.getUid(),
                             mGrievances.get(position).getRequest_id(), position);
                 }
             }
         });
 
-        holder.mGrievanceDescription.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 mGrievanceOnClickListener.viewGrievance(mGrievances.get(position).getRequest_id());
             }
         });
+
 
         holder.mGrievanceUsername.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,11 +180,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.GrievanceViewH
     class GrievanceViewHolder extends RecyclerView.ViewHolder {
         private TextView mGrievanceStatus, mGrievanceId, mGrievanceTitle, mGrievanceUsername,
                 mGrievanceDescription, mGrievanceTimestamp, mGrievanceUpvotes;
-        private ToggleButton mUpvote;
+        private AppCompatButton mUpvote;
 
         GrievanceViewHolder(@NonNull View itemView) {
 
             super(itemView);
+            mContext = itemView.getContext();
             mGrievanceStatus = itemView.findViewById(R.id.grievanceStatus);
             mGrievanceUsername = itemView.findViewById(R.id.grievanceUsername);
             mGrievanceId = itemView.findViewById(R.id.grievanceId);

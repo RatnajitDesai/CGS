@@ -1,33 +1,121 @@
 package com.darpg33.hackathon.cgs.ui.request.viewrequest;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.darpg33.hackathon.cgs.Model.Action;
+import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class CustomActionRepository {
 
     private static final String TAG = "CustomActionRepository";
 
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageReference;
+
+    public CustomActionRepository() {
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        mStorage = FirebaseStorage.getInstance();
+    }
+
+    MutableLiveData<HashMap<String, HashMap<String, Object>>> uploadAttachments(final Action action) {
+        final MutableLiveData<HashMap<String, HashMap<String, Object>>> attachmentLiveData = new MutableLiveData<>();
 
 
-    MutableLiveData<Action> addNote(final Action action) {
+        final HashMap<String, HashMap<String, Object>> attachmentMap = new HashMap<>();
+        if (action.getAttachments().size() > 0) {
+            Log.d(TAG, "uploadAttachments: total attachments :" + action.getAttachments().size());
+            for (final Attachment attachment : action.getAttachments()) {
+
+                Log.d(TAG, "uploadAttachments: attachmentpath :" + attachment.getAttachmentPath());
+                if (!attachment.getAttachmentType().equals("location")) {
+                    mStorageReference = mStorage.getReference("Requests/" + action.getAction_request_id() + "/action_attachments/" + attachment.getAttachment_name());
+
+                    UploadTask uploadTask = mStorageReference.putFile(attachment.getAttachmentUri());
+
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            if (taskSnapshot != null) {
+                                Task<Uri> task = taskSnapshot.getStorage().getDownloadUrl();
+
+                                task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+
+                                        Log.d(TAG, "onComplete: documents uploaded....." + uri.toString());
+                                        HashMap<String, Object> attachmentDetails = new HashMap<>();
+                                        attachmentDetails.put("name", attachment.getAttachment_name());
+                                        attachmentDetails.put("type", attachment.getAttachmentType());
+                                        attachmentDetails.put("path", Objects.requireNonNull(uri).toString());
+                                        attachmentDetails.put("timestamp", attachment.getTimestamp());
+                                        attachmentMap.put("attachment" + attachmentMap.size(), attachmentDetails);
+
+                                        if (action.getAttachments().size() == attachmentMap.size()) {
+                                            Log.d(TAG, "onComplete: all files uploaded.");
+                                            attachmentLiveData.setValue(attachmentMap);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                } else {
+                    HashMap<String, Object> attachmentDetails = new HashMap<>();
+                    GeoPoint point = new GeoPoint(attachment.getAddress().getLatitude(), attachment.getAddress().getLongitude());
+                    attachmentDetails.put("address", attachment.getAddress().getAddressLine(0));
+                    attachmentDetails.put("geo_point", point);
+                    attachmentDetails.put("timestamp", attachment.getTimestamp());
+                    attachmentDetails.put("type", attachment.getAttachmentType());
+                    attachmentMap.put("attachment" + attachmentMap.size(), attachmentDetails);
+
+                    if (action.getAttachments().size() == attachmentMap.size()) {
+                        Log.d(TAG, "onComplete: all files uploaded." + attachmentMap.toString());
+                        attachmentLiveData.setValue(attachmentMap);
+                    }
+
+                }
+
+            }
+
+        } else {
+
+            attachmentLiveData.setValue(attachmentMap);
+
+        }
+
+        return attachmentLiveData;
+    }
+
+
+    MutableLiveData<Action> addNote(final Action action, final HashMap<String, HashMap<String, Object>> attachmentMap) {
 
         final MutableLiveData<Action> data = new MutableLiveData<>();
 
@@ -59,6 +147,7 @@ public class CustomActionRepository {
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mAuth.getCurrentUser().getUid());
                             actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_ATTACHMENTS, attachmentMap);
 
                             db.collection(Fields.DBC_REQUESTS)
                                     .document(action.getAction_request_id())
@@ -91,16 +180,11 @@ public class CustomActionRepository {
                                                                 .update(Fields.DB_GR_STATUS, Fields.GR_STATUS_IN_PROCESS).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
-
                                                                 data.setValue(action);
                                                             }
                                                         });
-
                                                     }
-
-
                                                 }
-
                                             }
                                         });
 
@@ -123,7 +207,7 @@ public class CustomActionRepository {
         return data;
     }
 
-    MutableLiveData<Action> assignRequest(final Action action, final String assignTo, final String priority) {
+    MutableLiveData<Action> assignRequest(final Action action, final String assignTo, final String priority, final HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
         final MutableLiveData<Action> data = new MutableLiveData<>();
 
@@ -154,6 +238,7 @@ public class CustomActionRepository {
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mAuth.getCurrentUser().getUid());
                             actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_ATTACHMENTS, attachmentsHashmap);
 
                             // get global request database data
                             db.collection(Fields.DBC_REQUESTS)
@@ -302,7 +387,7 @@ public class CustomActionRepository {
 
     }
 
-    MutableLiveData<Action> completeRequest(final Action action) {
+    MutableLiveData<Action> completeRequest(final Action action, final HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
         final MutableLiveData<Action> data = new MutableLiveData<>();
 
@@ -333,6 +418,7 @@ public class CustomActionRepository {
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mAuth.getCurrentUser().getUid());
                             actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_ATTACHMENTS, attachmentsHashmap);
 
                             // get global request database data
                             db.collection(Fields.DBC_REQUESTS)
@@ -481,7 +567,7 @@ public class CustomActionRepository {
         return data;
     }
 
-    MutableLiveData<Action> rejectRequest(final Action action) {
+    MutableLiveData<Action> rejectRequest(final Action action, final HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
         final MutableLiveData<Action> data = new MutableLiveData<>();
 
@@ -513,6 +599,7 @@ public class CustomActionRepository {
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mAuth.getCurrentUser().getUid());
                             actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_ATTACHMENTS, attachmentsHashmap);
 
                             // get global request database data
                             db.collection(Fields.DBC_REQUESTS)
@@ -658,9 +745,10 @@ public class CustomActionRepository {
      * forward requests from one department to other department
      * @param action    - action data
      * @param forwardTo - department to which request is supposed to be forwarded
+     * @param attachmentsHashmap
      * @return
      */
-    MutableLiveData<Action> forwardRequest(final Action action, final String forwardTo) {
+    MutableLiveData<Action> forwardRequest(final Action action, final String forwardTo, final HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
         final MutableLiveData<Action> data = new MutableLiveData<>();
 
@@ -694,6 +782,7 @@ public class CustomActionRepository {
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mAuth.getCurrentUser().getUid());
                             actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_ATTACHMENTS, attachmentsHashmap);
 
                             //add action details to global requests database
                             final DocumentReference reference = db.collection(Fields.DBC_REQUESTS)
@@ -842,7 +931,7 @@ public class CustomActionRepository {
     }
 
 
-    MutableLiveData<Action> assignToWorkerRequest(final Action action, final User assignTo) {
+    MutableLiveData<Action> assignToWorkerRequest(final Action action, final User assignTo, final HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
         final MutableLiveData<Action> data = new MutableLiveData<>();
 
@@ -877,6 +966,7 @@ public class CustomActionRepository {
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_EMAIL, action.getEmail_id());
                             actionHashmap.put(Fields.DB_GR_ACTION_USER_ID, mAuth.getCurrentUser().getUid());
                             actionHashmap.put(Fields.DB_GR_ACTION_TIMESTAMP, new Timestamp(new Date()));
+                            actionHashmap.put(Fields.DB_GR_ACTION_ATTACHMENTS, attachmentsHashmap);
 
                             // get global request database data
                             db.collection(Fields.DBC_REQUESTS)

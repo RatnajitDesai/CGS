@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -174,7 +175,7 @@ public class FragmentOtpVerification extends Fragment {
                 // 2 - Auto-retrieval. On some devices Google Play services can automatically
                 //     detect the incoming verification SMS and perform verification without
                 //     user action.
-                Log.d(TAG, "onVerificationCompleted:" + credential);
+                Log.d(TAG, "onVerificationCompleted:" + credential.getSmsCode());
 
                 if (credential.getSmsCode() != null)
                 {
@@ -183,9 +184,8 @@ public class FragmentOtpVerification extends Fragment {
 
                 User NewUser = new User();
                 NewUser.setUser_id(mAuth.getCurrentUser().getUid());
-                NewUser.setUser_type(getString(R.string.citizen));
+                NewUser.setUser_type(Fields.USER_TYPE_CITIZEN);
                 NewUser.setTimestamp(new Timestamp(new Date()));
-                NewUser.setUser_type(getString(R.string.citizen));
                 NewUser.setEmail_id(mEmail);
                 NewUser.setFirst_name(mFirstname);
                 NewUser.setLast_name(mLastname);
@@ -220,6 +220,12 @@ public class FragmentOtpVerification extends Fragment {
                     Toast.makeText(mContext, "Unable to verify your at the moment.Please try again after some time.", Toast.LENGTH_SHORT).show();
                     mProgressBar.setVisibility(View.GONE);
                     enableViews(mOtp,mResendCode,mVerify);
+                } else if (e instanceof FirebaseAuthUserCollisionException) {
+
+                    Toast.makeText(mContext, "User already exists!", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.GONE);
+                    enableViews(mOtp, mResendCode, mVerify);
+
                 }
 
                 // Show a message and update the UI

@@ -89,6 +89,12 @@
             android:text="Our executive will take your request to the concern department ASAP."
             />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/attachmentsRecyclerView"
+            android:padding="4dp" />
+
         <TextView
             android:id="@+id/actionUserType"
             android:layout_width="wrap_content"

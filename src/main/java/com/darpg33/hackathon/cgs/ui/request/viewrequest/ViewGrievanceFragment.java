@@ -29,10 +29,13 @@ import com.darpg33.hackathon.cgs.R;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.TimeDateUtilities;
 import com.darpg33.hackathon.cgs.ui.CustomDialogs.CustomActionDialog;
+import com.darpg33.hackathon.cgs.ui.dialogs.viewProfile.ViewProfileDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -45,7 +48,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         CustomActionDialog.AssignWorkerListener,
         CustomActionDialog.RejectListener,
         CustomActionDialog.CompleteListener,
-        CustomActionDialog.ForwardListener {
+        CustomActionDialog.ForwardListener, ActionsAdapter.UsernameClickListener, ActionsAdapter.IntentListener {
 
     private static final String TAG = "ViewGrievanceFragment";
 
@@ -57,7 +60,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     private ArrayList<Attachment> mAttachments = new ArrayList<>();
     private ArrayList<Action> mActions = new ArrayList<>();
     private String mRequestId,mUserType;
-
+    private Grievance mGrievance = new Grievance();
 
     //widgets
     private TextView mTitle, mTimeStamp, mStatus, mRequestedBy,
@@ -78,7 +81,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         mDescription = view.findViewById(R.id.grievanceDescription);
         mTimeStamp = view.findViewById(R.id.grievance_timestamp);
         mStatus = view.findViewById(R.id.grievance_status);
-        mRequestedBy = view.findViewById(R.id.grievanceSubmittedBy);
+        mRequestedBy = view.findViewById(R.id.grievanceRequestedBy);
         mHandledBy = view.findViewById(R.id.grievanceHandledBy);
         mPrivacy = view.findViewById(R.id.grievancePrivacy);
         mGrievanceUpvotes = view.findViewById(R.id.grievanceUpvotes);
@@ -103,6 +106,16 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         viewGrievanceViewModel = ViewModelProviders.of(this).get(ViewGrievanceViewModel.class);
         customActionViewModel = ViewModelProviders.of(this).get(CustomActionViewModel.class);
         init();
+
+
+        mRequestedBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                viewProfile(mGrievance.getUser_id());
+            }
+        });
+
         return view;
     }
 
@@ -119,6 +132,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         {
             setGrievanceView(bundle);
         }
+
 
     }
 
@@ -266,6 +280,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
             public void onChanged(Grievance grievance) {
                 if (grievance != null)
                 {
+                    mGrievance = grievance;
                     viewGrievanceViewModel.getGrievanceAttachments(mRequestId).observe(ViewGrievanceFragment.this, new Observer<ArrayList<Attachment>>() {
                         @Override
                         public void onChanged(ArrayList<Attachment> attachments) {
@@ -368,7 +383,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         //actions recycler
         LinearLayoutManager actionsLinearLayout = new LinearLayoutManager(getContext());
         mActionsRecyclerView.setLayoutManager(actionsLinearLayout);
-        mActionsAdapter = new ActionsAdapter(mActions);
+        mActionsAdapter = new ActionsAdapter(mActions, this, this);
         mActionsRecyclerView.setAdapter(mActionsAdapter);
     }
 
@@ -437,8 +452,12 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     public void viewLocation(Attachment attachment) {
 
         Log.d(TAG, "viewLocation: ");
-        String uri = String.format(Locale.ENGLISH, "geo:%f,%f", attachment.getGeoPoint().getLatitude(),
-                attachment.getGeoPoint().getLongitude());
+        String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f&z=16", attachment.getGeoPoint().getLatitude(),
+                attachment.getGeoPoint().getLongitude(),
+                attachment.getGeoPoint().getLatitude(),
+                attachment.getGeoPoint().getLongitude()
+        );
+
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         getContext().startActivity(intent);
 
@@ -517,59 +536,75 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     }
 
     @Override
-    public void addNote(String note)
+    public void addNote(String note, final ArrayList<Attachment> attachments)
     {
         setProcessing(true);
-        Action action = new Action();
+        final Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("SAVE");
         action.setUser_type(mUserType);
+        action.setAttachments(attachments);
 
-        customActionViewModel.addNote(action).observe(this, new Observer<Action>() {
+        customActionViewModel.uploadAttachments(action).observe(this, new Observer<HashMap<String, HashMap<String, Object>>>() {
             @Override
-            public void onChanged(Action action) {
+            public void onChanged(HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
-                if (action!=null)
+                if (attachmentsHashmap != null)
                 {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                    customActionViewModel.addNote(action, attachmentsHashmap).observe(ViewGrievanceFragment.this, new Observer<Action>() {
+                        @Override
+                        public void onChanged(Action action) {
+
+                            if (action != null) {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 }
             }
         });
+
 
     }
 
 
     @Override
-    public void assignRequest(String note, String assignTo, String priority) {
-
+    public void assignRequest(String note, final String assignTo, final String priority, ArrayList<Attachment> attachments) {
 
         setProcessing(true);
-
-        Action action = new Action();
+        final Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("ASSIGN");
         action.setUser_type(mUserType);
+        action.setAttachments(attachments);
 
-
-        customActionViewModel.assignRequest(action, assignTo, priority).observe(this, new Observer<Action>() {
+        customActionViewModel.uploadAttachments(action).observe(this, new Observer<HashMap<String, HashMap<String, Object>>>() {
             @Override
-            public void onChanged(Action action) {
+            public void onChanged(HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
-                if (action!=null)
-                {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                if (attachmentsHashmap != null) {
+
+                    customActionViewModel.assignRequest(action, assignTo, priority, attachmentsHashmap).observe(ViewGrievanceFragment.this, new Observer<Action>() {
+                        @Override
+                        public void onChanged(Action action) {
+
+                            if (action != null) {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 }
             }
         });
@@ -579,28 +614,36 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     }
 
     @Override
-    public void completeRequest(String note) {
+    public void completeRequest(String note, ArrayList<Attachment> attachments) {
 
         setProcessing(true);
 
-        Action action = new Action();
+        final Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("COMPLETE");
         action.setUser_type(mUserType);
+        action.setAttachments(attachments);
 
-        customActionViewModel.completeRequest(action).observe(this, new Observer<Action>() {
+
+        customActionViewModel.uploadAttachments(action).observe(this, new Observer<HashMap<String, HashMap<String, Object>>>() {
             @Override
-            public void onChanged(Action action) {
+            public void onChanged(HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
-                if (action!=null)
-                {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                if (attachmentsHashmap != null) {
+                    customActionViewModel.completeRequest(action, attachmentsHashmap).observe(ViewGrievanceFragment.this, new Observer<Action>() {
+                        @Override
+                        public void onChanged(Action action) {
+
+                            if (action != null) {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -609,90 +652,164 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     }
 
     @Override
-    public void rejectRequest(String note) {
+    public void rejectRequest(String note, ArrayList<Attachment> attachments) {
 
 
         setProcessing(true);
-        Action action = new Action();
+        final Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("REJECT");
         action.setUser_type(mUserType);
+        action.setAttachments(attachments);
 
-        customActionViewModel.rejectRequest(action).observe(this, new Observer<Action>() {
+
+        customActionViewModel.uploadAttachments(action).observe(this, new Observer<HashMap<String, HashMap<String, Object>>>() {
             @Override
-            public void onChanged(Action action) {
+            public void onChanged(HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
-                if (action!=null)
-                {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                if (attachmentsHashmap != null) {
+
+                    customActionViewModel.rejectRequest(action, attachmentsHashmap).observe(ViewGrievanceFragment.this, new Observer<Action>() {
+                        @Override
+                        public void onChanged(Action action) {
+
+                            if (action != null) {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 }
             }
         });
 
-
     }
 
     @Override
-    public void forwardRequest(String note, String forwardTo) {
+    public void forwardRequest(String note, final String forwardTo, ArrayList<Attachment> attachments) {
 
 
         setProcessing(true);
-        Action action = new Action();
+        final Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setAction_performed("FORWARD");
         action.setUser_type(mUserType);
+        action.setAttachments(attachments);
 
-        customActionViewModel.forwardRequest(action, forwardTo).observe(this, new Observer<Action>() {
+
+        customActionViewModel.uploadAttachments(action).observe(this, new Observer<HashMap<String, HashMap<String, Object>>>() {
             @Override
-            public void onChanged(Action action) {
+            public void onChanged(HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
-                if (action != null) {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
-                } else {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                if (attachmentsHashmap != null) {
+                    customActionViewModel.forwardRequest(action, forwardTo, attachmentsHashmap).observe(ViewGrievanceFragment.this, new Observer<Action>() {
+                        @Override
+                        public void onChanged(Action action) {
+
+                            if (action != null) {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
                 }
             }
         });
 
-
     }
 
     @Override
-    public void assignToWorker(String note, User assignTo, String priority) {
-
+    public void assignToWorker(String note, final User assignTo, String priority, String ActionDone, ArrayList<Attachment> attachments) {
         setProcessing(true);
-        Action action = new Action();
+        final Action action = new Action();
         action.setAction_request_id(mRequestId);
         action.setAction_description(note);
         action.setUser_type(mUserType);
         action.setAction_performed("ASSIGN");
         action.setAction_priority(priority);
         action.setUser_type(mUserType);
+        action.setAttachments(attachments);
 
-
-        customActionViewModel.assignToWorkerRequest(action, assignTo).observe(this, new Observer<Action>() {
+        customActionViewModel.uploadAttachments(action).observe(this, new Observer<HashMap<String, HashMap<String, Object>>>() {
             @Override
-            public void onChanged(Action action) {
+            public void onChanged(HashMap<String, HashMap<String, Object>> attachmentsHashmap) {
 
-                if (action!=null) {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
-                } else {
-                    setProcessing(false);
-                    Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                if (attachmentsHashmap != null) {
+
+                    customActionViewModel.assignToWorkerRequest(action, assignTo, attachmentsHashmap).observe(ViewGrievanceFragment.this, new Observer<Action>() {
+                        @Override
+                        public void onChanged(Action action) {
+
+                            if (action != null) {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action saved.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                setProcessing(false);
+                                Toast.makeText(getContext(), "Action cannot be processed.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
                 }
             }
         });
 
+    }
+
+    @Override
+    public void viewProfile(String userId) {
+
+        viewGrievanceViewModel.getUser(userId).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+
+                if (user != null) {
+
+                    if (user.getUser_type().equalsIgnoreCase(Fields.USER_TYPE_CITIZEN)) {
+
+                        if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+
+                            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.nav_profile);
+
+                        } else {
+                            ViewProfileDialog dialog = new ViewProfileDialog();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(Fields.BUNDLE_USER_INFO, user);
+                            dialog.setArguments(bundle);
+                            dialog.show(Objects.requireNonNull(getFragmentManager()), "ViewProfileDialog");
+                        }
+                    } else {
+
+                        ViewProfileDialog dialog = new ViewProfileDialog();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(Fields.BUNDLE_USER_INFO, user);
+                        dialog.setArguments(bundle);
+                        dialog.show(Objects.requireNonNull(getFragmentManager()), "ViewProfileDialog");
+
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+    @Override
+    public void startIntent(Intent intent) {
+
+        startActivity(intent);
 
     }
 }

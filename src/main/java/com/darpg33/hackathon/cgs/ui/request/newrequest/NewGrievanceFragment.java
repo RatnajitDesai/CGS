@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -32,7 +31,6 @@ import com.darpg33.hackathon.cgs.R;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.FileUtilities;
 import com.darpg33.hackathon.cgs.Utils.Permissions;
-import com.darpg33.hackathon.cgs.Utils.SpinnerListProvider;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
@@ -51,6 +49,8 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
 
     private static final String TAG = "NewGrievanceFragment";
     private static final int VERIFY_PERMISSIONS_REQUEST = 201;
+
+
     //vars
     private NewGrievanceViewModel grievanceViewModel;
     private Context mContext;
@@ -92,17 +92,6 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
         mContext = getContext();
         mGrievanceCategory = view.findViewById(R.id.grievanceCategory);
 
-        final int listSize = SpinnerListProvider.getGrievanceCategoriesList().size()-1;
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1,
-                SpinnerListProvider.getGrievanceCategoriesList()){
-            @Override
-            public int getCount() {
-                return listSize;
-            }
-        };
-
-        mGrievanceCategory.setAdapter(adapter);
-        mGrievanceCategory.setSelection(listSize);
         mSubmit = view.findViewById(R.id.btnSubmit);
         mAttachments = new ArrayList<>();
 
@@ -135,7 +124,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             mGrievanceDescription.setError("Cannot be empty");
             flag = false;
         }
-        if (grievanceCategory.equals(getString(R.string.select_grievance_category)))
+        if (mGrievanceCategory.getSelectedItemPosition() == 0)
         {
             mGrievanceCategory.setBackgroundResource(R.drawable.transaparent_background_with_red_rounded_border);
             flag = false;
@@ -148,12 +137,10 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
         return flag;
     }
 
-
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btnSubmit)
         {
-            Log.d(TAG, "onClick: clicked.");
             if (checkInputs(mGrievanceTitle.getText().toString(), mGrievanceCategory.getSelectedItem().toString()
                     ,mGrievanceDescription.getText().toString()))
             {
@@ -184,10 +171,13 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
             }
         }
         else {
+
             if (v.getId() == R.id.btnAttachment){
 
                 showBottomSheet();
+
             }
+
         }
     }
 
@@ -228,14 +218,15 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
 
                                 if (map != null) {
 
-
-
                                         grievanceViewModel.submitNewRequest(grievance, map).observe(NewGrievanceFragment.this, new Observer<Grievance>() {
                                             @Override
                                             public void onChanged(Grievance grievance) {
                                                 if (grievance != null) {
                                                     Toast.makeText(mContext, "Request raised : " + grievance.getRequest_id(), Toast.LENGTH_SHORT).show();
-                                                    Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.btnSubmit).navigate(R.id.nav_home);
+
+                                                    //navigate to home
+                                                    Navigation.findNavController(getView()).navigate(R.id.action_nav_new_grievance_to_nav_home2);
+
                                                 }
                                                 else {
 
@@ -244,7 +235,6 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                                                     mAttachmentsRecycler.setClickable(true);
                                                     enableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
                                                             mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
-
                                                 }
                                             }
                                         });
@@ -259,18 +249,16 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                         }
                     });
                 }
-
             }
         });
-
     }
-
 
     @Override
     public void getPhotoUri(Uri uri, String display_name, long file_size) {
 
                 if (FileUtilities.checkFileSize(file_size))
                 {
+
                     Log.d(TAG, "getPhotoUri: file_size: "+file_size);
                     Attachment attachment = new Attachment(display_name,"image", uri,new Timestamp(new Date()));
                     mAttachments.add(attachment);
@@ -278,6 +266,7 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                     int position = mAttachments.size()-1;
                     Log.d(TAG, "getPhotoUri: setAttachmentsButton :"+position+1);
                     mAttachmentAdapter.notifyItemInserted(position);
+
                 }
                 else {
                     Toast.makeText(mContext, "Max. file should be less than 3 MB.", Toast.LENGTH_SHORT).show();
@@ -432,5 +421,4 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
         }
 
     }
-
 }

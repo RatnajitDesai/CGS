@@ -14,9 +14,9 @@ public class MediatorHomeViewModel extends ViewModel {
     }
 
 
-    LiveData<Integer> getGrievanceCount(String status, String user_type) {
+    LiveData<Integer> getGrievanceCount(String status) {
 
-        return mediatorHomeRepository.getGrievanceCount(status, user_type);
+        return mediatorHomeRepository.getGrievanceCount(status);
 
     }
 }

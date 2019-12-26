@@ -3,14 +3,95 @@
 
     <string-array name="department_list">
 
-
-        <item>Department of Water</item>
-        <item>Department of Road</item>
-        <item>Department of Health</item>
-        <item>Department of Safety</item>
-        <item>Department of Finance</item>
+        <item>Administrative Reforms and PG</item>
+        <item>Agriculture and Cooperation</item>
+        <item>Agriculture Research and Education</item>
+        <item>Animal Husbandry, Dairying</item>
+        <item>Atomic Energy</item>
+        <item>Ayush</item>
+        <item>Bio Technology</item>
+        <item>Central Board of Direct Taxes (Income Tax)</item>
+        <item>Central Board of Excise and Customs</item>
+        <item>Chemicals and Petrochemicals</item>
+        <item>Civil Aviation</item>
+        <item>Coal</item>
+        <item>Commerce</item>
+        <item>Consumer Affairs</item>
+        <item>Corporate Affairs</item>
+        <item>Culture</item>
+        <item>Defence</item>
+        <item>Defence Finance</item>
+        <item>Defence Production</item>
+        <item>Defence Research and Development</item>
+        <item>Development of North Eastern Region</item>
+        <item>Drinking Water and Sanitation</item>
+        <item>Earth Sciences</item>
+        <item>Economic Affairs</item>
+        <item>Electronics and Information Technology</item>
+        <item>Empowerment of Persons with Disabilities</item>
+        <item>Environment, Forest and Climate Change</item>
+        <item>Ex Servicemen Welfare</item>
+        <item>Expenditure</item>
+        <item>External Affairs</item>
+        <item>Fertilizers</item>
+        <item>Financial Services (Banking Division)</item>
+        <item>Financial Services (Insurance Division)</item>
+        <item>Financial Services (Pension Reforms)</item>
+        <item>Fisheries</item>
+        <item>Food and Public Distribution</item>
+        <item>Food Processing Industries</item>
+        <item>Health and Family Welfare</item>
+        <item>Health Research</item>
+        <item>Heavy Industry</item>
+        <item>Higher Education</item>
+        <item>Home Affairs</item>
+        <item>Housing and Urban Affairs</item>
+        <item>Industrial Policy and Promotion</item>
+        <item>Information and Broadcasting</item>
+        <item>Investment and Public Asset Management</item>
+        <item>Justice</item>
+        <item>Labour and Employment</item>
+        <item>Land Resources</item>
+        <item>Legal Affairs</item>
+        <item>Legislative Department</item>
+        <item>Micro Small and Medium Enterprises</item>
+        <item>Mines</item>
+        <item>Minority Affairs</item>
+        <item>New and Renewable Energy</item>
+        <item>NITI Aayog</item>
+        <item>O/o the Comptroller and Auditor General of India</item>
+        <item>Official Language</item>
+        <item>Panchayati Raj</item>
+        <item>Parliamentary Affairs</item>
+        <item>Personnel and Training</item>
+        <item>Petroleum and Natural Gas</item>
+        <item>Pharmaceutical</item>
+        <item>Posts</item>
+        <item>Power</item>
+        <item>Public Enterprises</item>
+        <item>Railways, ( Railway Board)</item>
+        <item>Revenue</item>
+        <item>Road Transport and Highways</item>
+        <item>Rural Development</item>
+        <item>School Education and Literacy</item>
+        <item>Science and Technology</item>
+        <item>Scientific and Industrial Research</item>
+        <item>Shipping</item>
+        <item>Skill Development and Entrepreneurship</item>
+        <item>Social Justice and Empowerment</item>
+        <item>Space</item>
+        <item>Sports</item>
+        <item>Statistics and Programme Implementation</item>
+        <item>Steel</item>
+        <item>Telecommunications</item>
+        <item>Textiles</item>
+        <item>Tourism</item>
+        <item>Tribal Affairs</item>
+        <item>Unique Identification Authority of India</item>
+        <item>Water Resources, River Development and Ganga Rejuvenuation,</item>
+        <item>Women and Child Development</item>
+        <item>Youth Affairs</item>
 
     </string-array>
-
 
 </resources>

@@ -4,28 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:id="@+id/scrollView"
         >
-    <LinearLayout
+
+
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/loginLinearLayout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="Citizen Grievance System"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="16dp"/>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:text="@string/citizen_grievance_system"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+                android:fontFamily="sans-serif-condensed"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="12dp" />
 
 
 
@@ -55,7 +60,6 @@
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtPassword"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,7 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:id="@+id/progressBar"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
 </RelativeLayout>

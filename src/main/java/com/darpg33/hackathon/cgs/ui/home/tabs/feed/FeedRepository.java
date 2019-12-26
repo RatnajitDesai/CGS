@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.darpg33.hackathon.cgs.Model.Grievance;
@@ -85,7 +86,6 @@ class FeedRepository {
                             for (final DocumentSnapshot snapshot :
                                     queryDocumentSnapshots.getDocuments()) {
 
-
                                 Grievance grievance = new Grievance();
                                 grievance.setUser_id(snapshot.getString(Fields.DB_GR_USER_ID)); // grievance user id
                                 grievance.setRequestedBy(snapshot.getString(Fields.DB_GR_REQUESTED_BY));
@@ -150,9 +150,9 @@ class FeedRepository {
                 .update(Fields.DB_GR_UPVOTES, FieldValue.arrayRemove(userId)).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d(TAG, "onSuccess: upvote resat : " + userId);
 
                 data.setValue(true);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -190,6 +190,7 @@ class FeedRepository {
                     user.setPhone_number(documentSnapshot.getString(Fields.DB_USER_PHONE_NUMBER));
                     user.setFirst_name(documentSnapshot.getString(Fields.DB_USER_FIRSTNAME));
                     user.setLast_name(documentSnapshot.getString(Fields.DB_USER_LASTNAME));
+                    user.setUser_type(documentSnapshot.getString(Fields.DB_USER_USER_TYPE));
 
                     data.setValue(user);
                 }
@@ -205,5 +206,13 @@ class FeedRepository {
 
         return data;
 
+    }
+
+    public LiveData<Boolean> currentUserUpvoted(ArrayList<String> list) {
+
+        MutableLiveData<Boolean> data = new MutableLiveData<>();
+
+
+        return data;
     }
 }
