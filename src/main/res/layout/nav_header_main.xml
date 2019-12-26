@@ -12,6 +12,14 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
 
+    <TextView
+        android:id="@+id/drawer_user_department"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:text="user dept"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
 
     <TextView
         android:id="@+id/drawer_username"

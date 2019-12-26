@@ -23,6 +23,7 @@ public class Fields {
     public static final String DBC_REQUESTS = "Requests";
     public static final String DBC_USERS = "Users";
     public static final String DBC_USERS_MY_REQUESTS = "MyRequests";
+    public static final String DBC_USERS_NOTIFICATIONS = "Notifications";
 
     public static final String DBC_MEDIATORS = "Mediators";
     public static final String DBC_MED_ALL_REQUESTS = "All Requests";
@@ -83,6 +84,16 @@ public class Fields {
     public static final String DB_USER_REGISTERED = "registered";
     public static final String DB_USER_PINCODE = "pin_code";
     public static final String DB_USER_DEPARTMENT = "user_department";
+    public static final String REG_TOKEN = "reg_token";
+
+
+    /**
+     * Notification fields
+     */
+    public static final String NOTIFICATION_TITLE = "notification_title";
+    public static final String NOTIFICATION_REQUEST_ID = "notification_request_id";
+    public static final String NOTIFICATION_TIMESTAMP = "timestamp";
+    public static final String NOTIFICATION_BODY = "notification_body";
 
 
     /**
@@ -106,7 +117,14 @@ public class Fields {
      * Bundles
      */
     public static final String BUNDLE_USER_INFO = "user_info";
+    public static final String BUNDLE_PROFILE_INFO = "profile_info";
 
 
+    /**
+     * Shared preferences
+     */
+
+    public static final String SHARED_PREF_SETTINGS = "settings";
+    public static final String SHARED_PREF_SETTINGS_LOCALE = "locale";
 
 }

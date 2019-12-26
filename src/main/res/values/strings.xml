@@ -1,23 +1,17 @@
 <resources>
+
     <string name="app_name">CGS</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Username</string>
     <string name="nav_header_subtitle">user@domain.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
     <string name="menu_sign_out">Sign Out</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="my_requests">My Requests</string>
-    <string name="action_items">Action Items</string>
-    <string name="no_action">No Action</string>
+    <string name="notifications">Notifications</string>
     <string name="pending">Pending</string>
     <string name="email_id">Email ID</string>
     <string name="password">Password</string>
@@ -33,7 +27,6 @@
     <string name="select_district">Select District</string>
     <string name="pin_code">Pin Code</string>
     <string name="register">Register</string>
-    <string name="content_description_navigate_back">navigate back</string>
     <string name="grievance_category">Grievance Category</string>
     <string name="enter_grievance_description">Enter Grievance Description</string>
     <string name="enter_grievance_title">Enter Grievance Title</string>
@@ -48,13 +41,11 @@
     <string name="female">Female</string>
     <string name="transgender">Transgender</string>
     <string name="address">Address</string>
-    <string name="globe">Globe</string>
     <string name="reset_password">Reset Password</string>
     <string name="emailid_linked_with_account">Enter Email ID linked with your account</string>
     <string name="cancel">Cancel</string>
     <string name="otp">OTP</string>
     <string name="resend_code">Resend Code?</string>
-    <string name="_0_59">0:59</string>
     <string name="verify_otp">Verify OTP</string>
     <string name="next">Next</string>
     <string name="gender">gender</string>
@@ -74,11 +65,9 @@
     <string name="document">Document</string>
     <string name="camera">Camera</string>
     <string name="title_activity_maps">Map</string>
-    <string name="share_current_location">Share Current location</string>
     <string name="share_selected_location">Share Selected location</string>
     <string name="get_current_location">Get Current location</string>
     <string name="confirm_sign_out_text">Do you really want to sign out?</string>
-    <string name="edit">Edit</string>
     <string name="save">SAVE</string>
     <string name="resolved">Resolved</string>
     <string name="in_process">In Process</string>
@@ -90,15 +79,9 @@
     <string name="txt_profile_district">District :</string>
     <string name="txt_profile_pin_code">Pin Code :</string>
     <string name="gps_not_found_title">GPS not found</string>
-    <string name="gps_not_found_message">Want to enable it?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="enter_address_city_or_zip_code">Enter Address, City or Zip Code</string>
     <string name="search_icon">Search Icon</string>
     <string name="place_icon">place icon</string>
-    <string name="request_id">Request ID:</string>
-    <string name="request_title">Request Title:</string>
-    <string name="request_status">Request Status:</string>
     <string name="default_count_value">0</string>
     <string name="total">Total</string>
     <string name="menu_feed">Feed</string>
@@ -115,15 +98,20 @@
     <string name="enter_notes">Enter Notes</string>
     <string name="action_title">Action Title</string>
     <string name="assigned_to">Assigned To:</string>
-    <string name="action_done">action_done</string>
     <string name="priority">Priority</string>
     <string name="requested_by">Requested by :</string>
     <string name="add_note">Add note</string>
-    <string name="provide_your_feedback">Provide your feedback</string>
     <string name="mediator">mediator</string>
     <string name="handled_by">Handled by:</string>
-    <string name="upvote">Upvote</string>
-    <string name="upvoted">Upvoted</string>
     <string name="privacy">Privacy:</string>
+    <string name="select_language">Select Language</string>
+    <string name="marathi">Marathi</string>
+    <string name="english">English</string>
+    <string name="selected_language">Selected Language</string>
+    <string name="search_hint">Enter request id, title etc.</string>
+    <string name="default_notification_channel_id">111111</string>
+    <string name="request_search_text">Search CG#</string>
+    <string name="most_important_grievances">Most important grievances:</string>
+    <string name="relax_no_important_grievances_available_right_now">Relax! No important grievances available right now!</string>
 
 </resources>

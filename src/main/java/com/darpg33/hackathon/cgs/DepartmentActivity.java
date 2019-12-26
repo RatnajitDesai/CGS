@@ -5,17 +5,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.darpg33.hackathon.cgs.HelperViewModels.ActivityHelperViewModel;
+import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.ui.login.LoginActivity;
 import com.darpg33.hackathon.cgs.ui.signout.SignOutFragment;
 import com.google.android.material.navigation.NavigationView;
@@ -28,6 +34,10 @@ public class DepartmentActivity extends AppCompatActivity implements NavigationV
     //vars
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
+    private NavigationView navigationView;
+    private ActivityHelperViewModel activityHelperViewModel;
+
+
 
     //widgets
     private DrawerLayout drawer;
@@ -40,22 +50,26 @@ public class DepartmentActivity extends AppCompatActivity implements NavigationV
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_search, R.id.nav_view_grievance,
-                R.id.nav_dashboard, R.id.nav_department_home,
-                R.id.nav_settings, R.id.nav_sign_out)
+                R.id.nav_view_grievance,
+                R.id.nav_dashboard,
+                R.id.nav_sign_out)
                 .setDrawerLayout(drawer)
                 .build();
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        activityHelperViewModel = ViewModelProviders.of(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ActivityHelperViewModel.class);
+
         navigationView.setNavigationItemSelectedListener(this);
+
+        setDrawerHeader();
 
     }
 
@@ -63,7 +77,6 @@ public class DepartmentActivity extends AppCompatActivity implements NavigationV
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
 
-        getMenuInflater().inflate(R.menu.search_actionbar_menu, menu);
 
         return true;
     }
@@ -133,6 +146,29 @@ public class DepartmentActivity extends AppCompatActivity implements NavigationV
             startActivity(new Intent(DepartmentActivity.this, LoginActivity.class));
 
         }
+
+    }
+
+    private void setDrawerHeader() {
+
+        final TextView username = navigationView.getHeaderView(0).findViewById(R.id.drawer_username);
+        final TextView email = navigationView.getHeaderView(0).findViewById(R.id.drawer_user_email);
+        final TextView dept = navigationView.getHeaderView(0).findViewById(R.id.drawer_user_department);
+
+        activityHelperViewModel.getCurrentUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+
+                if (user != null) {
+                    String username1 = user.getFirst_name() + " " + user.getLast_name();
+                    username.setText(username1);
+                    email.setText(user.getEmail_id());
+                    dept.setText(user.getUser_department());
+                }
+
+            }
+        });
+
 
     }
 

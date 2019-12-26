@@ -16,15 +16,10 @@ class MediatorHomeRepository {
 
      private static final String TAG = "MediatorHomeRepository";
 
-     MutableLiveData<Integer> getGrievanceCount(String status, String user_type) {
+    MutableLiveData<Integer> getGrievanceCount(String status) {
 
          final MutableLiveData<Integer> data = new MutableLiveData<>();
 
-
-         switch (user_type){
-
-             case Fields.USER_TYPE_MEDIATOR:
-             {
                  FirebaseFirestore.getInstance()
                          .collection(Fields.DBC_MEDIATORS)
                          .document(Fields.DBC_REQUESTS)
@@ -46,9 +41,6 @@ class MediatorHomeRepository {
                                  }
                              }
                          });
-                }
-
-             }
 
          return data;
 

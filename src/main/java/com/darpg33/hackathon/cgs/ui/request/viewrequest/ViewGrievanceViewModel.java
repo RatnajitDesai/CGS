@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
+import com.darpg33.hackathon.cgs.Model.User;
 
 import java.util.ArrayList;
 
@@ -40,5 +41,11 @@ public class ViewGrievanceViewModel extends ViewModel {
     LiveData<String> getUserType() {
 
         return repository.getUserType();
+    }
+
+    public LiveData<User> getUser(String userId) {
+
+        return repository.getUser(userId);
+
     }
 }

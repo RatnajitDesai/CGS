@@ -16,7 +16,6 @@ public class Grievance {
     private Grievance grievance;
 
 
-
     public Grievance() {
 
     }

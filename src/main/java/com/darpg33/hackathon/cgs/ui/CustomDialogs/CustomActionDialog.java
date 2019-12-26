@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -124,6 +125,13 @@ public class CustomActionDialog extends BottomSheetDialogFragment implements Vie
         btnSubmit.setOnClickListener(this);
         init(mActionBy);
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        view.setAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.fade_transition_animation));
     }
 
     private void init(String mActionBy) {

@@ -1,12 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:gravity="center"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/quantum_grey50"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:weightSum="100">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dashboard Fragment"/>
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/piechart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="50"
+        android:layout_margin="8dp"
+        android:background="@drawable/white_rounded_border"
+        android:elevation="10dp" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:id="@+id/relativeLayout"
+        android:layout_weight="50">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/most_important_grievances"
+            android:fontFamily="sans-serif-medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+            android:layout_margin="8dp"
+            android:id="@+id/text"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:id="@+id/requestsRecyclerView"
+            android:layout_below="@id/text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/relax_no_important_grievances_available_right_now"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:textColor="@color/design_default_color_on_secondary"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:id="@+id/textNoGrievances" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/progressBar"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
 </LinearLayout>

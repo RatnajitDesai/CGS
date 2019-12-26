@@ -67,7 +67,6 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
 
     private void getAllRequests(String user_district) {
 
-
         Log.d(TAG, "getAllRequests: called.");
 
         mFeedsViewModel.getAllRequests(user_district).observe(this, new Observer<ArrayList<Grievance>>() {
@@ -114,15 +113,7 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
 
                 if (upvoted) {
                     Log.d(TAG, "onChanged: setting upvote.");
-                    if (mGrievances.get(position).getUpvotes() != null) {
-                        mGrievances.get(position).getUpvotes().add(userId);
-                        mFeedAdapter.notifyItemChanged(position);
-                    } else {
-                        ArrayList<String> temp = new ArrayList<>();
-                        temp.add(userId);
-                        mGrievances.get(position).setUpvotes(temp);
-                        mFeedAdapter.notifyItemChanged(position);
-                    }
+                    mFeedAdapter.notifyItemChanged(position, mGrievances.get(position).getUpvotes());
                 }
             }
         });
@@ -138,12 +129,13 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
                 if (upvoteCanceled) {
 
                     mGrievances.get(position).getUpvotes().remove(userId);
-                    mFeedAdapter.notifyItemChanged(position);
+                    mFeedAdapter.notifyItemChanged(position, mGrievances.get(position).getUpvotes());
 
                 }
             }
         });
     }
+
 
     @Override
     public void viewProfile(String userId) {

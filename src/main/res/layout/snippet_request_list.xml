@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/requestTitleData"
             android:layout_width="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:maxLines="2"
@@ -65,7 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="High"
             android:layout_centerHorizontal="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
             android:layout_marginEnd="8dp" />

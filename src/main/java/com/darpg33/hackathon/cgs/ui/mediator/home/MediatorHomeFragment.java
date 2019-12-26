@@ -15,6 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.darpg33.hackathon.cgs.HelperAdapters.SectionsPagerAdapter;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.ui.request.requestlist.InProcessRequestFragment;
 import com.darpg33.hackathon.cgs.ui.request.requestlist.PendingRequestFragment;
 import com.darpg33.hackathon.cgs.ui.request.requestlist.ResolvedRequestFragment;
@@ -82,7 +83,7 @@ public class MediatorHomeFragment extends Fragment implements
 
     private void getCountPending(){
 
-        mediatorHomeViewModel.getGrievanceCount("Pending", "mediator").observe(this, new Observer<Integer>() {
+        mediatorHomeViewModel.getGrievanceCount(Fields.GR_STATUS_PENDING).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -101,8 +102,7 @@ public class MediatorHomeFragment extends Fragment implements
 
     private void getCountInProcess(){
 
-
-        mediatorHomeViewModel.getGrievanceCount("In Process", "mediator").observe(this, new Observer<Integer>() {
+        mediatorHomeViewModel.getGrievanceCount(Fields.GR_STATUS_IN_PROCESS).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -122,7 +122,7 @@ public class MediatorHomeFragment extends Fragment implements
 
     private void getCountResolved(){
 
-        mediatorHomeViewModel.getGrievanceCount("Resolved", "mediator").observe(this, new Observer<Integer>() {
+        mediatorHomeViewModel.getGrievanceCount(Fields.GR_STATUS_RESOLVED).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {

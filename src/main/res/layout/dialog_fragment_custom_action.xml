@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/white_background_tile"
+    android:background="@drawable/rounded_upper_corners_white_bg"
     android:id="@+id/relativeLayout"
     android:elevation="10dp">
 
@@ -98,7 +98,6 @@
             />
 
         <androidx.appcompat.widget.AppCompatSpinner
-
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:id="@+id/spPriority"
@@ -106,12 +105,8 @@
             android:entries="@array/select_priority"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-
             />
-
     </LinearLayout>
-
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/txtEnterNotes"

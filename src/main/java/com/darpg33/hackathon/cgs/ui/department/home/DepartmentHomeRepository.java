@@ -24,7 +24,7 @@ class DepartmentHomeRepository {
 
     }
 
-    MutableLiveData<Integer> getGrievanceCount(final String status, String user_type) {
+    MutableLiveData<Integer> getGrievanceCount(final String status) {
 
         final MutableLiveData<Integer> data = new MutableLiveData<>();
 

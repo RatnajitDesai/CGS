@@ -14,7 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.darpg33.hackathon.cgs.HelperAdapters.SectionsPagerAdapter;
 import com.darpg33.hackathon.cgs.R;
-import com.darpg33.hackathon.cgs.ui.home.tabs.actions.ActionItemsFragment;
+import com.darpg33.hackathon.cgs.ui.home.tabs.actions.NotificationsFragment;
 import com.darpg33.hackathon.cgs.ui.home.tabs.feed.FeedsFragment;
 import com.darpg33.hackathon.cgs.ui.home.tabs.myrequests.MyRequestsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,7 +22,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, BottomNavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
+public class HomeFragment extends Fragment implements View.OnClickListener,
+        BottomNavigationView.OnNavigationItemSelectedListener,
+        ViewPager.OnPageChangeListener {
 
     private static final String TAG = "HomeFragment";
 
@@ -46,7 +48,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Bott
         SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager(), 3);
         mSectionsPagerAdapter.addFragment(new FeedsFragment());
         mSectionsPagerAdapter.addFragment(new MyRequestsFragment());
-        mSectionsPagerAdapter.addFragment(new ActionItemsFragment());
+        mSectionsPagerAdapter.addFragment(new NotificationsFragment());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mFab.setOnClickListener(this);
         mViewPager.addOnPageChangeListener(this);

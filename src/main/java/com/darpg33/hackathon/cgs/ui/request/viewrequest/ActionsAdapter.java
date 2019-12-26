@@ -20,16 +20,22 @@ import java.util.ArrayList;
 
 public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.ViewActionViewHolder>{
 
+    public interface UsernameClickListener {
+        void viewProfile(String userId);
+    }
+
 
 
     private static final String TAG = "ActionsAdapter";
     private ArrayList<Action> mActions;
     private Context mContext;
+    private UsernameClickListener mUsernameClickListener;
 
 
-    ActionsAdapter(ArrayList<Action> actions)
+    ActionsAdapter(ArrayList<Action> actions, UsernameClickListener listener)
     {
         mActions = actions;
+        mUsernameClickListener = listener;
     }
 
     @NonNull
@@ -59,6 +65,13 @@ public class ActionsAdapter extends RecyclerView.Adapter<ActionsAdapter.ViewActi
             }
             holder.actionUserType.setText(mActions.get(position).getUser_type());
         }
+
+        holder.actionSubmittedBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mUsernameClickListener.viewProfile(mActions.get(position).getUser_id());
+            }
+        });
 
     }
 

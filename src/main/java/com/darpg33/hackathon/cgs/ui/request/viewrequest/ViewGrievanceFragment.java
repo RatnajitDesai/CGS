@@ -29,7 +29,9 @@ import com.darpg33.hackathon.cgs.R;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.TimeDateUtilities;
 import com.darpg33.hackathon.cgs.ui.CustomDialogs.CustomActionDialog;
+import com.darpg33.hackathon.cgs.ui.dialogs.viewProfile.ViewProfileDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.util.ArrayList;
@@ -45,7 +47,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         CustomActionDialog.AssignWorkerListener,
         CustomActionDialog.RejectListener,
         CustomActionDialog.CompleteListener,
-        CustomActionDialog.ForwardListener {
+        CustomActionDialog.ForwardListener, ActionsAdapter.UsernameClickListener {
 
     private static final String TAG = "ViewGrievanceFragment";
 
@@ -57,7 +59,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     private ArrayList<Attachment> mAttachments = new ArrayList<>();
     private ArrayList<Action> mActions = new ArrayList<>();
     private String mRequestId,mUserType;
-
+    private Grievance mGrievance = new Grievance();
 
     //widgets
     private TextView mTitle, mTimeStamp, mStatus, mRequestedBy,
@@ -78,7 +80,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         mDescription = view.findViewById(R.id.grievanceDescription);
         mTimeStamp = view.findViewById(R.id.grievance_timestamp);
         mStatus = view.findViewById(R.id.grievance_status);
-        mRequestedBy = view.findViewById(R.id.grievanceSubmittedBy);
+        mRequestedBy = view.findViewById(R.id.grievanceRequestedBy);
         mHandledBy = view.findViewById(R.id.grievanceHandledBy);
         mPrivacy = view.findViewById(R.id.grievancePrivacy);
         mGrievanceUpvotes = view.findViewById(R.id.grievanceUpvotes);
@@ -103,6 +105,16 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         viewGrievanceViewModel = ViewModelProviders.of(this).get(ViewGrievanceViewModel.class);
         customActionViewModel = ViewModelProviders.of(this).get(CustomActionViewModel.class);
         init();
+
+
+        mRequestedBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                viewProfile(mGrievance.getUser_id());
+            }
+        });
+
         return view;
     }
 
@@ -119,6 +131,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         {
             setGrievanceView(bundle);
         }
+
 
     }
 
@@ -266,6 +279,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
             public void onChanged(Grievance grievance) {
                 if (grievance != null)
                 {
+                    mGrievance = grievance;
                     viewGrievanceViewModel.getGrievanceAttachments(mRequestId).observe(ViewGrievanceFragment.this, new Observer<ArrayList<Attachment>>() {
                         @Override
                         public void onChanged(ArrayList<Attachment> attachments) {
@@ -368,7 +382,7 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         //actions recycler
         LinearLayoutManager actionsLinearLayout = new LinearLayoutManager(getContext());
         mActionsRecyclerView.setLayoutManager(actionsLinearLayout);
-        mActionsAdapter = new ActionsAdapter(mActions);
+        mActionsAdapter = new ActionsAdapter(mActions, this);
         mActionsRecyclerView.setAdapter(mActionsAdapter);
     }
 
@@ -437,8 +451,12 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
     public void viewLocation(Attachment attachment) {
 
         Log.d(TAG, "viewLocation: ");
-        String uri = String.format(Locale.ENGLISH, "geo:%f,%f", attachment.getGeoPoint().getLatitude(),
-                attachment.getGeoPoint().getLongitude());
+        String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f&z=16", attachment.getGeoPoint().getLatitude(),
+                attachment.getGeoPoint().getLongitude(),
+                attachment.getGeoPoint().getLatitude(),
+                attachment.getGeoPoint().getLongitude()
+        );
+
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         getContext().startActivity(intent);
 
@@ -678,7 +696,6 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
         action.setAction_priority(priority);
         action.setUser_type(mUserType);
 
-
         customActionViewModel.assignToWorkerRequest(action, assignTo).observe(this, new Observer<Action>() {
             @Override
             public void onChanged(Action action) {
@@ -693,6 +710,46 @@ public class ViewGrievanceFragment extends Fragment implements ViewAttachmentAda
             }
         });
 
+    }
+
+    @Override
+    public void viewProfile(String userId) {
+
+        viewGrievanceViewModel.getUser(userId).observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+
+                if (user != null) {
+
+                    if (user.getUser_type().equalsIgnoreCase(Fields.USER_TYPE_CITIZEN)) {
+
+                        if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+
+                            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.nav_profile);
+
+                        } else {
+                            ViewProfileDialog dialog = new ViewProfileDialog();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(Fields.BUNDLE_USER_INFO, user);
+                            dialog.setArguments(bundle);
+                            dialog.show(Objects.requireNonNull(getFragmentManager()), "ViewProfileDialog");
+                        }
+                    } else {
+
+                        ViewProfileDialog dialog = new ViewProfileDialog();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(Fields.BUNDLE_USER_INFO, user);
+                        dialog.setArguments(bundle);
+                        dialog.show(Objects.requireNonNull(getFragmentManager()), "ViewProfileDialog");
+
+
+                    }
+
+                }
+
+            }
+
+        });
 
     }
 }
