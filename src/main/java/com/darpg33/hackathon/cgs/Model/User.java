@@ -12,12 +12,18 @@ public class User implements Parcelable {
     user_type,
     first_name, last_name, gender,
     phone_number, email_id,
-    address,pin_code, country, state, district;
+            address, pin_code, country, state, district, user_department;
     private Timestamp timestamp;
     private Boolean registered;
 
-    public User(String user_id,String user_type, String first_name, String last_name, String gender, String phone_number, String email_id,
-                String address, String pin_code, String country, String state, String district, Timestamp timestamp, Boolean registered) {
+
+    public User() {
+    }
+
+    public User(String user_id, String user_type,
+                String first_name, String last_name, String gender,
+                String phone_number, String email_id, String address, String pin_code, String country, String state, String district,
+                String user_department, Timestamp timestamp, Boolean registered) {
         this.user_id = user_id;
         this.user_type = user_type;
         this.first_name = first_name;
@@ -30,28 +36,10 @@ public class User implements Parcelable {
         this.country = country;
         this.state = state;
         this.district = district;
+        this.user_department = user_department;
         this.timestamp = timestamp;
         this.registered = registered;
     }
-
-
-    public User(String first_name, String last_name, String gender, String phone_number, String email_id, String address, String pin_code, String country, String state, String district, Timestamp timestamp) {
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.gender = gender;
-        this.phone_number = phone_number;
-        this.email_id = email_id;
-        this.address = address;
-        this.pin_code = pin_code;
-        this.country = country;
-        this.state = state;
-        this.district = district;
-        this.timestamp = timestamp;
-    }
-
-    public User() {
-    }
-
 
     protected User(Parcel in) {
         user_id = in.readString();
@@ -66,6 +54,7 @@ public class User implements Parcelable {
         country = in.readString();
         state = in.readString();
         district = in.readString();
+        user_department = in.readString();
         timestamp = in.readParcelable(Timestamp.class.getClassLoader());
         byte tmpRegistered = in.readByte();
         registered = tmpRegistered == 0 ? null : tmpRegistered == 1;
@@ -179,6 +168,14 @@ public class User implements Parcelable {
         this.district = district;
     }
 
+    public String getUser_department() {
+        return user_department;
+    }
+
+    public void setUser_department(String user_department) {
+        this.user_department = user_department;
+    }
+
     public Timestamp getTimestamp() {
         return timestamp;
     }
@@ -193,30 +190,6 @@ public class User implements Parcelable {
 
     public void setRegistered(Boolean registered) {
         this.registered = registered;
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(user_id);
-        dest.writeString(user_type);
-        dest.writeString(first_name);
-        dest.writeString(last_name);
-        dest.writeString(gender);
-        dest.writeString(phone_number);
-        dest.writeString(email_id);
-        dest.writeString(address);
-        dest.writeString(pin_code);
-        dest.writeString(country);
-        dest.writeString(state);
-        dest.writeString(district);
-        dest.writeParcelable(timestamp, flags);
-        dest.writeByte((byte) (registered == null ? 0 : registered ? 1 : 2));
     }
 
     @Override
@@ -234,9 +207,34 @@ public class User implements Parcelable {
                 ", country='" + country + '\'' +
                 ", state='" + state + '\'' +
                 ", district='" + district + '\'' +
+                ", user_department='" + user_department + '\'' +
                 ", timestamp=" + timestamp +
                 ", registered=" + registered +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(user_id);
+        parcel.writeString(user_type);
+        parcel.writeString(first_name);
+        parcel.writeString(last_name);
+        parcel.writeString(gender);
+        parcel.writeString(phone_number);
+        parcel.writeString(email_id);
+        parcel.writeString(address);
+        parcel.writeString(pin_code);
+        parcel.writeString(country);
+        parcel.writeString(state);
+        parcel.writeString(district);
+        parcel.writeString(user_department);
+        parcel.writeParcelable(timestamp, i);
+        parcel.writeByte((byte) (registered == null ? 0 : registered ? 1 : 2));
     }
 }
 

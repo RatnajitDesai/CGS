@@ -29,7 +29,6 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
 
     private static final String TAG = "FeedsFragment";
 
-
     //vars
     private FeedAdapter mFeedAdapter;
     private ArrayList<Grievance> mGrievances;
@@ -67,7 +66,6 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
 
     private void getAllRequests(String user_district) {
 
-
         Log.d(TAG, "getAllRequests: called.");
 
         mFeedsViewModel.getAllRequests(user_district).observe(this, new Observer<ArrayList<Grievance>>() {
@@ -75,12 +73,10 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
             public void onChanged(ArrayList<Grievance> grievances) {
 
                 Log.d(TAG, "onChanged: get all feeds." + grievances.size());
-                //PagedList should be used instead - time crunch
-
+                //PagedList should be used instead
                 mGrievances.clear();
                 mGrievances.addAll(grievances);
                 mFeedAdapter.notifyDataSetChanged();
-
             }
         });
     }
@@ -113,15 +109,10 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
             public void onChanged(Boolean upvoted) {
 
                 if (upvoted) {
-                    Log.d(TAG, "onChanged: setting upvote.");
-                    if (mGrievances.get(position).getUpvotes() != null) {
+                    if (mGrievances.size() > 0) {
+                        Log.d(TAG, "onChanged: setting upvote. " + mGrievances.toString() + " " + mGrievances.size());
                         mGrievances.get(position).getUpvotes().add(userId);
-                        mFeedAdapter.notifyItemChanged(position);
-                    } else {
-                        ArrayList<String> temp = new ArrayList<>();
-                        temp.add(userId);
-                        mGrievances.get(position).setUpvotes(temp);
-                        mFeedAdapter.notifyItemChanged(position);
+                        mFeedAdapter.notifyItemChanged(position, mGrievances.get(position).getUpvotes());
                     }
                 }
             }
@@ -132,18 +123,21 @@ public class FeedsFragment extends Fragment implements FeedAdapter.GrievanceOnCl
     public void resetUpvote(final String userId, String requestId, final int position) {
 
         Log.d(TAG, "onChanged: resetting upvote.");
+
         mFeedsViewModel.resetUpvote(userId, requestId).observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean upvoteCanceled) {
                 if (upvoteCanceled) {
 
-                    mGrievances.get(position).getUpvotes().remove(userId);
-                    mFeedAdapter.notifyItemChanged(position);
-
+                    if (mGrievances.size() > 0) {
+                        mGrievances.get(position).getUpvotes().remove(userId);
+                        mFeedAdapter.notifyItemChanged(position, mGrievances.get(position).getUpvotes());
+                    }
                 }
             }
         });
     }
+
 
     @Override
     public void viewProfile(String userId) {

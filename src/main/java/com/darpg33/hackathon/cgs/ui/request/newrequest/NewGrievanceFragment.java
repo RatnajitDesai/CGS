@@ -228,14 +228,18 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
 
                                 if (map != null) {
 
-
-
                                         grievanceViewModel.submitNewRequest(grievance, map).observe(NewGrievanceFragment.this, new Observer<Grievance>() {
                                             @Override
                                             public void onChanged(Grievance grievance) {
                                                 if (grievance != null) {
                                                     Toast.makeText(mContext, "Request raised : " + grievance.getRequest_id(), Toast.LENGTH_SHORT).show();
-                                                    Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.btnSubmit).navigate(R.id.nav_home);
+
+
+                                                    //navigate to home
+
+                                                    Navigation.findNavController(getView()).navigate(R.id.action_nav_new_grievance_to_nav_home2);
+
+
                                                 }
                                                 else {
 
@@ -244,7 +248,6 @@ public class NewGrievanceFragment extends Fragment implements View.OnClickListen
                                                     mAttachmentsRecycler.setClickable(true);
                                                     enableViews(mGrievanceTitle,mGrievanceCategory, mGrievanceDescription,
                                                             mPrivacy, mPrivate,mPublic, mAttachmentButton, mSubmit);
-
                                                 }
                                             }
                                         });

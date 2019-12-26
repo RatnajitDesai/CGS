@@ -324,22 +324,22 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
         }
     }
 
-     void setPhotoUriListener(PhotoUriListener mPhotoUriListener)
+    public void setPhotoUriListener(PhotoUriListener mPhotoUriListener)
     {
         this.mPhotoUriListener = mPhotoUriListener;
     }
 
-     void setDocumentUriListener(DocumentUriListener listener)
+    public void setDocumentUriListener(DocumentUriListener listener)
     {
         this.mDocumentUriListener = listener;
     }
 
-    void setLocationListener(LocationListener listener)
+    public void setLocationListener(LocationListener listener)
     {
         this.mLocationListener = listener;
     }
 
-    void setCameraUriListener(CameraUriListener listener)
+    public void setCameraUriListener(CameraUriListener listener)
     {
         this.mCameraUriListener = listener;
     }

@@ -11,14 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/citizen_bottom_navigation"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/citizen_home_nav"
+        android:layout_below="@id/citizen_home_nav"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -28,7 +28,7 @@
         android:src="@drawable/ic_icon_edit"
         app:backgroundTint="@color/colorPrimary"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@id/viewpager"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
         />
 

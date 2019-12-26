@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +15,6 @@ import androidx.navigation.Navigation;
 import com.darpg33.hackathon.cgs.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.Objects;
 
@@ -30,16 +28,11 @@ public class PersonalInfoFragment extends Fragment implements View.OnClickListen
     private RegisterViewModel registerViewModel;
     private View view;
 
-    private String mVerificationId;
-    private PhoneAuthProvider.ForceResendingToken mResendToken;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-
 
 
     //widgets
     private MaterialButton mNext;
-    private TextInputEditText mEtFirstName, mEtLastName, mEtPhoneNumber, mEtEmailId, mEtAddress, mEtPinCode, mEtPassword, mEtConfPassword;
-    private Spinner mSpSelectCountry, mSpSelectState, mSpSelectDistrict;
+    private TextInputEditText mEtFirstName, mEtLastName;
     private RadioGroup mRgGender;
 
 

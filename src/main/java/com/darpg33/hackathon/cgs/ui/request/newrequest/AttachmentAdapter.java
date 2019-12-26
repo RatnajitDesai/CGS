@@ -23,19 +23,19 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
     private RemoveItemListener removeItemListener;
     public boolean isClickable = true;
 
-    AttachmentAdapter(ArrayList<Attachment> attachments)
+    public AttachmentAdapter(ArrayList<Attachment> attachments)
     {
         mAttachments = attachments;
     }
 
 
-    interface RemoveItemListener{
+    public interface RemoveItemListener {
 
         void removeItem(Attachment attachment,int position);
 
     }
 
-    void setRemoveItemListener(RemoveItemListener listener)
+    public void setRemoveItemListener(RemoveItemListener listener)
     {
         removeItemListener = listener;
     }

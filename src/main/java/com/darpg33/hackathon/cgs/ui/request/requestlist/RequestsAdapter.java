@@ -15,6 +15,7 @@ import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.darpg33.hackathon.cgs.Utils.TimeDateUtilities;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class RequestsAdapter extends RecyclerView.Adapter< RequestsAdapter.GrievanceViewHolder> {
 
@@ -46,17 +47,10 @@ public class RequestsAdapter extends RecyclerView.Adapter< RequestsAdapter.Griev
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final GrievanceViewHolder holder, int position){
-        StringBuffer request_id = new StringBuffer("#");
+    public void onBindViewHolder(@NonNull final GrievanceViewHolder holder, final int position) {
+
         StringBuffer title_buffer =  new StringBuffer(mGrievances.get(position).getTitle());
-        int title_length = 30;
-        if (title_buffer.length() > title_length)
-        {
-            title_buffer = new StringBuffer(title_buffer.substring(0,title_length)).append("...");
-        }
-        else {
-            title_buffer = new StringBuffer(title_buffer);
-        }
+
 
         switch (mGrievances.get(position).getStatus()) {
             case Fields
@@ -71,35 +65,39 @@ public class RequestsAdapter extends RecyclerView.Adapter< RequestsAdapter.Griev
             }
             case Fields
                     .GR_STATUS_RESOLVED: {
-                holder.mRequestStatus.setTextColor(Color.GREEN);
+                holder.mRequestStatus.setTextColor(Color.rgb(34, 139, 34));
                 break;
             }
         }
 
-        request_id.append(mGrievances.get(position).getRequest_id());
-        holder.mRequestId.setText(request_id);
+        holder.mRequestId.setText(String.format(Locale.ENGLISH, "CG#%s", mGrievances.get(position).getRequest_id()));
         holder.mRequestStatus.setText(mGrievances.get(position).getStatus());
         holder.mRequestTimeStamp.setText(TimeDateUtilities.getDateAndTime(mGrievances.get(position).getTimestamp()));
         holder.mRequestTitle.setText(title_buffer);
 
         if (mGrievances.get(position).getPriority() != null) {
             String priority = mGrievances.get(position).getPriority();
-            switch (priority) {
+            if (priority.equalsIgnoreCase("High")) {
+                holder.mRequestPriority.setVisibility(View.VISIBLE);
+                holder.mRequestPriority.setTextColor(Color.RED);
 
-                case "High": {
-                    holder.mRequestPriority.setVisibility(View.VISIBLE);
-                    holder.mRequestPriority.setTextColor(Color.RED);
-                    break;
-                }
-                case "Medium": {
-                    holder.mRequestPriority.setVisibility(View.VISIBLE);
-                    holder.mRequestPriority.setTextColor(Color.BLUE);
-                    break;
-                }
+            } else if (priority.equalsIgnoreCase("Medium")) {
+
+                holder.mRequestPriority.setVisibility(View.VISIBLE);
+                holder.mRequestPriority.setTextColor(Color.BLUE);
+
             }
         } else {
             holder.mRequestPriority.setVisibility(View.GONE);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mGrievanceOnClickListener.viewGrievance(mGrievances.get(position).getRequest_id());
+            }
+        });
 
     }
 
@@ -109,7 +107,7 @@ public class RequestsAdapter extends RecyclerView.Adapter< RequestsAdapter.Griev
     }
 
 
-     class GrievanceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class GrievanceViewHolder extends RecyclerView.ViewHolder {
 
          private TextView mRequestStatus, mRequestId, mRequestPriority,
                 mRequestTitle, mRequestTimeStamp;
@@ -123,17 +121,6 @@ public class RequestsAdapter extends RecyclerView.Adapter< RequestsAdapter.Griev
              mRequestPriority = itemView.findViewById(R.id.requestPriorityData);
              mRequestTitle = itemView.findViewById(R.id.requestTitleData);
              mRequestTimeStamp = itemView.findViewById(R.id.requestTimeStamp);
-
-             itemView.setOnClickListener(this);
-
-
-        }
-
-         @Override
-         public void onClick(View v) {
-
-             mGrievanceOnClickListener.viewGrievance(mRequestId.getText().toString().replace("#",""));
-
          }
-     }
+    }
 }

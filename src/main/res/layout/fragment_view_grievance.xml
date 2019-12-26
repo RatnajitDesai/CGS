@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -125,13 +124,14 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
                     <TextView
-                        android:id="@+id/grievanceSubmittedBy"
+                        android:id="@+id/grievanceRequestedBy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/attachmentsRecyclerView"
                         android:layout_margin="8dp"
                         android:layout_toEndOf="@id/txtGrievanceSubmittedBy"
                         android:text="Ratnajit Desai"
+                        android:textColor="@color/link_blue"
                         android:fontFamily="Rubik"
                         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
@@ -140,7 +140,7 @@
                         android:id="@+id/txtGrievanceHandledBy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/txtGrievanceSubmittedBy"
+                        android:layout_below="@id/grievanceRequestedBy"
                         android:layout_margin="8dp"
                         android:text="@string/handled_by"
                         android:fontFamily="Rubik"
@@ -151,7 +151,7 @@
                         android:id="@+id/grievanceHandledBy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/grievanceSubmittedBy"
+                        android:layout_below="@id/grievanceRequestedBy"
                         android:layout_margin="8dp"
                         android:layout_toEndOf="@id/txtGrievanceHandledBy"
                         android:text="@string/mediator"
@@ -160,7 +160,6 @@
 
 
                     <TextView
-                        android:id="@+id/txtGrievancePrivacy"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/attachmentsRecyclerView"
@@ -190,7 +189,7 @@
                         android:layout_margin="8dp"
                         android:drawableStart="@drawable/ic_thumb_up_colored_24dp"
                         android:drawablePadding="8dp"
-                        android:text="8"
+                        android:text="0"
                         android:layout_centerVertical="true"
                         android:layout_below="@id/grievanceHandledBy"
                         android:fontFamily="Rubik"
@@ -202,10 +201,11 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/actionsRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_below="@id/relativeLayout1"
                     android:layout_centerHorizontal="true"
                     android:orientation="vertical" />
+
 
             </RelativeLayout>
 
@@ -215,6 +215,8 @@
             android:id="@id/relativeLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:background="@color/transparent"
             android:layout_alignParentBottom="true">
 
             <LinearLayout
@@ -255,7 +257,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linearLayout1"

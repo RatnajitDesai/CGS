@@ -37,8 +37,6 @@ public class DepartmentHomeFragment extends Fragment implements
     private ViewPager mViewPager;
     private BadgeDrawable pendingBadge, inProcessBadge, resolvedBadge;
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -83,7 +81,7 @@ public class DepartmentHomeFragment extends Fragment implements
 
     private void getCountPending(){
 
-        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_PENDING, Fields.USER_TYPE_DEP_INCHARGE).observe(this, new Observer<Integer>() {
+        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_PENDING).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -103,7 +101,7 @@ public class DepartmentHomeFragment extends Fragment implements
     private void getCountInProcess(){
 
 
-        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_IN_PROCESS, Fields.USER_TYPE_DEP_INCHARGE).observe(this, new Observer<Integer>() {
+        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_IN_PROCESS).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {
@@ -123,7 +121,7 @@ public class DepartmentHomeFragment extends Fragment implements
 
     private void getCountResolved(){
 
-        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_RESOLVED, Fields.USER_TYPE_DEP_INCHARGE).observe(this, new Observer<Integer>() {
+        departmentHomeViewModel.getGrievanceCount(Fields.GR_STATUS_RESOLVED).observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 if (integer > 0) {

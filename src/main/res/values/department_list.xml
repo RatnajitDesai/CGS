@@ -3,7 +3,6 @@
 
     <string-array name="department_list">
 
-
         <item>Department of Water</item>
         <item>Department of Road</item>
         <item>Department of Health</item>
@@ -11,6 +10,5 @@
         <item>Department of Finance</item>
 
     </string-array>
-
 
 </resources>

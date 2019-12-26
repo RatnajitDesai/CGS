@@ -7,8 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/relativeLayout">
-
+        android:visibility="gone"
+        android:id="@+id/citizenRelativeLayout">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -21,7 +21,6 @@
                 android:layout_margin="8dp">
 
                 <TextView
-                    android:id="@+id/txtPersonalInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/personal_info"
@@ -38,7 +37,6 @@
                     android:layout_marginStart="8dp">
 
                     <TextView
-                        android:id="@+id/txtUsername"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="User Name"
@@ -63,7 +61,6 @@
 
 
                     <TextView
-                        android:id="@+id/txtGender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/gender"
@@ -80,7 +77,6 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/txtContactInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/contact_info"
@@ -99,7 +95,6 @@
 
 
                     <TextView
-                        android:id="@+id/txtPhoneNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/phone_number"
@@ -142,7 +137,6 @@
 
 
                 <TextView
-                    android:id="@+id/txtAddressInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/address_info"
@@ -190,6 +184,46 @@
 
 
     </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/linOfficerLayout"
+        android:gravity="center_horizontal">
+
+
+        <TextView
+            android:id="@+id/officerDepartment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:text="Officer Department"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+
+        <TextView
+            android:id="@+id/officerUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textAllCaps="true"
+            android:layout_margin="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+        <TextView
+            android:id="@+id/officerPost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Officer Post"
+            android:textAllCaps="true"
+            android:layout_margin="8dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"

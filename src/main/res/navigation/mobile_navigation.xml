@@ -2,19 +2,33 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_home">
 
     <fragment
         android:id="@+id/nav_new_grievance"
         android:name="com.darpg33.hackathon.cgs.ui.request.newrequest.NewGrievanceFragment"
         android:label="@string/menu_new_grievance"
-        tools:layout="@layout/fragment_new_grievance" />
+        tools:layout="@layout/fragment_new_grievance">
+        <action
+            android:id="@+id/action_nav_new_grievance_to_nav_home2"
+            app:destination="@id/nav_home"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_home" />
+    </fragment>
 
     <fragment android:id="@+id/nav_view_grievance"
         android:name="com.darpg33.hackathon.cgs.ui.request.viewrequest.ViewGrievanceFragment"
         android:label="CG#{grievance_request_id}"
-        tools:layout="@layout/fragment_view_grievance"/>
+        tools:layout="@layout/fragment_view_grievance">
+
+        <action
+            android:id="@+id/action_nav_view_grievance_to_nav_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_home"
@@ -22,28 +36,35 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home" >
         <action
+            android:id="@+id/action_nav_home_to_nav_new_grievance2"
+            app:destination="@id/nav_new_grievance"
+            app:popUpTo="@+id/nav_new_grievance" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_view_grievance2"
+            app:destination="@id/nav_view_grievance"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@+id/nav_view_grievance" />
+        <action
             android:id="@+id/action_nav_home_to_nav_profile"
-            app:destination="@id/nav_profile" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_settings"
-            app:destination="@id/nav_settings" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_share"
-            app:destination="@id/nav_share" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_sign_out"
-            app:destination="@id/nav_sign_out" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_new_grievance"
-            app:destination="@id/nav_new_grievance" />
-
+            app:destination="@id/nav_profile"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@+id/nav_profile" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_profile"
         android:name="com.darpg33.hackathon.cgs.ui.profile.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_nav_profile_to_nav_edit_profile3"
+            app:destination="@id/nav_edit_profile"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_edit_profile"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_edit_profile"
@@ -51,13 +72,25 @@
         android:label="@string/menu_edit_profile"
         tools:layout="@layout/fragment_edit_profile" >
 
+        <action
+            android:id="@+id/action_nav_edit_profile_to_nav_profile"
+            app:destination="@+id/nav_profile"
+            app:enterAnim="@anim/fade_transition_animation"
+            app:exitAnim="@anim/fade_transition_animation"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_profile"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.darpg33.hackathon.cgs.ui.settings.SettingsFragment"
         android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_nav_settings_to_nav_home"
+            app:popUpTo="@id/nav_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_share"
@@ -70,13 +103,7 @@
         android:name="com.darpg33.hackathon.cgs.ui.signout.SignOutFragment"
         android:label="@string/menu_sign_out"
         tools:layout="@layout/fragment_sign_out" >
-        <action
-            android:id="@+id/action_nav_sign_out_to_login_activity"
-            app:destination="@id/login_activity" />
     </fragment>
-
-
-
 
     <activity android:id="@+id/login_activity"
         tools:layout="@layout/activity_login"/>

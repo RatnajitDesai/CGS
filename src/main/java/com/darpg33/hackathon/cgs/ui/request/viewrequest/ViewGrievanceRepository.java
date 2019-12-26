@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.darpg33.hackathon.cgs.Model.Action;
 import com.darpg33.hackathon.cgs.Model.Attachment;
 import com.darpg33.hackathon.cgs.Model.Grievance;
+import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,7 +34,6 @@ class ViewGrievanceRepository {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
     MutableLiveData<Grievance> getGrievanceData(final String requestID) {
 
         final MutableLiveData<Grievance> liveData = new MutableLiveData<>();
@@ -41,6 +41,7 @@ class ViewGrievanceRepository {
         db.collection(Fields.DBC_USERS)
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
             @Override
             public void onSuccess(DocumentSnapshot ds) {
 
@@ -238,7 +239,7 @@ class ViewGrievanceRepository {
                 ArrayList<Attachment> attachmentArrayList = new ArrayList<>();
                 if (documentSnapshot.exists())
                 {
-                    HashMap<String,HashMap<String,Object>> grievanceAttachments = (HashMap<String, HashMap<String, Object>>) documentSnapshot.get("grievance_attachments");
+                    HashMap<String, HashMap<String, Object>> grievanceAttachments = (HashMap<String, HashMap<String, Object>>) documentSnapshot.get(Fields.DB_GR_ATTACHMENTS);
 
                     if (grievanceAttachments!= null)
                     {
@@ -353,14 +354,73 @@ class ViewGrievanceRepository {
 
                                     Action action = new Action();
 
-                                    action.setAction_performed(snapshot.getString("action_performed"));
-                                    action.setAction_description(snapshot.getString("action_description"));
-                                    action.setEmail_id(snapshot.getString("action_user_email"));
-                                    action.setUser_id(snapshot.getString("action_user_id"));
-                                    action.setTimestamp(snapshot.getTimestamp("action_timestamp"));
-                                    action.setUser_type(snapshot.getString("action_user_type"));
-                                    action.setAction_info(snapshot.getString("action_info"));
-                                    action.setUsername(snapshot.getString("action_username"));
+                                    action.setAction_performed(snapshot.getString(Fields.DB_GR_ACTION_PERFORMED));
+                                    action.setAction_description(snapshot.getString(Fields.DB_GR_ACTION_DESCRIPTION));
+                                    action.setEmail_id(snapshot.getString(Fields.DB_GR_ACTION_USER_EMAIL));
+                                    action.setUser_id(snapshot.getString(Fields.DB_GR_ACTION_USER_ID));
+                                    action.setTimestamp(snapshot.getTimestamp(Fields.DB_GR_ACTION_TIMESTAMP));
+                                    action.setUser_type(snapshot.getString(Fields.DB_GR_ACTION_USER_TYPE));
+                                    action.setAction_info(snapshot.getString(Fields.DB_GR_ACTION_INFO));
+                                    action.setUsername(snapshot.getString(Fields.DB_GR_ACTION_USERNAME));
+
+                                    ArrayList<Attachment> attachmentArrayList = new ArrayList<>();
+
+                                    HashMap<String, HashMap<String, Object>> actionAttachments = (HashMap<String, HashMap<String, Object>>) snapshot.get(Fields.DB_GR_ACTION_ATTACHMENTS);
+
+                                    if (actionAttachments != null) {
+                                        for (HashMap.Entry<String, HashMap<String, Object>> attachments : actionAttachments.entrySet()) {
+                                            HashMap<String, Object> attachment = attachments.getValue();
+
+                                            Attachment attachment1 = new Attachment();
+                                            for (HashMap.Entry<String, Object> attachmentDetails : attachment.entrySet()) {
+
+                                                if (attachment.keySet().contains("geo_point")) {
+                                                    switch (attachmentDetails.getKey()) {
+                                                        case "address": {
+                                                            attachment1.setLocation_address((String) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                        case "geo_point": {
+                                                            attachment1.setGeoPoint((GeoPoint) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                        case "timestamp": {
+                                                            attachment1.setTimestamp((Timestamp) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                        case "type": {
+                                                            attachment1.setAttachmentType((String) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    switch (attachmentDetails.getKey()) {
+                                                        case "name": {
+                                                            attachment1.setAttachment_name((String) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                        case "path": {
+                                                            attachment1.setAttachmentPath((String) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                        case "timestamp": {
+                                                            attachment1.setTimestamp((Timestamp) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                        case "type": {
+                                                            attachment1.setAttachmentType((String) attachmentDetails.getValue());
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            attachmentArrayList.add(attachment1);
+                                        }
+                                        if (attachmentArrayList.size() == actionAttachments.size()) {
+                                            action.setAttachments(attachmentArrayList);
+                                        }
+                                    }
 
                                     actions.add(action);
                                 }
@@ -383,25 +443,67 @@ class ViewGrievanceRepository {
 
         final MutableLiveData<String> data = new MutableLiveData<>();
 
-        db.collection("Users")
+        db.collection(Fields.DBC_USERS)
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
 
-                        if (documentSnapshot.exists())
-                        {
-                            String userType = documentSnapshot.getString("user_type");
+                        if (documentSnapshot.exists()) {
+                            String userType = documentSnapshot.getString(Fields.DB_USER_USER_TYPE);
 
                             data.setValue(userType);
-                        }
-                        else {
+                        } else {
                             data.setValue(null);
                         }
                     }
                 });
 
+        return data;
+    }
+
+    public LiveData<User> getUser(final String userId) {
+
+
+        final MutableLiveData<User> data = new MutableLiveData<>();
+
+        db.collection(Fields.DBC_USERS)
+                .document(userId)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot.exists()) {
+
+                    User user = new User();
+                    user.setUser_id(userId);
+                    user.setAddress(documentSnapshot.getString(Fields.DB_USER_ADDRESS));
+                    user.setCountry(documentSnapshot.getString(Fields.DB_USER_COUNTRY));
+                    user.setState(documentSnapshot.getString(Fields.DB_USER_STATE));
+                    user.setDistrict(documentSnapshot.getString(Fields.DB_USER_DISTRICT));
+                    user.setPin_code(documentSnapshot.getString(Fields.DB_USER_PINCODE));
+                    user.setEmail_id(documentSnapshot.getString(Fields.DB_USER_EMAIL_ID));
+                    user.setUser_type(documentSnapshot.getString(Fields.DB_USER_USER_TYPE));
+                    user.setGender(documentSnapshot.getString(Fields.DB_USER_GENDER));
+                    user.setPhone_number(documentSnapshot.getString(Fields.DB_USER_PHONE_NUMBER));
+                    user.setFirst_name(documentSnapshot.getString(Fields.DB_USER_FIRSTNAME));
+                    user.setLast_name(documentSnapshot.getString(Fields.DB_USER_LASTNAME));
+                    user.setUser_department(documentSnapshot.getString(Fields.DB_USER_DEPARTMENT));
+                    data.setValue(user);
+                }
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ", e);
+                data.setValue(null);
+            }
+        });
 
         return data;
+
+
     }
 }
