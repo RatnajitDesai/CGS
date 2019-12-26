@@ -24,7 +24,6 @@
             >
 
             <TextView
-                android:id="@+id/txtPersonalInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/personal_info"
@@ -100,7 +99,6 @@
 
 
             <TextView
-                android:id="@+id/txtContactInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/contact_info"
@@ -114,7 +112,6 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/txtPhoneNumber"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -159,7 +156,6 @@
 
 
             <TextView
-                android:id="@+id/txtAddressInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/address_info"

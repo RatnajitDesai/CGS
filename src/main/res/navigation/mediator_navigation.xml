@@ -2,13 +2,12 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mediator_navigation.xml"
     app:startDestination="@id/nav_dashboard">
 
     <fragment android:id="@+id/nav_search"
         android:label="@string/menu_search"
         android:name="com.darpg33.hackathon.cgs.ui.mediator.search.MediatorSearchFragment"
-        tools:layout="@layout/fragment_search_grievance"/>
+        tools:layout="@layout/fragment_search" />
 
     <fragment android:id="@+id/nav_view_grievance"
         android:name="com.darpg33.hackathon.cgs.ui.request.viewrequest.ViewGrievanceFragment"
@@ -25,18 +24,6 @@
         android:label="@string/menu_dashboard"
         android:name="com.darpg33.hackathon.cgs.ui.mediator.dashboard.DashboardFragment"
         tools:layout="@layout/fragment_dashboard">
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_search"
-            app:destination="@id/nav_search" />
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_mediator_home"
-            app:destination="@id/nav_mediator_home" />
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_sign_out"
-            app:destination="@id/nav_sign_out" />
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_settings"
-            app:destination="@id/nav_settings" />
     </fragment>
 
     <fragment android:id="@+id/nav_mediator_home"
@@ -50,6 +37,7 @@
         android:name="com.darpg33.hackathon.cgs.ui.settings.SettingsFragment"
         tools:layout="@layout/fragment_settings"
         />
+
 
     <fragment android:id="@+id/nav_sign_out"
         android:label="@string/menu_sign_out"

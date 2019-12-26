@@ -21,6 +21,7 @@ import androidx.navigation.Navigation;
 
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.R;
+import com.darpg33.hackathon.cgs.Utils.Fields;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -155,8 +156,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             if (mUser != null)
             {
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("user",mUser);
-                Navigation.findNavController(getActivity(),R.id.fabEditProfile).navigate(R.id.nav_edit_profile,bundle);
+                bundle.putParcelable(Fields.BUNDLE_PROFILE_INFO, mUser);
+                Navigation.findNavController(getView()).navigate(R.id.action_nav_profile_to_nav_edit_profile3, bundle);
 
             }
         }

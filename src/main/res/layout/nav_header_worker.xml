@@ -12,25 +12,25 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
-        android:id="@+id/nv_txt_department"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.MaterialComponents.Headline5"
         android:text="Department of Water - worker"
+        android:id="@+id/drawer_user_department"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing" />
 
     <TextView
-        android:id="@+id/nv_txt_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_title"
+        android:id="@+id/drawer_username"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/nv_txt_email"
         android:layout_width="wrap_content"
+        android:id="@+id/drawer_user_email"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_subtitle" />
 

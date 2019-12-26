@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,10 +67,12 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
     private DocumentUriListener mDocumentUriListener;
     private CameraUriListener mCameraUriListener;
     private LocationListener mLocationListener;
+    private Uri photoURI;
 
 
     //widgets
     private MaterialButton mLocation, mDocument, mPhotos, mCamera;
+
 
     @Nullable
     @Override
@@ -82,7 +85,6 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
     private void init(View view) {
 
         Log.d(TAG, "init: ");
-
         mLocation = view.findViewById(R.id.location);
         mDocument = view.findViewById(R.id.document);
         mCamera = view.findViewById(R.id.camera);
@@ -124,11 +126,11 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
 
     }
 
+
     private void startCameraIntent() {
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, GET_CAMERA_REQUEST);
-
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePictureIntent, GET_CAMERA_REQUEST);
     }
 
     private void startLocationIntent()
@@ -136,7 +138,6 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
         if (checkPermissionsArray(Permissions.LOCATION_PERMISSIONS) && isServicesOK())
         {
             Intent intent = new Intent(getActivity(), MapsActivity.class);
-
             startActivityForResult(intent,GET_LOCATION_REQUEST);
         }
         else {
@@ -159,13 +160,10 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
     }
 
     private void startPhotosIntent() {
-
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         startActivityForResult(intent, GET_PHOTO_REQUEST);
     }
-
-
 
 
     /**
@@ -254,57 +252,81 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
                 if (intent != null) {
                     Uri uri = intent.getData();
 
-                    Cursor cursor =
-                            getContext().getContentResolver().query(uri, null, null, null, null);
-                    /*
-                     * Get the column indexes of the data in the Cursor,
-                     * move to the first row in the Cursor, get the data,
-                     * and display it.
-                     */
-                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                    cursor.moveToFirst();
-                    mPhotoUriListener.getPhotoUri(uri,cursor.getString(nameIndex),cursor.getLong(sizeIndex));
-                    cursor.close();
+                    if (uri != null) {
+                        Cursor cursor =
+                                getContext().getContentResolver().query(uri, null, null, null, null);
+                        /*
+                         * Get the column indexes of the data in the Cursor,
+                         * move to the first row in the Cursor, get the data,
+                         * and display it.
+                         */
+                        int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                        cursor.moveToFirst();
+                        mPhotoUriListener.getPhotoUri(uri, cursor.getString(nameIndex), cursor.getLong(sizeIndex));
+                        cursor.close();
+                    } else {
+                        Toast.makeText(getContext(), "Unable to load attachment.", Toast.LENGTH_SHORT).show();
+                    }
                     dismiss();
                 }
 
                 break;
             }
+
             case GET_DOC_REQUEST: {
                 Log.d(TAG, "onActivityResult: resultCode : " + resultCode);
 
                 if (intent != null) {
                     Uri uri = intent.getData();
 
-                    Cursor cursor =
-                            getContext().getContentResolver().query(uri, null, null, null, null);
-                    /*
-                     * Get the column indexes of the data in the Cursor,
-                     * move to the first row in the Cursor, get the data,
-                     * and display it.
-                     */
-                    int nameIndex = Objects.requireNonNull(cursor).getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                    cursor.moveToFirst();
-                    mDocumentUriListener.getDocumentUri(uri,cursor.getString(nameIndex),cursor.getLong(sizeIndex));
-                    cursor.close();
+                    if (uri != null) {
+                        Cursor cursor =
+                                getContext().getContentResolver().query(uri, null, null, null, null);
+                        /*
+                         * Get the column indexes of the data in the Cursor,
+                         * move to the first row in the Cursor, get the data,
+                         * and display it.
+                         */
+                        int nameIndex = Objects.requireNonNull(cursor).getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        int sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
+                        cursor.moveToFirst();
+                        mDocumentUriListener.getDocumentUri(uri, cursor.getString(nameIndex), cursor.getLong(sizeIndex));
+                        cursor.close();
+                    } else {
+                        Toast.makeText(getContext(), "Unable to load attachment.", Toast.LENGTH_SHORT).show();
+                    }
                     dismiss();
                 }
 
                 break;
             }
+
             case GET_CAMERA_REQUEST: {
-                Log.d(TAG, "onActivityResult: resultCode : " + resultCode);
+                Log.d(TAG, "onActivityResult: camera resultCode : " + resultCode);
 
                 if (intent != null) {
+                    File file;
                     Uri uri = intent.getData();
-                    File file = new File(uri.getPath());
-                    mCameraUriListener.getCameraUri(uri,file.getName()+".jpg",file.length());
+                    if (uri != null) {
+
+                        file = new File(Objects.requireNonNull(uri.getPath()));
+                        mCameraUriListener.getCameraUri(uri, file.getName() + ".jpg", file.length());
+                    } else {
+
+                        Log.d(TAG, "onActivityResult: uri : null");
+                        Toast.makeText(getContext(), "Unable to load photo.", Toast.LENGTH_SHORT).show();
+
+                    }
                     dismiss();
+                } else {
+                    Toast.makeText(getContext(), "Unable to load attachment.", Toast.LENGTH_SHORT).show();
                 }
+
+
                 break;
             }
+
             case GET_LOCATION_REQUEST: {
                 Log.d(TAG, "onActivityResult: resultCode : " + resultCode);
 
@@ -324,24 +346,26 @@ public class ChooseAttachmentBottomSheet extends BottomSheetDialogFragment imple
         }
     }
 
-     void setPhotoUriListener(PhotoUriListener mPhotoUriListener)
+
+    public void setPhotoUriListener(PhotoUriListener mPhotoUriListener)
     {
         this.mPhotoUriListener = mPhotoUriListener;
     }
 
-     void setDocumentUriListener(DocumentUriListener listener)
+    public void setDocumentUriListener(DocumentUriListener listener)
     {
         this.mDocumentUriListener = listener;
     }
 
-    void setLocationListener(LocationListener listener)
+    public void setLocationListener(LocationListener listener)
     {
         this.mLocationListener = listener;
     }
 
-    void setCameraUriListener(CameraUriListener listener)
+    public void setCameraUriListener(CameraUriListener listener)
     {
         this.mCameraUriListener = listener;
     }
+
 
 }

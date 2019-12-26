@@ -47,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:entries="@array/grievance_category_list"
             android:prompt="@string/grievance_category"
             android:spinnerMode="dialog" />
 
@@ -139,7 +140,6 @@
             app:icon="@drawable/ic_icon_attach_file"/>
 
         <ImageView
-            android:id="@+id/attachmentHelp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

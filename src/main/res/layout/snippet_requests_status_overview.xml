@@ -30,7 +30,6 @@
             android:text="@string/total"
             android:textColor="@color/colorPrimaryDark"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:id="@+id/txt_total_requests"
             android:layout_below="@id/count_total_requests"
             />
 
@@ -60,7 +59,6 @@
             android:text="@string/pending"
             android:textColor="@color/red"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:id="@+id/txt_request_status_pending"
             android:layout_below="@id/count_request_pending"
             />
 
@@ -90,7 +88,6 @@
             android:text="@string/in_process"
             android:textColor="@color/design_default_color_primary"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:id="@+id/txt_request_status_in_process"
             android:layout_below="@id/count_request_in_process"
             />
     </RelativeLayout>
@@ -100,8 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_toEndOf="@id/relativeLayout3"
-        android:id="@+id/relativeLayout4">
+        android:layout_toEndOf="@id/relativeLayout3">
 
         <TextView
             android:layout_width="wrap_content"
@@ -120,7 +116,6 @@
             android:textColor="@color/green"
             android:layout_centerHorizontal="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            android:id="@+id/txt_request_status_resolved"
             android:layout_below="@id/count_request_resolved"
             />
 

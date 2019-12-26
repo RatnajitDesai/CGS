@@ -20,7 +20,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.darpg33.hackathon.cgs.HelperViewModels.MainActivityViewModel;
+import com.darpg33.hackathon.cgs.HelperViewModels.ActivityHelperViewModel;
 import com.darpg33.hackathon.cgs.Model.User;
 import com.darpg33.hackathon.cgs.ui.login.LoginActivity;
 import com.darpg33.hackathon.cgs.ui.signout.SignOutFragment;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //vars
     private AppBarConfiguration mAppBarConfiguration;
     private NavController navController;
-    private MainActivityViewModel mainActivityViewModel;
+    private ActivityHelperViewModel activityHelperViewModel;
 
     //widgets
     private DrawerLayout drawer;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
@@ -56,9 +55,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // menu should be considered as top level destinations.
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_new_grievance, R.id.nav_view_grievance, R.id.nav_home,
-                R.id.nav_profile, R.id.nav_edit_profile,
-                R.id.nav_settings, R.id.nav_share, R.id.nav_sign_out)
+                R.id.nav_home, R.id.nav_sign_out
+        )
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -66,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        mainActivityViewModel = ViewModelProviders.of(this,new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(MainActivityViewModel.class);
+        activityHelperViewModel = ViewModelProviders.of(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(ActivityHelperViewModel.class);
 
         navigationView.setNavigationItemSelectedListener(this);
         setDrawerHeader();
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
          final TextView username = navigationView.getHeaderView(0).findViewById(R.id.drawer_username);
          final TextView email = navigationView.getHeaderView(0).findViewById(R.id.drawer_user_email);
 
-        mainActivityViewModel.getCurrentUser().observe(this, new Observer<User>() {
+        activityHelperViewModel.getCurrentUser().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
 
@@ -177,6 +175,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
     }
-
 
 }

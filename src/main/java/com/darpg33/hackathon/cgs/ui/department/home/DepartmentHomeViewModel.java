@@ -14,9 +14,9 @@ public class DepartmentHomeViewModel extends ViewModel {
     }
 
 
-    LiveData<Integer> getGrievanceCount(String status, String user_type) {
+    LiveData<Integer> getGrievanceCount(String status) {
 
-        return departmentHomeRepository.getGrievanceCount(status, user_type);
+        return departmentHomeRepository.getGrievanceCount(status);
 
     }
 }

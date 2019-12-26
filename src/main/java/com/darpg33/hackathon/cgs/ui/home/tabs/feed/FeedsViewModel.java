@@ -42,4 +42,9 @@ public class FeedsViewModel extends ViewModel {
 
         return mRepository.getUser(userId);
     }
+
+    LiveData<Boolean> currentUserUpvoted(ArrayList<String> list) {
+
+        return mRepository.currentUserUpvoted(list);
+    }
 }

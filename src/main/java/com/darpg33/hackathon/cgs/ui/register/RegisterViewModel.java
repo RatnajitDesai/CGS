@@ -1,5 +1,6 @@
 package com.darpg33.hackathon.cgs.ui.register;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -22,4 +23,8 @@ public class RegisterViewModel extends ViewModel {
 
     }
 
+    LiveData<Boolean> checkIfUserExists(String phone_number, String email) {
+
+        return repository.checkIfUserExists(phone_number, email);
+    }
 }

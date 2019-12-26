@@ -55,6 +55,7 @@ class NewGrievanceRepository {
 
     MutableLiveData<HashMap<String, HashMap<String, Object>>> uploadAttachments(final Grievance grievance, final String request_id) {
         final MutableLiveData<HashMap<String, HashMap<String, Object>>> attachmentLiveData = new MutableLiveData<>();
+
         grievance.setRequest_id(request_id);
 
         final HashMap<String, HashMap<String, Object>> attachmentMap = new HashMap<>();
@@ -189,6 +190,7 @@ class NewGrievanceRepository {
                                     .set(grievanceMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
+
                                     //adding request to user's MyRequests database
                                     db.collection(Fields.DBC_USERS)
                                             .document(grievance.getUser_id())
@@ -235,6 +237,7 @@ class NewGrievanceRepository {
                                                     });
 
                                             //adding action to 'Requests/request_id' database
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -291,6 +294,7 @@ class NewGrievanceRepository {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (queryDocumentSnapshots != null) {
+
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         if (document.exists()) {
                             Log.d(TAG, document.getId());
@@ -305,6 +309,7 @@ class NewGrievanceRepository {
                             break;
                         }
                     }
+
                 }
             }
         });
