@@ -1,11 +1,11 @@
-NOTE : Final code is available under branch "fianl_build". Due to some issue I was unable to push code to "master" branch.
+NOTE : Final code is available under branch "final_build". Due to some issue I was unable to push code to "master" branch.
 
 # CGS 
 Summary: 
 CGS is a mobile application designed to provide smooth grievance redressal mechanism.
 It is designed in a way that will increase citizen coordination/engagement in the grievance redressal procedure as well as make it transparent.
 
-Follwoing are the technologies we used for making CGS:
+Following are the technologies we used for making CGS:
 
 1) We have used architecture components alogn with Material design to enhance the user interface.
 2) For Authentication and database, we made use of Google's Firebase Authentication services and Firebase Firestore for storing the data as well as to give real-time updates.
